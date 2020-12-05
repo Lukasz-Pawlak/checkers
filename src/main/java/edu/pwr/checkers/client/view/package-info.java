@@ -1,0 +1,1 @@
+package edu.pwr.checkers.client.view;

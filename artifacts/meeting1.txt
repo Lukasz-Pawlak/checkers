@@ -1,0 +1,31 @@
+sprint 1
+----------------------------
+Diagramy w modelu:
+
+(potrzrbujemy opisać funkcjonalność)
+
+Interfejsy
+
+Piece
+Board
+Player
+
+
+Przygotowanie workspace
+
+git
+scrum Board
+
+----------------------------
+
+model logiczny modelu (kolejne diagramy)
+    jak dokładnie ma działać Board
+    jak dokładnie ma działać Piece
+    jak dokładnie ma współdziałać Player z Piece/Board
+
+----------------------------
+
+implementacja modelu
+testowanie modelu
+
+---------------------------------------------------------------------
