@@ -1,9 +1,9 @@
 Piece:
-- contains information about its colour, (and/or/it_is reference to Player)
-- contains information if the Piece is home or not,     // to bym wyrzycił do Game chyba, bo tam się odbywa sprawdzanie ze zgodnością z zasadami
+- contains information about its colour,
+- contains information about the Field it's currently on,
 
 Player:
-- has assigned colour,
+- contains information about the colours of his/her Pieces,
 - each turn can move exactly one of his/her Pieces
 or give up his/her turn,
 - can see the whole Board,
@@ -12,23 +12,24 @@ Board:
 - creates Fields,
 - creates Pieces,
 - contains information about its Fields,
-- given a Field can return all of its neighbours
+- given a Field can return all of its neighbours,
 
 Game:
 - sets up Board for new game                            // to może być delegowane do Buildera
-# conatains Board, Players,                             // # zamiast - bo to nie jest junkcjonalność
+# contains Board, Players,                             // # zamiast - bo to nie jest junkcjonalność
 - contains information about whose turn is it,
 - given a Piece can return all the Fields
 that the Piece can be moved to,                         // stores rule set somehow
 - checks if anyone has won the game after each turn,
-- updates Board based on Player's Move (if it is valid)
+- updates Board based on Player's Move (if it is valid),
+- contains information if the Piece is home or not,
 
 Move:
 - contains information about move to be performed
-(for example swquence of individual jumps)
+(for example sequence of individual jumps)
 
 Field:
-- contains information about its colour,                // czy nie wystarczy Piece, skoro Piece ma kolor?
+- contains information about its colour,
 - contains information about the Piece on it
 or information that the Field is empty,
 - contains information whether its full or empty,
