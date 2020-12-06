@@ -22,7 +22,6 @@ Game:
 that the Piece can be moved to,                         // stores rule set somehow
 - checks if anyone has won the game after each turn,
 - updates Board based on Player's Move (if it is valid),
-- contains information if the Piece is home or not,
 
 Move:
 - contains information about move to be performed
@@ -33,3 +32,5 @@ Field:
 - contains information about the Piece on it
 or information that the Field is empty,
 - contains information whether its full or empty,
+- contains information which Piece colour this
+Field is home for (one or none)
