@@ -2,7 +2,7 @@ sprint 1
 ----------------------------
 Diagramy w modelu:
 
-(potrzrbujemy opisać funkcjonalność)
+(potrzebujemy opisać funkcjonalność)
 
 Interfejsy
 

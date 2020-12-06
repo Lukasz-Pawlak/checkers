@@ -1,0 +1,24 @@
+Piece:
+- contains information about its colour,
+- contains information if the Piece is home or not,
+
+Player:
+- can move exactly one of his/her Pieces
+or give up his/her turn,
+- can see the whole Board,
+
+Board:
+- creates Fields,
+- creates Pieces,
+- contains information about its Fields,
+- contains information about whose turn is it,
+- given a Piece can return all the Fields
+that the Piece can be moved to,
+- can check if anyone has won the game,
+
+Field:
+- can check its neighbours,
+- contains information about its colour,
+- contains information about the Piece on it
+or information that the Field is empty,
+- contains information whether its full or empty,
