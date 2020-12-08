@@ -1,0 +1,54 @@
+The game of chinese checkers uses star-shaped board.
+On that board, every non-border field is adjacent to six others,
+thus resembling a grid of hexagons. It is easier to work in this
+context when we can operate on hexagonal grid. This leads to
+the first issue:
+
+
+    1. How to simulate hexagonal grid in java
+
+The key property of hexagonal grid is that every cell has 6 neighbors.
+Note that we can easily operate on square grids using 2-dimensional
+arrays, however in that case every cell has either 4 adjacent ones
+(when we don't count corner-touching ones) or 8 (when we do).
+To fix it, we consider squares being adjacent when they either:
+
+    a) share an edge
+    b) share corner whose diagonal follows
+        (previously chosen) fixed direction
+
+Visualization of this concept can be found in 'squarehex.svg' file.
+Dots represent cells, depending on point of view either square
+or hexagonal. As you can see, this enables us to model hexagonal
+grid (black lines) using square grid (grey lines intersections).
+Note that only hexagons on the border of square array don't have
+all 6 neighbors, same as squares on the border don't have 4.
+
+
+    2. Movement
+
+Suppose we have position expressed in square coordinates
+    ( x    , y    )
+Then adjacent cells have coordinates of
+    ( x + 1, y    )
+    ( x - 1, y    )
+    ( x    , y + 1)
+    ( x    , y - 1)
+    ( x + 1, y + 1)
+    ( x - 1, y - 1)
+
+
+    3. Actual board
+
+It is easy to draw whole board in this convention (see 'star.svg'),
+but it is not very elegant solution. Firstly, there are loads of
+unused space in 17x17 square grid. Secondly, we either need to deal
+with edge cases (when checking for neighbors of 4 fields touching
+the boundary) or further increase size of array to 19x19, so that
+those fields also could use 'null = no neighbor there' convention.
+
+To fix both we will create the same shape on torus - see 'torus.svg'.
+It fits on smaller board - 14x14, because we want empty spaces to
+communicate that cells don't have neighbors in that direction.
+
+Every move will just be divided modulo 14;
