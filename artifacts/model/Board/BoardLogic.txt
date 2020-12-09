@@ -52,3 +52,15 @@ It fits on smaller board - 14x14, because we want empty spaces to
 communicate that cells don't have neighbors in that direction.
 
 Every move will just be divided modulo 14;
+
+
+    4. Generating new board
+
+First, we create 14x14 array of nulls, in some we will create field
+objects. See 'FieldGenAlgo.drawio' for reference. Pieces can be created
+simultaneously with fields.
+
+
+    5. Neighbors of Field
+
+Return all non-null Fields adjacent to this Field (those 1 move away)
