@@ -21,6 +21,7 @@ Game:
 - given a Piece can return all the Fields
 that the Piece can be moved to,                         // stores rule set somehow
 - checks if anyone has won the game after each turn,
+then puts the Player on the ranking and disactives the player,
 - updates Board based on Player's Move (if it is valid),
 
 Move:
