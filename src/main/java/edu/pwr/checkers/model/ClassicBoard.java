@@ -60,6 +60,11 @@ public class ClassicBoard implements Board {
         return cells[Math.floorMod(x, TORUS_SIZE)][Math.floorMod(y, TORUS_SIZE)];
     }
 
+    @Override
+    public List<Color> getColors(int playersNo) {
+        return null;
+    }
+
     public ClassicBoard() {
         cells = new Field[TORUS_SIZE][TORUS_SIZE];
     }
