@@ -15,6 +15,7 @@ public class ClassicBoard implements Board {
         TORUS_SIZE = STAR_RADIUS + SIDE_LENGTH + 1;
     }
 
+    // idk if this will be useful, just leaving it for now since it's already here
     public final static int RIGHT = 0;
     public final static int RIGHT_DOWN = 1;
     public final static int LEFT_DOWN = 2;
@@ -65,8 +66,7 @@ public class ClassicBoard implements Board {
 
     @Override
     public void setup() {
-        // TODO: write Factory for Field and add proper factories where needed
-        FieldFactory currentFactory = null;
+        FieldFactory currentFactory = new ClassicFieldFactory(Color.NOCOLOR, false);
         cells[0][0] = null;
         for (int rad = 1; rad <= HEX_RADIUS; rad++) {               // for each ring
             for (int direction = 0; direction < DIRECTIONS_NO; direction++) {
@@ -78,15 +78,17 @@ public class ClassicBoard implements Board {
                 }
             }
         }
-        CyclicFieldFactory cycle = new CyclicFieldFactory(DIRECTIONS_NO);
-        // TODO actual factories
-        cycle.addFactory(null);
-        cycle.addFactory(null);
-        // we will need total of 6 factories, for each color
+        CyclicGetter<FieldFactory> cycle = new CyclicGetter<>(DIRECTIONS_NO);
+        cycle.addObject(new ClassicFieldFactory(Color.RED, true));
+        cycle.addObject(new ClassicFieldFactory(Color.GREEN, true));
+        cycle.addObject(new ClassicFieldFactory(Color.BLUE, true));
+        cycle.addObject(new ClassicFieldFactory(Color.CYAN, true));
+        cycle.addObject(new ClassicFieldFactory(Color.MAGENTA, true));
+        cycle.addObject(new ClassicFieldFactory(Color.YELLOW, true));
         for (int rad = HEX_RADIUS + 1; rad <= STAR_RADIUS; rad++) { // for each outer ring
             for (int direction = 0; direction < DIRECTIONS_NO; direction++) {
                 Coordinates curr = new Coordinates(0, 0);           // starting from the center
-                currentFactory = cycle.getNextFactory();
+                currentFactory = cycle.getNext();
                 curr = move(direction, rad, curr);                  // move to the starting position
                 curr = move(direction + 2, rad - HEX_RADIUS, curr);
                 for (int i = STAR_RADIUS; i > rad; i--) {           // create proper amount of Fields
