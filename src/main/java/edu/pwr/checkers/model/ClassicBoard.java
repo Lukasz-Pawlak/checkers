@@ -17,11 +17,11 @@ public class ClassicBoard implements Board {
 
     // idk if this will be useful, just leaving it for now since it's already here
     public final static int RIGHT = 0;
-    public final static int RIGHT_DOWN = 1;
-    public final static int LEFT_DOWN = 2;
+    public final static int RIGHT_UP = 1;
+    public final static int UP = 2;
     public final static int LEFT = 3;
-    public final static int LEFT_UP = 4;
-    public final static int RIGHT_UP = 5;
+    public final static int LEFT_DOWN = 4;
+    public final static int DOWN = 5;
 
     protected final static int DIRECTIONS_NO = 6;
 
@@ -58,6 +58,11 @@ public class ClassicBoard implements Board {
     @Override
     public Field getField(int x, int y) {
         return cells[Math.floorMod(x, TORUS_SIZE)][Math.floorMod(y, TORUS_SIZE)];
+    }
+
+    @Override
+    public Field getField(Coordinates cor) {
+        return getField(cor.x, cor.y);
     }
 
     @Override
@@ -113,6 +118,16 @@ public class ClassicBoard implements Board {
             if (cells[other.x][other.y] != null) {
                 list.add(cells[other.x][other.y]);
             }
+        }
+        return list;
+    }
+
+    @Override
+    public List<Field> getFurtherNeighborsOf(Field field) {
+        List<Field> neighbours = getNeighborsOf(field);
+        List<Field> list = new ArrayList<>();
+        for (Field f: neighbours) {
+            list.addAll(getNeighborsOf(f));
         }
         return list;
     }

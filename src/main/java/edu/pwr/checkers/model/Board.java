@@ -9,6 +9,7 @@ public interface Board {
      */
     void setup();
     List<Field> getNeighborsOf(Field field);
+    List<Field> getFurtherNeighborsOf(Field field);
     Coordinates move(int direction, int amount, Coordinates pos); // TODO: maybe this should be done differently, for example using abstract class
     /**
      * This method should return side length of square in which
@@ -16,6 +17,7 @@ public interface Board {
      */
     int getSize();
     Field getField(int x, int y);
+    Field getField(Coordinates cor);
     /** This function should return list of colors optimal for given number of players */
     List<Color> getColors(int playersNo);
 }
