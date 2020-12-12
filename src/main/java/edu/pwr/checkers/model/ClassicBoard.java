@@ -1,6 +1,7 @@
 package edu.pwr.checkers.model;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ClassicBoard implements Board {
@@ -57,11 +58,26 @@ public class ClassicBoard implements Board {
 
     @Override
     public Field getField(int x, int y) {
-        return cells[Math.floorMod(x, TORUS_SIZE)][Math.floorMod(y, TORUS_SIZE)];
+        return cells[Math.floorMod(x - STAR_RADIUS, TORUS_SIZE)]
+                    [Math.floorMod(y - STAR_RADIUS, TORUS_SIZE)];
     }
 
     @Override
     public List<Color> getColors(int playersNo) {
+        List<Color> colors = new ArrayList<>();
+        colors.add(Color.RED);
+        switch (playersNo) {
+            case 2:
+                colors.add(Color.CYAN);
+                break;
+            case 3:
+                colors.add(Color.BLUE);
+                break;
+            case 6:
+                break;
+            default:
+                return null;
+        }
         return null;
     }
 
@@ -72,7 +88,7 @@ public class ClassicBoard implements Board {
     @Override
     public void setup() {
         FieldFactory currentFactory = new ClassicFieldFactory(Color.NOCOLOR, false);
-        cells[0][0] = null;
+        cells[0][0] = currentFactory.getField(new Coordinates(0, 0));
         for (int rad = 1; rad <= HEX_RADIUS; rad++) {               // for each ring
             for (int direction = 0; direction < DIRECTIONS_NO; direction++) {
                 Coordinates curr = new Coordinates(0, 0);           // starting from the center

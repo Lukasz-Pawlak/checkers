@@ -6,6 +6,7 @@ public class ClassicGame implements Game {
     protected int numberOfPlayers;
     protected Board board;
     protected CyclicGetter<Player> players;
+    protected Player activePlayer;
 
     public ClassicGame(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
@@ -16,7 +17,10 @@ public class ClassicGame implements Game {
     @Override
     public void init() {
         board.setup();
-        board.getColors(numberOfPlayers);
+        List<Color> colors = board.getColors(numberOfPlayers);
+        for (int i = 0; i < numberOfPlayers; i++) {
+           players.addObject(new ClassicPlayer(colors.get(i)));
+        }
     }
 
     @Override
@@ -26,7 +30,7 @@ public class ClassicGame implements Game {
 
     @Override
     public void confirmMove(Player player) {
-        
+
     }
 
     @Override
