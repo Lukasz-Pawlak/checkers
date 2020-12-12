@@ -124,12 +124,11 @@ public class ClassicBoard implements Board {
         }
     }
 
-    @Override
-    public List<Field> getNeighborsOf(Field field) {
+    public List<Field> getNeigboursOfDistance (Field field, int distance) {
         List<Field> list = new ArrayList<>();
         Coordinates pos = field.getPosition();
         for (int i = 0; i < DIRECTIONS_NO; i++) {
-            Coordinates other = move(i, 1, pos);
+            Coordinates other = move(i, distance, pos);
             if (cells[other.x][other.y] != null) {
                 list.add(cells[other.x][other.y]);
             }
@@ -138,12 +137,12 @@ public class ClassicBoard implements Board {
     }
 
     @Override
+    public List<Field> getNeighborsOf(Field field) {
+        return getNeigboursOfDistance(field, 1);
+    }
+
+    @Override
     public List<Field> getFurtherNeighborsOf(Field field) {
-        List<Field> neighbours = getNeighborsOf(field);
-        List<Field> list = new ArrayList<>();
-        for (Field f: neighbours) {
-            list.addAll(getNeighborsOf(f));
-        }
-        return list;
+        return getNeigboursOfDistance(field, 2);
     }
 }
