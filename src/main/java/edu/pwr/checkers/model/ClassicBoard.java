@@ -116,7 +116,7 @@ public class ClassicBoard implements Board {
                 currentFactory = cycle.getNext();
                 curr = move(direction, rad, curr);                  // move to the starting position
                 curr = move(direction + 2, rad - HEX_RADIUS, curr);
-                for (int i = STAR_RADIUS; i > rad; i--) {           // create proper amount of Fields
+                for (int i = STAR_RADIUS; i >= rad; i--) {           // create proper amount of Fields
                     cells[curr.x][curr.y] = currentFactory.getField(curr);
                     curr = move(direction + 2, 1, curr);
                 }
