@@ -1,12 +1,17 @@
 package edu.pwr.checkers.model;
 
+import edu.pwr.checkers.server.Server;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClassicGame implements Game {
     protected int numberOfPlayers;
     protected Board board;
     protected CyclicGetter<Player> players;
+    protected ArrayList<MoveType> lastMoves = new ArrayList<>(numberOfPlayers);
     protected Player activePlayer;
+    private Server server;
 
     public ClassicGame(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
@@ -25,38 +30,58 @@ public class ClassicGame implements Game {
 
     @Override
     public void move(Player player, Piece piece, Coordinates newPosition) throws IllegalMoveException, WrongPlayerException {
-        MoveType type = player.getCurrentMove().getMovetype();
-        Piece pieceOnNewCor = board.getField(newPosition).getPiece();
+        int index = getPlayerNum(player);
+        MoveType lastMove = lastMoves.get(index);
         Coordinates betweenPosition = new Coordinates((piece.getField().getPosition().x + newPosition.x) / 2,
           (piece.getField().getPosition().y + newPosition.y) / 2);
         Piece pieceInBetween = board.getField(betweenPosition).getPiece();
+        Piece pieceOnNewCor = board.getField(newPosition).getPiece();
 
         if (!player.getPieces().contains(piece)) {
             throw new WrongPlayerException();
-        } else if (type == MoveType.ONESTEP
-        && (pieceOnNewCor != null || player.getPreviousMove().getMovetype() != null)) {
+        } else if (lastMove == MoveType.ONESTEP
+        && (pieceOnNewCor != null || lastMove != null)) {
             throw new IllegalMoveException();
-        } else if (type == MoveType.JUMPSEQ
+        } else if (lastMove == MoveType.JUMPSEQ
           && (pieceOnNewCor != null || pieceInBetween == null
-          || (player.getPreviousMove().getMovetype() != MoveType.JUMPSEQ
-          && player.getPreviousMove().getMovetype() != null))) {
+          || (lastMove != MoveType.JUMPSEQ
+          && lastMove != null))) {
             throw new IllegalMoveException();
-        } else if (type == MoveType.UNKNOWN) {
+        } else if (lastMove == MoveType.UNKNOWN) {
             throw new IllegalMoveException();
         } else {
-            piece.setField(board.getField(newPosition));
-            player.setPreviousMove(player.getCurrentMove());
-            player.setCurrentMove(null);
+            lastMoves.set(index, getType(piece, newPosition));
         }
     }
 
-    @Override
-    public void confirmMove(Player player) {
-
+    private int getPlayerNum(Player player) {
+        for (int i = 0; i < numberOfPlayers; i++) {
+            if (players.get(i) == player) {
+                return i;
+            }
+        }
+        return -1;
     }
 
-    @Override
-    public void rollback(Player player) {
-        player.setCurrentMove(player.getPreviousMove());
+    public MoveType getType (Piece piece, Coordinates newCor) {
+        Field field = piece.getField();
+        Field newField = board.getField(newCor.x, newCor.y);
+        List<Field> neighbours = board.getNeighborsOf(field);
+        List<Field> furtherNeighbours = board.getFurtherNeighborsOf(field);
+        if (neighbours.contains(newField)) {
+            return MoveType.ONESTEP;
+        } else if (furtherNeighbours.contains(newField)) {
+            return MoveType.JUMPSEQ;
+        }
+        return MoveType.UNKNOWN;
+    }
+
+    public void cancelMove(Player player) {
+        int index = getPlayerNum(player);
+        lastMoves.set(index, null);
+    }
+
+    public void acceptMove(Player player) {
+        board =  player.getCurrState();
     }
 }

@@ -1,11 +1,12 @@
 package edu.pwr.checkers.model;
 
+import edu.pwr.checkers.client.Controller;
+
 import java.util.List;
 
 public class ClassicPlayer implements Player {
   private final List<Piece> pieces;
-  private Move currentMove;
-  private Move previousMove;
+  Controller controller;
   private final Board board;
 
   public ClassicPlayer(List<Piece> pieces, Board board) {
@@ -13,33 +14,28 @@ public class ClassicPlayer implements Player {
     this.board = board;
   }
 
+
   @Override
-  public void currentMove(Piece piece, Coordinates cor, Board board) {
-    currentMove = new Move(piece, cor, board);
+  public void movePiece(Piece piece, Coordinates cor) {
+    if (notMyPiece(piece)) {
+      // TODO: send msg to controller
+    } else {
+      //client.sendMoveRequest(this, piece, cor);
+    }
   }
 
   @Override
-  public Move getPreviousMove() {
-    return previousMove;
-  }
-
-  @Override
-  public Move getCurrentMove() {
-    return currentMove;
-  }
-
-  @Override
-  public void setCurrentMove(Move move) {
-    currentMove = move;
-  }
-
-  @Override
-  public void setPreviousMove(Move move) {
-    this.previousMove = move;
+  public boolean notMyPiece(Piece piece) {
+    return !pieces.contains(piece);
   }
 
   @Override
   public List<Piece> getPieces() {
     return pieces;
+  }
+
+  @Override
+  public Board getCurrState() {
+    return controller.currState;
   }
 }

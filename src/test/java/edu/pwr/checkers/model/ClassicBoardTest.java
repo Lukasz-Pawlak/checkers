@@ -5,6 +5,12 @@ import static org.junit.Assert.*;
 
 public class ClassicBoardTest {
     @Test
+    public void testGetSize() {
+        Board board = new ClassicBoard();
+        assertEquals(17, board.getSize());
+    }
+
+    @Test
     public void testGetField() {
         Board board = new ClassicBoard();
         board.setup();
@@ -14,7 +20,8 @@ public class ClassicBoardTest {
         assertNotNull(board.getField(2, 6));
         assertNotNull(board.getField(2, 5));
         assertNotNull(board.getField(2, 4));
-        assertNull(board.getField(2, 3));
+        Coordinates cor = new Coordinates(2, 3);
+        assertNull(board.getField(cor));
         assertNull(board.getField(2, 7));
         assertNull(board.getField(2, 3));
         assertNull(board.getField(3, 8));

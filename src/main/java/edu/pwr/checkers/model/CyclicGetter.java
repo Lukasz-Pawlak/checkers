@@ -26,6 +26,10 @@ public class CyclicGetter<T> {
         return false;
     }
 
+    T get(int i) {
+        return ring.get(i);
+    }
+
     T getNext() {
         if (remainingSpace > 0) {
             return null;
