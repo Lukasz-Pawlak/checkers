@@ -17,7 +17,28 @@ class ClassicFieldFactory implements FieldFactory {
     public Field getField(Coordinates coordinates) {
         Field field = new ClassicField(coordinates, homeFor);
         if (withPiece) {
-            field.setPiece(new ClassicPiece(homeFor));
+            switch (homeFor) {
+                case RED:
+                    field.setPiece(new ClassicPiece(Color.CYAN));
+                    break;
+                case CYAN:
+                    field.setPiece(new ClassicPiece(Color.RED));
+                    break;
+                case YELLOW:
+                    field.setPiece(new ClassicPiece(Color.BLUE));
+                    break;
+                case BLUE:
+                    field.setPiece(new ClassicPiece(Color.YELLOW));
+                    break;
+                case MAGENTA:
+                    field.setPiece(new ClassicPiece(Color.GREEN));
+                    break;
+                case GREEN:
+                    field.setPiece(new ClassicPiece(Color.MAGENTA));
+                    break;
+                default:
+                    return null;
+            }
         }
         return field;
     }

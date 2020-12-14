@@ -15,14 +15,14 @@ public class ClassicGame implements Game {
 
     public ClassicGame(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
-        board = new ClassicBoard();
+        board = new ClassicBoard(numberOfPlayers);
         players = new CyclicGetter<>(numberOfPlayers);
     }
 
     @Override
     public void init() {
         board.setup();
-        List<Color> colors = board.getColors(numberOfPlayers);
+        List<Color> colors = board.getColors();
         for (int i = 0; i < numberOfPlayers; i++) {
            players.addObject(new ClassicPlayer(null, null)); // todo: parameters
         }

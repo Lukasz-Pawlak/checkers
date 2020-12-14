@@ -19,5 +19,5 @@ public interface Board {
     Field getField(int x, int y);
     Field getField(Coordinates cor);
     /** This function should return list of colors optimal for given number of players */
-    List<Color> getColors(int playersNo);
+    List<Color> getColors();
 }

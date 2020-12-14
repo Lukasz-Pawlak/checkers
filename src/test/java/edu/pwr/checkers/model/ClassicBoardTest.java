@@ -9,23 +9,24 @@ import static org.junit.Assert.*;
 public class ClassicBoardTest {
     @Test
     public void testGetSize() {
-        Board board = new ClassicBoard();
+        Board board = new ClassicBoard(6);
         assertEquals(17, board.getSize());
     }
 
     @Test
     public void testGetColor() {
-        Board board = new ClassicBoard();
-        List<Color> list = board.getColors(-1);
+        Board board = new ClassicBoard(-1);
+        List<Color> list = board.getColors();
         assertNull(list);
-        list = board.getColors(4);
+        board = new ClassicBoard(4);
+        list = board.getColors();
         assertNotNull(list);
         assertTrue(list.contains(Color.RED));
     }
 
     @Test
     public void testNeighbours() {
-        ClassicBoard board = new ClassicBoard();
+        ClassicBoard board = new ClassicBoard(6);
         board.setup();
         Field field = board.cells[0][0];
         Field field1 = board.cells[13][13];
@@ -40,7 +41,7 @@ public class ClassicBoardTest {
 
     @Test
     public void testGetField() {
-        Board board = new ClassicBoard();
+        Board board = new ClassicBoard(6);
         board.setup();
         assertNotNull(board.getField(8, 8));
         assertNotNull(board.getField(4, 8));
@@ -58,7 +59,7 @@ public class ClassicBoardTest {
     }
     @Test
     public void testRandomFields() {
-        Board board = new ClassicBoard();
+        Board board = new ClassicBoard(6);
         board.setup();
         assertEquals(Color.NOCOLOR, board.getField(8, 8).getHomeForColor());
         assertEquals(Color.NOCOLOR, board.getField(4, 4).getHomeForColor());
@@ -95,7 +96,7 @@ public class ClassicBoardTest {
     }
 
     private int countColor (Color color) {
-        Board board = new ClassicBoard();
+        Board board = new ClassicBoard(6);
         board.setup();
         int count = 0;
         for (int x = 0; x < 14; x++) {

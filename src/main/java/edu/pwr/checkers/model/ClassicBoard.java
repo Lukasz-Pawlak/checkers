@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClassicBoard implements Board {
+    private int playerNo;
     protected static int SIDE_LENGTH = 5;       // left not final for inheritance
     protected final static int HEX_RADIUS;
     protected final static int STAR_RADIUS;
@@ -67,10 +68,10 @@ public class ClassicBoard implements Board {
     }
 
     @Override
-    public List<Color> getColors(int playersNo) {
+    public List<Color> getColors() {
         List<Color> colors = new ArrayList<>();
         colors.add(Color.RED);
-        switch (playersNo) {
+        switch (playerNo) {
             case 2:
                 colors.add(Color.CYAN);
                 break;
@@ -96,8 +97,9 @@ public class ClassicBoard implements Board {
         return colors;
     }
 
-    public ClassicBoard() {
+    public ClassicBoard(int playerNo) {
         cells = new Field[TORUS_SIZE][TORUS_SIZE];
+        this.playerNo = playerNo;
     }
 
     @Override
@@ -115,6 +117,46 @@ public class ClassicBoard implements Board {
             }
         }
         CyclicGetter<FieldFactory> cycle = new CyclicGetter<>(DIRECTIONS_NO);
+        switch (playerNo) {
+            case 2:
+                cycle.addObject(new ClassicFieldFactory(Color.RED, true));
+                cycle.addObject(new ClassicFieldFactory(Color.GREEN, false));
+                cycle.addObject(new ClassicFieldFactory(Color.BLUE, false));
+                cycle.addObject(new ClassicFieldFactory(Color.CYAN, true));
+                cycle.addObject(new ClassicFieldFactory(Color.MAGENTA, false));
+                cycle.addObject(new ClassicFieldFactory(Color.YELLOW, false));                break;
+            case 3:
+                cycle.addObject(new ClassicFieldFactory(Color.RED, true));
+                cycle.addObject(new ClassicFieldFactory(Color.GREEN, false));
+                cycle.addObject(new ClassicFieldFactory(Color.BLUE, true));
+                cycle.addObject(new ClassicFieldFactory(Color.CYAN, false));
+                cycle.addObject(new ClassicFieldFactory(Color.MAGENTA, true));
+                cycle.addObject(new ClassicFieldFactory(Color.YELLOW, false));
+                break;
+            case 4:
+                cycle.addObject(new ClassicFieldFactory(Color.RED, true));
+                cycle.addObject(new ClassicFieldFactory(Color.GREEN, false));
+                cycle.addObject(new ClassicFieldFactory(Color.BLUE, true));
+                cycle.addObject(new ClassicFieldFactory(Color.CYAN, true));
+                cycle.addObject(new ClassicFieldFactory(Color.MAGENTA, false));
+                cycle.addObject(new ClassicFieldFactory(Color.YELLOW, true));
+                break;
+            case 6:
+                cycle.addObject(new ClassicFieldFactory(Color.RED, true));
+                cycle.addObject(new ClassicFieldFactory(Color.GREEN, true));
+                cycle.addObject(new ClassicFieldFactory(Color.BLUE, true));
+                cycle.addObject(new ClassicFieldFactory(Color.CYAN, true));
+                cycle.addObject(new ClassicFieldFactory(Color.MAGENTA, true));
+                cycle.addObject(new ClassicFieldFactory(Color.YELLOW, true));
+                break;
+            default:
+                cycle.addObject(new ClassicFieldFactory(Color.RED, false));
+                cycle.addObject(new ClassicFieldFactory(Color.GREEN, false));
+                cycle.addObject(new ClassicFieldFactory(Color.BLUE, false));
+                cycle.addObject(new ClassicFieldFactory(Color.CYAN, false));
+                cycle.addObject(new ClassicFieldFactory(Color.MAGENTA, false));
+                cycle.addObject(new ClassicFieldFactory(Color.YELLOW, false));
+        }
         cycle.addObject(new ClassicFieldFactory(Color.RED, true));
         cycle.addObject(new ClassicFieldFactory(Color.GREEN, true));
         cycle.addObject(new ClassicFieldFactory(Color.BLUE, true));
