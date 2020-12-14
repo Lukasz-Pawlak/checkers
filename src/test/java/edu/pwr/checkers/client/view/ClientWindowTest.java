@@ -11,7 +11,7 @@ public class ClientWindowTest {
     // this isn't a proper test, I use it to see if everything displays correctly
     @Test
     public void testConstructor() {
-        Board board = new ClassicBoard(6);
+        Board board = new ClassicBoard( 4);
         board.setup();
         new ClientWindow(board);
         Scanner scanner = new Scanner(System.in);

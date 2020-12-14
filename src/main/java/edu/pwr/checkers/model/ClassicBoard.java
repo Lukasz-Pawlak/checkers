@@ -8,12 +8,14 @@ public class ClassicBoard implements Board {
     protected static int SIDE_LENGTH = 5;       // left not final for inheritance
     protected final static int HEX_RADIUS;
     protected final static int STAR_RADIUS;
-    protected final static int TORUS_SIZE;
+    //protected final static int TORUS_SIZE;
+    protected final static int SQUARE_SIZE;
 
     static {
         HEX_RADIUS = SIDE_LENGTH - 1;
         STAR_RADIUS = HEX_RADIUS * 2;
-        TORUS_SIZE = STAR_RADIUS + SIDE_LENGTH + 1;
+        //TORUS_SIZE = STAR_RADIUS + SIDE_LENGTH + 1;
+        SQUARE_SIZE = 2 * STAR_RADIUS + 1;
     }
 
     // idk if this will be useful, just leaving it for now since it's already here
@@ -36,16 +38,16 @@ public class ClassicBoard implements Board {
         int x = 0, y = 0;
         switch (Math.floorMod(direction, 3)) { // we use the symmetry to write less cases
             case 0:
-                x = Math.floorMod(pos.x + amount, TORUS_SIZE);
+                x = pos.x + amount;
                 y = pos.y;
                 break;
             case 1:
-                x = Math.floorMod(pos.x + amount, TORUS_SIZE);
-                y = Math.floorMod(pos.y + amount, TORUS_SIZE);
+                x = pos.x + amount;
+                y = pos.y + amount;
                 break;
             case 2:
                 x = pos.x;
-                y = Math.floorMod(pos.y + amount, TORUS_SIZE);
+                y = pos.y + amount;
                 break;
         }
         return new Coordinates(x, y);
@@ -58,8 +60,7 @@ public class ClassicBoard implements Board {
 
     @Override
     public Field getField(int x, int y) {
-        return cells[Math.floorMod(x - STAR_RADIUS, TORUS_SIZE)]
-                    [Math.floorMod(y - STAR_RADIUS, TORUS_SIZE)];
+        return cells[x][y];
     }
 
     @Override
@@ -98,17 +99,17 @@ public class ClassicBoard implements Board {
     }
 
     public ClassicBoard(int playerNo) {
-        cells = new Field[TORUS_SIZE][TORUS_SIZE];
+        cells = new Field[SQUARE_SIZE][SQUARE_SIZE];
         this.playerNo = playerNo;
     }
 
     @Override
     public void setup() {
         FieldFactory currentFactory = new ClassicFieldFactory(Color.NOCOLOR, false);
-        cells[0][0] = currentFactory.getField(new Coordinates(0, 0));
+        cells[8][8] = currentFactory.getField(new Coordinates(8, 8));
         for (int rad = 1; rad <= HEX_RADIUS; rad++) {               // for each ring
             for (int direction = 0; direction < DIRECTIONS_NO; direction++) {
-                Coordinates curr = new Coordinates(0, 0);           // starting from the center
+                Coordinates curr = new Coordinates(8, 8);           // starting from the center
                 curr = move(direction, rad, curr);                  // move to the starting position
                 for (int i = 0; i < rad; i++) {                     // create proper amount of Fields
                     cells[curr.x][curr.y] = currentFactory.getField(curr);
@@ -165,7 +166,7 @@ public class ClassicBoard implements Board {
         cycle.addObject(new ClassicFieldFactory(Color.YELLOW, true));
         for (int rad = HEX_RADIUS + 1; rad <= STAR_RADIUS; rad++) { // for each outer ring
             for (int direction = 0; direction < DIRECTIONS_NO; direction++) {
-                Coordinates curr = new Coordinates(0, 0);           // starting from the center
+                Coordinates curr = new Coordinates(8, 8);           // starting from the center
                 currentFactory = cycle.getNext();
                 curr = move(direction, rad, curr);                  // move to the starting position
                 curr = move(direction + 2, rad - HEX_RADIUS, curr);
