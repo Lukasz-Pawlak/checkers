@@ -20,4 +20,5 @@ public interface Board {
     Field getField(Coordinates cor);
     /** This function should return list of colors optimal for given number of players */
     List<Color> getColors();
+    List<Piece> getPiecesOfColor(Color color);
 }

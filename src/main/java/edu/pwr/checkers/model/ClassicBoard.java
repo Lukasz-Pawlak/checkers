@@ -71,26 +71,26 @@ public class ClassicBoard implements Board {
     @Override
     public List<Color> getColors() {
         List<Color> colors = new ArrayList<>();
-        colors.add(Color.RED);
+        colors.add(Color.CYAN);
         switch (playerNo) {
             case 2:
-                colors.add(Color.CYAN);
+                colors.add(Color.RED);
                 break;
             case 3:
-                colors.add(Color.MAGENTA);
-                colors.add(Color.BLUE);
+                colors.add(Color.GREEN);
+                colors.add(Color.YELLOW);
                 break;
             case 4:
-                colors.add(Color.YELLOW);
-                colors.add(Color.CYAN);
                 colors.add(Color.BLUE);
+                colors.add(Color.RED);
+                colors.add(Color.YELLOW);
                 break;
             case 6:
-                colors.add(Color.YELLOW);
-                colors.add(Color.MAGENTA);
-                colors.add(Color.CYAN);
                 colors.add(Color.BLUE);
                 colors.add(Color.GREEN);
+                colors.add(Color.RED);
+                colors.add(Color.YELLOW);
+                colors.add(Color.MAGENTA);
                 break;
             default:
                 return null;
@@ -98,10 +98,25 @@ public class ClassicBoard implements Board {
         return colors;
     }
 
+    @Override
+    public List<Piece> getPiecesOfColor(Color color) {
+        List<Piece> pieces = new ArrayList<>();
+        for (int i = 0; i < SQUARE_SIZE; i++) {
+            for (int j = 0; j < SQUARE_SIZE; j++) {
+                if (cells[i][j] != null && cells[i][j].getPiece().getColor() == color) {
+                    pieces.add(cells[i][j].getPiece());
+                }
+            }
+        }
+        return pieces;
+    }
+
     public ClassicBoard(int playerNo) {
         cells = new Field[SQUARE_SIZE][SQUARE_SIZE];
         this.playerNo = playerNo;
     }
+
+
 
     @Override
     public void setup() {

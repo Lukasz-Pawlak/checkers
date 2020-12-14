@@ -52,7 +52,7 @@ public class SidePanel extends JPanel {
         toggleAllButtonsState(false);
     }
 
-    void  enableButtons() {
+    void enableButtons() {
         toggleAllButtonsState(true);
     }
 

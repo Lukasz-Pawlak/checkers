@@ -24,7 +24,7 @@ public class ClassicGame implements Game {
         board.setup();
         List<Color> colors = board.getColors();
         for (int i = 0; i < numberOfPlayers; i++) {
-           players.addObject(new ClassicPlayer(null, null)); // todo: parameters
+           players.addObject(new ClassicPlayer(board.getPiecesOfColor(colors.get(i)), board));
         }
     }
 
