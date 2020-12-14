@@ -17,7 +17,7 @@ public class ClientWindow extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        canvas = new Canvas();
+        canvas = new Canvas(board);
         messageBox = new JTextArea();
         sidePanel = new SidePanel();
 
@@ -42,5 +42,9 @@ public class ClientWindow extends JFrame {
 
     public void setMessage(String msg) {
         messageBox.setText(msg);
+    }
+
+    public void useThisBoard(Board board) {
+        canvas.setBoard(board);
     }
 }
