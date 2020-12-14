@@ -11,7 +11,7 @@ public class ClientWindow extends JFrame {
 
     public ClientWindow(Board board) {
         super("Chinese Checkers");
-        setBounds(300, 200, 600, 400);
+        setBounds(300, 200, 800, 400);
         setResizable(true);
         setMinimumSize(new Dimension(600, 400));
 
