@@ -28,9 +28,9 @@ public class ClassicBoardTest {
     public void testNeighbours() {
         ClassicBoard board = new ClassicBoard(6);
         board.setup();
-        Field field = board.cells[0][0];
-        Field field1 = board.cells[13][13];
-        Field field2 = board.cells[0][12];
+        Field field = board.cells[8][8];
+        Field field1 = board.cells[7][7];
+        Field field2 = board.cells[10][8];
         List<Field> list1 = board.getNeighborsOf(field);
         List<Field> list2 = board.getFurtherNeighborsOf(field);
         assertNotNull(list1);
@@ -65,14 +65,14 @@ public class ClassicBoardTest {
         assertEquals(Color.NOCOLOR, board.getField(4, 4).getHomeForColor());
         assertEquals(Color.NOCOLOR, board.getField(11, 7).getHomeForColor());
         assertEquals(Color.GREEN, board.getField(13, 9).getHomeForColor());
-        assertEquals(Color.GREEN, board.getField(0, 11).getHomeForColor());
-        assertEquals(Color.GREEN, board.getField(2, 12).getHomeForColor());
+        assertEquals(Color.GREEN, board.getField(14, 11).getHomeForColor());
+        assertEquals(Color.GREEN, board.getField(16, 12).getHomeForColor());
         assertEquals(Color.RED, board.getField(10, 4).getHomeForColor());
         assertEquals(Color.RED, board.getField(12, 7).getHomeForColor());
         assertEquals(Color.RED, board.getField(9, 4).getHomeForColor());
-        assertEquals(Color.BLUE, board.getField(11, 0).getHomeForColor());
+        assertEquals(Color.BLUE, board.getField(11, 14).getHomeForColor());
         assertEquals(Color.BLUE, board.getField(12, 13).getHomeForColor());
-        assertEquals(Color.BLUE, board.getField(12, 2).getHomeForColor());
+        assertEquals(Color.BLUE, board.getField(12, 16).getHomeForColor());
         assertEquals(Color.CYAN, board.getField(6, 11).getHomeForColor());
         assertEquals(Color.CYAN, board.getField(7, 12).getHomeForColor());
         assertEquals(Color.CYAN, board.getField(4, 9).getHomeForColor());

@@ -118,52 +118,20 @@ public class ClassicBoard implements Board {
             }
         }
         CyclicGetter<FieldFactory> cycle = new CyclicGetter<>(DIRECTIONS_NO);
-        switch (playerNo) {
-            case 2:
-                cycle.addObject(new ClassicFieldFactory(Color.RED, true));
-                cycle.addObject(new ClassicFieldFactory(Color.GREEN, false));
-                cycle.addObject(new ClassicFieldFactory(Color.BLUE, false));
-                cycle.addObject(new ClassicFieldFactory(Color.CYAN, true));
-                cycle.addObject(new ClassicFieldFactory(Color.MAGENTA, false));
-                cycle.addObject(new ClassicFieldFactory(Color.YELLOW, false));                break;
-            case 3:
-                cycle.addObject(new ClassicFieldFactory(Color.RED, true));
-                cycle.addObject(new ClassicFieldFactory(Color.GREEN, false));
-                cycle.addObject(new ClassicFieldFactory(Color.BLUE, true));
-                cycle.addObject(new ClassicFieldFactory(Color.CYAN, false));
-                cycle.addObject(new ClassicFieldFactory(Color.MAGENTA, true));
-                cycle.addObject(new ClassicFieldFactory(Color.YELLOW, false));
-                break;
-            case 4:
-                cycle.addObject(new ClassicFieldFactory(Color.RED, true));
-                cycle.addObject(new ClassicFieldFactory(Color.GREEN, false));
-                cycle.addObject(new ClassicFieldFactory(Color.BLUE, true));
-                cycle.addObject(new ClassicFieldFactory(Color.CYAN, true));
-                cycle.addObject(new ClassicFieldFactory(Color.MAGENTA, false));
-                cycle.addObject(new ClassicFieldFactory(Color.YELLOW, true));
-                break;
-            case 6:
-                cycle.addObject(new ClassicFieldFactory(Color.RED, true));
-                cycle.addObject(new ClassicFieldFactory(Color.GREEN, true));
-                cycle.addObject(new ClassicFieldFactory(Color.BLUE, true));
-                cycle.addObject(new ClassicFieldFactory(Color.CYAN, true));
-                cycle.addObject(new ClassicFieldFactory(Color.MAGENTA, true));
-                cycle.addObject(new ClassicFieldFactory(Color.YELLOW, true));
-                break;
-            default:
-                cycle.addObject(new ClassicFieldFactory(Color.RED, false));
-                cycle.addObject(new ClassicFieldFactory(Color.GREEN, false));
-                cycle.addObject(new ClassicFieldFactory(Color.BLUE, false));
-                cycle.addObject(new ClassicFieldFactory(Color.CYAN, false));
-                cycle.addObject(new ClassicFieldFactory(Color.MAGENTA, false));
-                cycle.addObject(new ClassicFieldFactory(Color.YELLOW, false));
-        }
-        cycle.addObject(new ClassicFieldFactory(Color.RED, true));
-        cycle.addObject(new ClassicFieldFactory(Color.GREEN, true));
-        cycle.addObject(new ClassicFieldFactory(Color.BLUE, true));
-        cycle.addObject(new ClassicFieldFactory(Color.CYAN, true));
-        cycle.addObject(new ClassicFieldFactory(Color.MAGENTA, true));
-        cycle.addObject(new ClassicFieldFactory(Color.YELLOW, true));
+        boolean redFactory = (playerNo == 2 || playerNo == 3 || playerNo == 4 || playerNo == 6);
+        boolean greenFactory = (playerNo == 6);
+        boolean blueFactory = (playerNo == 3 ||playerNo == 4 || playerNo == 6);
+        boolean cyanFactory = (playerNo == 2 || playerNo == 4 || playerNo == 6);
+        boolean magentaFactory = (playerNo == 3 ||playerNo == 6);
+        boolean yellowFactory = (playerNo == 4 || playerNo == 6);
+
+        cycle.addObject(new ClassicFieldFactory(Color.RED, redFactory));
+        cycle.addObject(new ClassicFieldFactory(Color.GREEN, greenFactory));
+        cycle.addObject(new ClassicFieldFactory(Color.BLUE, blueFactory));
+        cycle.addObject(new ClassicFieldFactory(Color.CYAN, cyanFactory));
+        cycle.addObject(new ClassicFieldFactory(Color.MAGENTA, magentaFactory));
+        cycle.addObject(new ClassicFieldFactory(Color.YELLOW, yellowFactory));
+
         for (int rad = HEX_RADIUS + 1; rad <= STAR_RADIUS; rad++) { // for each outer ring
             for (int direction = 0; direction < DIRECTIONS_NO; direction++) {
                 Coordinates curr = new Coordinates(STAR_RADIUS, STAR_RADIUS);           // starting from the center
