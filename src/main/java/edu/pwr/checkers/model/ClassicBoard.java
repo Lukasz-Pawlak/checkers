@@ -106,10 +106,10 @@ public class ClassicBoard implements Board {
     @Override
     public void setup() {
         FieldFactory currentFactory = new ClassicFieldFactory(Color.NOCOLOR, false);
-        cells[8][8] = currentFactory.getField(new Coordinates(8, 8));
+        cells[STAR_RADIUS][STAR_RADIUS] = currentFactory.getField(new Coordinates(STAR_RADIUS, STAR_RADIUS));
         for (int rad = 1; rad <= HEX_RADIUS; rad++) {               // for each ring
             for (int direction = 0; direction < DIRECTIONS_NO; direction++) {
-                Coordinates curr = new Coordinates(8, 8);           // starting from the center
+                Coordinates curr = new Coordinates(STAR_RADIUS, STAR_RADIUS);           // starting from the center
                 curr = move(direction, rad, curr);                  // move to the starting position
                 for (int i = 0; i < rad; i++) {                     // create proper amount of Fields
                     cells[curr.x][curr.y] = currentFactory.getField(curr);
@@ -166,7 +166,7 @@ public class ClassicBoard implements Board {
         cycle.addObject(new ClassicFieldFactory(Color.YELLOW, true));
         for (int rad = HEX_RADIUS + 1; rad <= STAR_RADIUS; rad++) { // for each outer ring
             for (int direction = 0; direction < DIRECTIONS_NO; direction++) {
-                Coordinates curr = new Coordinates(8, 8);           // starting from the center
+                Coordinates curr = new Coordinates(STAR_RADIUS, STAR_RADIUS);           // starting from the center
                 currentFactory = cycle.getNext();
                 curr = move(direction, rad, curr);                  // move to the starting position
                 curr = move(direction + 2, rad - HEX_RADIUS, curr);
