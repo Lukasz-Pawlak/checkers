@@ -75,14 +75,25 @@ public class ClassicBoard implements Board {
                 colors.add(Color.CYAN);
                 break;
             case 3:
+                colors.add(Color.MAGENTA);
+                colors.add(Color.BLUE);
+                break;
+            case 4:
+                colors.add(Color.YELLOW);
+                colors.add(Color.CYAN);
                 colors.add(Color.BLUE);
                 break;
             case 6:
+                colors.add(Color.YELLOW);
+                colors.add(Color.MAGENTA);
+                colors.add(Color.CYAN);
+                colors.add(Color.BLUE);
+                colors.add(Color.GREEN);
                 break;
             default:
                 return null;
         }
-        return null;
+        return colors;
     }
 
     public ClassicBoard() {

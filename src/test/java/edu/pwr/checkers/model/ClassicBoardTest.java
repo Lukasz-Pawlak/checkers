@@ -1,6 +1,9 @@
 package edu.pwr.checkers.model;
 
 import org.junit.Test;
+
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class ClassicBoardTest {
@@ -8,6 +11,31 @@ public class ClassicBoardTest {
     public void testGetSize() {
         Board board = new ClassicBoard();
         assertEquals(17, board.getSize());
+    }
+
+    @Test
+    public void testGetColor() {
+        Board board = new ClassicBoard();
+        List<Color> list = board.getColors(-1);
+        assertNull(list);
+        list = board.getColors(4);
+        assertNotNull(list);
+        assertTrue(list.contains(Color.RED));
+    }
+
+    @Test
+    public void testNeighbours() {
+        ClassicBoard board = new ClassicBoard();
+        board.setup();
+        Field field = board.cells[0][0];
+        Field field1 = board.cells[13][13];
+        Field field2 = board.cells[0][12];
+        List<Field> list1 = board.getNeighborsOf(field);
+        List<Field> list2 = board.getFurtherNeighborsOf(field);
+        assertNotNull(list1);
+        assertNotNull(list2);
+        assertTrue(list1.contains(field1));
+        assertTrue(list2.contains(field2));
     }
 
     @Test
