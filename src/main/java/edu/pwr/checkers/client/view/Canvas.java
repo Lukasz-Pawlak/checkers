@@ -16,6 +16,7 @@ public class Canvas extends JPanel {
     private BufferedImage boardLayer;
     private BufferedImage stillPiecesLayer;
     private BufferedImage movingPieceLayer;
+    private BufferedImage CLEAR;
     private Piece movingPiece;
     /** Position on screen of moving piece relative to this panel */
     private Point movingPiecePosition;
@@ -128,6 +129,7 @@ public class Canvas extends JPanel {
         boardLayer = new BufferedImage(width, height, type);
         stillPiecesLayer = new BufferedImage(width, height, type);
         movingPieceLayer = new BufferedImage(width, height, type);
+        CLEAR = new BufferedImage(width, height, type);
 
         redrawAll();
     }
@@ -159,6 +161,8 @@ public class Canvas extends JPanel {
     private void redrawAllPieces() {
         Graphics g = stillPiecesLayer.getGraphics();
         super.paint(g);
+
+        stillPiecesLayer.setData(CLEAR.getRaster());
 
         int diam = (int) (0.7 * stepSize);
 
