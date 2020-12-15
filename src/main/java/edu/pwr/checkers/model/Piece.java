@@ -10,8 +10,9 @@ class ClassicPiece implements Piece {
     private final Color color;
     private Field field;
 
-    public ClassicPiece(Color color) {
+    public ClassicPiece(Color color, Field field) {
         this.color = color;
+        this.field = field;
     }
 
     @Override

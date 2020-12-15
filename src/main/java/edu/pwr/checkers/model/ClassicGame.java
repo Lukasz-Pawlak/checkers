@@ -9,7 +9,7 @@ public class ClassicGame implements Game {
     protected int numberOfPlayers;
     protected Board board;
     protected CyclicGetter<Player> players;
-    protected ArrayList<MoveType> lastMoves = new ArrayList<>(numberOfPlayers);
+    protected ArrayList<MoveType> lastMoves;
     protected Player activePlayer;
     private Server server;
 
@@ -17,6 +17,7 @@ public class ClassicGame implements Game {
         this.numberOfPlayers = numberOfPlayers;
         board = new ClassicBoard(numberOfPlayers);
         players = new CyclicGetter<>(numberOfPlayers);
+        lastMoves = new ArrayList<>(numberOfPlayers);
     }
 
     @Override
@@ -25,6 +26,7 @@ public class ClassicGame implements Game {
         List<Color> colors = board.getColors();
         for (int i = 0; i < numberOfPlayers; i++) {
            players.addObject(new ClassicPlayer(board.getPiecesOfColor(colors.get(i)), board));
+           lastMoves.add(MoveType.UNKNOWN);
         }
     }
 

@@ -103,7 +103,9 @@ public class ClassicBoard implements Board {
         List<Piece> pieces = new ArrayList<>();
         for (int i = 0; i < SQUARE_SIZE; i++) {
             for (int j = 0; j < SQUARE_SIZE; j++) {
-                if (cells[i][j] != null && cells[i][j].getPiece().getColor() == color) {
+                if (cells[i][j] != null
+                  && cells[i][j].getPiece() != null
+                  && cells[i][j].getPiece().getColor() == color) {
                     pieces.add(cells[i][j].getPiece());
                 }
             }

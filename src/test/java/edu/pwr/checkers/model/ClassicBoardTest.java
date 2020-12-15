@@ -86,21 +86,31 @@ public class ClassicBoardTest {
 
     @Test
     public void testQuantity() {
-        assertEquals(61, countColor(Color.NOCOLOR));
-        assertEquals(10, countColor(Color.RED));
-        assertEquals(10, countColor(Color.GREEN));
-        assertEquals(10, countColor(Color.BLUE));
-        assertEquals(10, countColor(Color.MAGENTA));
-        assertEquals(10, countColor(Color.CYAN));
-        assertEquals(10, countColor(Color.YELLOW));
+        Board board = new ClassicBoard(4);
+        board.setup();
+
+        assertEquals(61, countColor(Color.NOCOLOR, board));
+        assertEquals(10, countColor(Color.RED, board));
+        assertEquals(10, countColor(Color.GREEN, board));
+        assertEquals(10, countColor(Color.BLUE, board));
+        assertEquals(10, countColor(Color.MAGENTA, board));
+        assertEquals(10, countColor(Color.CYAN, board));
+        assertEquals(10, countColor(Color.YELLOW, board));
+
+        assertEquals(0, (board.getPiecesOfColor(Color.NOCOLOR)).size());
+        assertEquals(10, (board.getPiecesOfColor(Color.RED)).size());
+        assertEquals(0, (board.getPiecesOfColor(Color.GREEN)).size());
+        assertEquals(10, (board.getPiecesOfColor(Color.BLUE)).size());
+        assertEquals(0, (board.getPiecesOfColor(Color.MAGENTA)).size());
+        assertEquals(10, (board.getPiecesOfColor(Color.CYAN)).size());
+        assertEquals(10, (board.getPiecesOfColor(Color.YELLOW)).size());
     }
 
-    private int countColor (Color color) {
-        Board board = new ClassicBoard(6);
+    private int countColor (Color color, Board board) {
         board.setup();
         int count = 0;
-        for (int x = 0; x < 14; x++) {
-            for (int y = 0; y < 14; y++) {
+        for (int x = 0; x < 17; x++) {
+            for (int y = 0; y < 17; y++) {
                 if (board.getField(x, y) != null && board.getField(x, y).getHomeForColor() == color) {
                     count++;
                 }

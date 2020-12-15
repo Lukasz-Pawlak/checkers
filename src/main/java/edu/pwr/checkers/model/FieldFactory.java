@@ -17,7 +17,7 @@ class ClassicFieldFactory implements FieldFactory {
     public Field getField(Coordinates coordinates) {
         Field field = new ClassicField(coordinates, homeFor);
         if (withPiece) {
-            field.setPiece(new ClassicPiece(homeFor.getInverse()));
+            field.setPiece(new ClassicPiece(homeFor.getInverse(), field));
         }
         return field;
     }
