@@ -7,11 +7,9 @@ import java.util.List;
 public class ClassicPlayer implements Player {
   private final List<Piece> pieces;
   Controller controller;
-  private final Board board;
 
-  public ClassicPlayer(List<Piece> pieces, Board board) {
+  public ClassicPlayer(List<Piece> pieces) {
     this.pieces = pieces;
-    this.board = board;
   }
 
 

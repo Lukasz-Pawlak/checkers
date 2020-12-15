@@ -24,7 +24,7 @@ public class ClassicGame implements Game {
         board.setup();
         List<Color> colors = board.getColors();
         for (int i = 0; i < numberOfPlayers; i++) {
-           players.addObject(new ClassicPlayer(board.getPiecesOfColor(colors.get(i)), board));
+           players.addObject(new ClassicPlayer(board.getPiecesOfColor(colors.get(i))));
         }
     }
 
@@ -74,13 +74,20 @@ public class ClassicGame implements Game {
         return MoveType.UNKNOWN;
     }
 
+    @Override
     public void cancelMove(Player player) {
         int index = getPlayerNum(player);
         lastMove = MoveType.NEWTURN;
     }
 
+    @Override
     public void acceptMove(Player player) {
         board =  player.getCurrState();
         lastMove = MoveType.NEWTURN;
+    }
+
+    @Override
+    public Board getBoard() {
+        return board;
     }
 }

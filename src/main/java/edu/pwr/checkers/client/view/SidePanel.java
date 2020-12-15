@@ -1,5 +1,7 @@
 package edu.pwr.checkers.client.view;
 
+import edu.pwr.checkers.client.Controller;
+
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -9,9 +11,11 @@ public class SidePanel extends JPanel {
     private final JButton cancelButton;
     private final JButton acceptButton;
     private final JTextArea statusBox;
+    private final Controller controller;
 
-    SidePanel() {
+    SidePanel(Controller controller) {
         // setPreferredSize(new Dimension(140, 300));
+        this.controller = controller;
 
         statusBox = new JTextArea();
         statusBox.setEditable(false);
@@ -21,7 +25,8 @@ public class SidePanel extends JPanel {
         giveUpButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // todo: giving up turn
+                controller.sendCancelMoveRequest();
+                controller.sendAcceptMoveRequest();
             }
         });
         add(giveUpButton);
@@ -30,7 +35,7 @@ public class SidePanel extends JPanel {
         acceptButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // todo: confirming move
+                controller.sendAcceptMoveRequest();
             }
         });
         add(acceptButton);
@@ -39,7 +44,7 @@ public class SidePanel extends JPanel {
         cancelButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // todo: cancelling move
+                controller.sendCancelMoveRequest();
             }
         });
         add(cancelButton);

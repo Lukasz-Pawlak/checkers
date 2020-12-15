@@ -1,6 +1,8 @@
 package edu.pwr.checkers.client.view;
 
+import edu.pwr.checkers.client.Controller;
 import edu.pwr.checkers.model.Board;
+import edu.pwr.checkers.model.Coordinates;
 import edu.pwr.checkers.model.Field;
 import edu.pwr.checkers.model.Piece;
 
@@ -17,17 +19,17 @@ public class Canvas extends JPanel {
     private Piece movingPiece;
     /** Position on screen of moving piece relative to this panel */
     private Point movingPiecePosition;
-    /** This variable refers to position in fields array NOT on screen */
-    private Point initialMovingPointPosition;
     /** Side in pixels of maximal square whose transformation fits in this panel */
     private int squareSideLength;
     /** Size in pixels of representation on screen of cell in Fields array */
     private int stepSize;
     /** this.board.getSize() */
     private int boardSize;
+    private Controller controller;
 
-    Canvas(Board board) {
-        this.board = board;
+    Canvas(Controller controller) {
+        this.controller = controller;
+        this.board = controller.getBoard();
         boardLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
         stillPiecesLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
         movingPieceLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
@@ -53,7 +55,6 @@ public class Canvas extends JPanel {
                 if (movingPiece != null) {
                     movingPiecePosition = e.getPoint();
                     redrawAllPieces();
-                    repaint();
                 }
             }
 
@@ -63,7 +64,6 @@ public class Canvas extends JPanel {
                 if (movingPiece != null) {
                     putMovingPiece(e.getPoint());
                     redrawAllPieces();
-                    repaint();
                 }
             }
         });
@@ -75,21 +75,19 @@ public class Canvas extends JPanel {
                 if (movingPiece != null) {
                     movingPiecePosition = e.getPoint();
                     redrawMovingPiece();
-                    repaint();
                 }
             }
         });
     }
 
     private Piece tryToGetPiece(Point point) {
+        super.paint(stillPiecesLayer.getGraphics());
         point.translate(- squareSideLength / 2, 0);
         point = inverseTransform(point.x, point.y);
-        point.x /= stepSize;
-        point.y /= stepSize;
-        if (point.x < boardSize && point.y < boardSize && point.x >= 0 && point.y >= 0) {
-            Field field = board.getField(point.x, point.y);
+        Coordinates coords = new Coordinates(point.x / stepSize, point.y / stepSize);
+        if (coords.x < boardSize && coords.y < boardSize && coords.x >= 0 && coords.y >= 0) {
+            Field field = board.getField(coords.x, coords.y);
             if (field != null) {
-                initialMovingPointPosition = point;
                 Piece piece = field.getPiece();
                 field.setPiece(null);
                 return piece;
@@ -99,25 +97,23 @@ public class Canvas extends JPanel {
     }
 
     private void putMovingPiece(Point point) {
+        super.paint(movingPieceLayer.getGraphics());        // dunno why but it is needed; like it needs to be called early enough
         point.translate(- squareSideLength / 2, 0);
         point = inverseTransform(point.x, point.y);
-        point.x /= boardSize;
-        point.y /= boardSize;
-        if (point.x < boardSize && point.y < boardSize && point.x >= 0 && point.y >= 0) {
-            Field field = board.getField(point.x, point.y);
-            if (field != null) {
+
+        Coordinates coords = new Coordinates(point.x / stepSize, point.y / stepSize);
+        if (coords.x < boardSize && coords.y < boardSize && coords.x >= 0 && coords.y >= 0) {
+            Field field = board.getField(coords.x, coords.y);
+            if (field != null && controller.movePiece(movingPiece, coords)) { // this references to the server already
                 field.setPiece(movingPiece);
+                movingPiece.setField(field);
             }
             else {
-                board.getField(initialMovingPointPosition.x,
-                        initialMovingPointPosition.y)
-                        .setPiece(movingPiece);
+                movingPiece.getField().setPiece(movingPiece);
             }
         }
         else {
-            board.getField(initialMovingPointPosition.x,
-                    initialMovingPointPosition.y)
-                    .setPiece(movingPiece);
+            movingPiece.getField().setPiece(movingPiece);
         }
         movingPiece = null;
     }
@@ -138,12 +134,13 @@ public class Canvas extends JPanel {
 
     /** This method redraws all layers */
     private void redrawAll() {
+        Graphics g = boardLayer.getGraphics();
+        super.paint(g);
+
         boardSize = board.getSize();
         stepSize = squareSideLength / boardSize;
         int diam = (int) (0.8 * stepSize);
 
-        Graphics g = boardLayer.getGraphics();
-        super.paint(g);
         for (int x = 0; x < boardSize; x++) {
             for (int y = 0; y < boardSize; y++) {
                 Field f = board.getField(x, y);
@@ -160,10 +157,10 @@ public class Canvas extends JPanel {
     }
 
     private void redrawAllPieces() {
-        int diam = (int) (0.7 * stepSize);
-
         Graphics g = stillPiecesLayer.getGraphics();
         super.paint(g);
+
+        int diam = (int) (0.7 * stepSize);
 
         for (int x = 0; x < boardSize; x++) {
             for (int y = 0; y < boardSize; y++) {
@@ -190,6 +187,7 @@ public class Canvas extends JPanel {
             g.setColor(translateColor(movingPiece.getColor()));
             g.fillOval(coords.x - diam / 2, coords.y - diam / 2, diam, diam);
         }
+        repaint();
     }
 
 

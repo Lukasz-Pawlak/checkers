@@ -1,5 +1,6 @@
 package edu.pwr.checkers.client.view;
 
+import edu.pwr.checkers.client.Controller;
 import edu.pwr.checkers.model.Board;
 import javax.swing.*;
 import java.awt.*;
@@ -8,18 +9,20 @@ public class ClientWindow extends JFrame {
     private final Canvas canvas;
     private final JTextArea messageBox;
     private final SidePanel sidePanel;
+    private final Controller controller;
 
-    public ClientWindow(Board board) {
+    public ClientWindow(Controller controller) {
         super("Chinese Checkers");
         setBounds(300, 200, 800, 400);
         setResizable(true);
         setMinimumSize(new Dimension(600, 400));
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.controller = controller;
 
-        canvas = new Canvas(board);
+        canvas = new Canvas(controller);
         messageBox = new JTextArea();
-        sidePanel = new SidePanel();
+        sidePanel = new SidePanel(controller);
 
         messageBox.setEditable(false);
 

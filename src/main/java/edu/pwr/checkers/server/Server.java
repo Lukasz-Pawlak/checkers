@@ -4,5 +4,5 @@ import edu.pwr.checkers.model.ClassicGame;
 import edu.pwr.checkers.model.Game;
 
 public class Server {
-  private Game game = new ClassicGame(2);
+  private Game game;// = new ClassicGame(2);
 }
