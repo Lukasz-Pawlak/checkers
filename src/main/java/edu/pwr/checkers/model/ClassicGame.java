@@ -9,7 +9,7 @@ public class ClassicGame implements Game {
     protected int numberOfPlayers;
     protected Board board;
     protected CyclicGetter<Player> players;
-    protected ArrayList<MoveType> lastMoves;
+    protected MoveType lastMove;
     protected Player activePlayer;
     private Server server;
 
@@ -17,7 +17,6 @@ public class ClassicGame implements Game {
         this.numberOfPlayers = numberOfPlayers;
         board = new ClassicBoard(numberOfPlayers);
         players = new CyclicGetter<>(numberOfPlayers);
-        lastMoves = new ArrayList<>(numberOfPlayers);
     }
 
     @Override
@@ -26,14 +25,11 @@ public class ClassicGame implements Game {
         List<Color> colors = board.getColors();
         for (int i = 0; i < numberOfPlayers; i++) {
            players.addObject(new ClassicPlayer(board.getPiecesOfColor(colors.get(i)), board));
-           lastMoves.add(MoveType.UNKNOWN);
         }
     }
 
     @Override
     public void move(Player player, Piece piece, Coordinates newPosition) throws IllegalMoveException, WrongPlayerException {
-        int index = getPlayerNum(player);
-        MoveType lastMove = lastMoves.get(index);
         Coordinates betweenPosition = new Coordinates((piece.getField().getPosition().x + newPosition.x) / 2,
           (piece.getField().getPosition().y + newPosition.y) / 2);
         Piece pieceInBetween = board.getField(betweenPosition).getPiece();
@@ -52,7 +48,7 @@ public class ClassicGame implements Game {
         } else if (lastMove == MoveType.UNKNOWN) {
             throw new IllegalMoveException();
         } else {
-            lastMoves.set(index, getType(piece, newPosition));
+            lastMove = getType(piece, newPosition);
         }
     }
 
@@ -80,10 +76,11 @@ public class ClassicGame implements Game {
 
     public void cancelMove(Player player) {
         int index = getPlayerNum(player);
-        lastMoves.set(index, null);
+        lastMove = MoveType.NEWTURN;
     }
 
     public void acceptMove(Player player) {
         board =  player.getCurrState();
+        lastMove = MoveType.NEWTURN;
     }
 }
