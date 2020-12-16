@@ -4,6 +4,7 @@ import edu.pwr.checkers.server.Server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ClassicGame implements Game {
     protected int numberOfPlayers;
@@ -20,6 +21,9 @@ public class ClassicGame implements Game {
         this.numberOfPlayers = numberOfPlayers;
         board = new ClassicBoard(numberOfPlayers);
         activePlayers = new CyclicGetter<>(numberOfPlayers);
+        Random rd = new Random();
+        int random = rd.nextInt() % numberOfPlayers;
+        activePlayer = activePlayers.get(random);
         ranking = new ArrayList<>(numberOfPlayers);
     }
 
