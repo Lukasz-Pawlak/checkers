@@ -10,8 +10,8 @@ public class Mediator {
     private final Controller controller;
     private final Client client;
 
-    public Mediator() {
-        this.client = new Client();
+    public Mediator(Client client) {
+        this.client = client;
         this.player = client.getPlayer();
         controller = new Controller(this);
     }
