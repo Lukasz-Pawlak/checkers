@@ -125,4 +125,9 @@ public class ClassicGame implements Game {
     public Board getBoard() {
         return board;
     }
+
+    @Override
+    public Player getActivePlayer() {
+        return activePlayer;
+    }
 }

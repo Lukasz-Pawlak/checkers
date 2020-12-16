@@ -6,7 +6,7 @@ import edu.pwr.checkers.model.Piece;
 import edu.pwr.checkers.model.Player;
 
 public class Mediator {
-    private final Player player;
+    private /*final*/ Player player;
     private final Controller controller;
     private final Client client;
 
@@ -37,5 +37,14 @@ public class Mediator {
         else {
             return client.sendMoveRequest(player, piece, cor);
         }
+    }
+
+    public void setStatus(String status) {
+        controller.setStatus(status);
+    }
+
+    // for testing
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

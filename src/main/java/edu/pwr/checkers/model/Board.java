@@ -1,8 +1,9 @@
 package edu.pwr.checkers.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface Board {
+public interface Board extends Serializable {
     /**
      * This method sets up everything in Board, should be called
      * before first use of Board object.

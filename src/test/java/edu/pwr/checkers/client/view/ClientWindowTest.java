@@ -18,24 +18,25 @@ public class ClientWindowTest {
     protected CyclicGetter<Player> players;
     protected Player current;
     protected Game game;
+    protected Mediator mediator;
 
     @Before
     public void setup() {
         client = getMockedClient();
         game = new ClassicGame(2);
         game.init();
-        players = new CyclicGetter<>(2);
-        players.addObject(new ClassicPlayer(game.getBoard().getPiecesOfColor(Color.CYAN)));
-        players.addObject(new ClassicPlayer(game.getBoard().getPiecesOfColor(Color.RED)));
-        current = players.getNext();
-        when(client.getBoard()).thenReturn(game.getBoard());
+        board = new ClassicBoard(2);
+        board.setup();
+        current = game.getActivePlayer(); //players.getNext();
+        when(client.getBoard()).thenReturn(board);
         when(client.getPlayer()).thenReturn(current);
 
         doAnswer(new Answer<Boolean>() {
             @Override
             public Boolean answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return Boolean.TRUE;
-                /*Object[] args = invocationOnMock.getArguments();
+                //return Boolean.TRUE;
+                Object[] args = invocationOnMock.getArguments();
+                //System.out.println("hello from mocked move");
                 try {
                     game.move((Player) args[0], (Piece) args[1], (Coordinates) args[2]);
                     return Boolean.TRUE;
@@ -49,7 +50,9 @@ public class ClientWindowTest {
             @Override
             public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
                 game.acceptMove(invocationOnMock.getArgument(0));
-                current = players.getNext();
+                current = game.getActivePlayer();
+                mediator.setPlayer(current);
+                mediator.setStatus("Now moving:\nPlayer with color " + current.getPieces().get(0).getColor().toString());
                 return null;
             }
         }).when(client).sendAcceptMoveRequest(any(Player.class));
@@ -58,6 +61,7 @@ public class ClientWindowTest {
             @Override
             public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
                 game.cancelMove(invocationOnMock.getArgument(0));
+                game.getBoard();
                 return null;
             }
         }).when(client).sendCancelMoveRequest(any(Player.class));
@@ -66,7 +70,8 @@ public class ClientWindowTest {
     // this isn't a proper test, I use it to see if everything displays correctly and rules
     @Test
     public void testRules() {
-        new Mediator(client);
+        mediator = new Mediator(client);
+        mediator.setStatus("Now moving:\nPlayer with color " + current.getPieces().get(0).getColor().toString());
         Scanner scanner = new Scanner(System.in);
         scanner.next();
         scanner.close();

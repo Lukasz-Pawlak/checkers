@@ -1,6 +1,8 @@
 package edu.pwr.checkers.model;
 
-public interface Piece {
+import java.io.Serializable;
+
+public interface Piece extends Serializable {
     Color getColor();
     Field getField();
     void setField(Field field);

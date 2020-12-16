@@ -24,7 +24,8 @@ public class ClassicPlayer implements Player {
 
   @Override
   public boolean notMyPiece(Piece piece) {
-    return !pieces.contains(piece);
+    //return !pieces.contains(piece);
+    return !piece.getColor().equals(pieces.get(0).getColor());
   }
 
   @Override

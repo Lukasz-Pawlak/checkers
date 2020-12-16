@@ -8,4 +8,5 @@ public interface Game extends Serializable {
     void cancelMove(Player player);
     void acceptMove(Player player);
     Board getBoard();
+    Player getActivePlayer();
 }
