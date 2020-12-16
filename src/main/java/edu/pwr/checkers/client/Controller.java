@@ -29,18 +29,6 @@ public class Controller {
     return mediator.movePiece(piece, cor);
   }
 
-  public void restoreLastState() {
-    // TODO: make GUI draw lastState
-  }
-
-  public void restartState(Board board) {
-    lastState = beginState;
-  }
-
-  public void saveState() { // that's not gonna work dude, we need to clone it or smth
-    lastState = currState;
-  }
-
   public void showMessage(String message) {
     window.setMessage(message);
   }

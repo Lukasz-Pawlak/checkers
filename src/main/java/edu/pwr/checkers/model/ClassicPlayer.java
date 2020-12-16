@@ -12,16 +12,6 @@ public class ClassicPlayer implements Player {
     this.colors = colors;
   }
 
-
-  @Override
-  public void movePiece(Piece piece, Coordinates cor) {
-    if (notMyPiece(piece)) {
-      // TODO: send msg to controller
-    } else {
-      //client.sendMoveRequest(this, piece, cor);
-    }
-  }
-
   @Override
   public boolean notMyPiece(Piece piece) {
     return !colors.contains(piece.getColor());

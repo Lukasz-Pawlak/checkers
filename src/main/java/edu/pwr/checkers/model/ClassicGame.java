@@ -57,7 +57,7 @@ public class ClassicGame implements Game {
         Piece pieceInBetween = board.getField(betweenPosition).getPiece();
         Piece pieceOnNewCor = board.getField(newPosition).getPiece();
 
-        if (!player.getColors().contains(piece.getColor())) {
+        if (player.notMyPiece(piece)) {
             throw new WrongPlayerException();
         } else if (currMove == MoveType.ONESTEP
           && (lastMove != MoveType.NEWTURN
@@ -79,7 +79,7 @@ public class ClassicGame implements Game {
         }
     }
 
-    public MoveType getType (Piece piece, Coordinates newCor) {
+    public MoveType getType(Piece piece, Coordinates newCor) {
         Field field = piece.getField();
         Field newField = board.getField(newCor.x, newCor.y);
         List<Field> neighbours = board.getNeighborsOf(field);

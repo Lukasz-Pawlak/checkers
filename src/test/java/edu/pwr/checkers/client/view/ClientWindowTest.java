@@ -31,39 +31,30 @@ public class ClientWindowTest {
         when(client.getBoard()).thenReturn(board);
         when(client.getPlayer()).thenReturn(current);
 
-        doAnswer(new Answer<Boolean>() {
-            @Override
-            public Boolean answer(InvocationOnMock invocationOnMock) throws Throwable {
-                //return Boolean.TRUE;
-                Object[] args = invocationOnMock.getArguments();
-                //System.out.println("hello from mocked move");
-                try {
-                    game.move((Player) args[0], (Piece) args[1], (Coordinates) args[2]);
-                    return Boolean.TRUE;
-                } catch (Exception ex) {
-                    return Boolean.FALSE;
-                }//*/
-            }
+        doAnswer((Answer<Boolean>) invocationOnMock -> {
+            //return Boolean.TRUE;
+            Object[] args = invocationOnMock.getArguments();
+            //System.out.println("hello from mocked move");
+            try {
+                game.move((Player) args[0], (Piece) args[1], (Coordinates) args[2]);
+                return Boolean.TRUE;
+            } catch (Exception ex) {
+                return Boolean.FALSE;
+            }//*/
         }).when(client).sendMoveRequest(any(Player.class), any(Piece.class), any(Coordinates.class));
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
-                game.acceptMove(invocationOnMock.getArgument(0));
-                current = game.getActivePlayer();
-                mediator.setPlayer(current);
-                mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
-                return null;
-            }
+        doAnswer((Answer<Void>) invocationOnMock -> {
+            game.acceptMove(invocationOnMock.getArgument(0));
+            current = game.getActivePlayer();
+            mediator.setPlayer(current);
+            mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
+            return null;
         }).when(client).sendAcceptMoveRequest(any(Player.class));
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
-                game.cancelMove(invocationOnMock.getArgument(0));
-                mediator.setBoard(cloneBoard(game.getBoard()));
-                return null;
-            }
+        doAnswer((Answer<Void>) invocationOnMock -> {
+            game.cancelMove(invocationOnMock.getArgument(0));
+            mediator.setBoard(cloneBoard(game.getBoard()));
+            return null;
         }).when(client).sendCancelMoveRequest(any(Player.class));
     }
 

@@ -39,7 +39,14 @@ public class Mediator {
             return false;
         }
         else {
-            return client.sendMoveRequest(player, piece, cor);
+            boolean b = client.sendMoveRequest(player, piece, cor);
+            if (b) {
+                controller.showMessage("");
+            }
+            else {
+                controller.showMessage("This is illegal move!");
+            }
+            return b;
         }
     }
 
