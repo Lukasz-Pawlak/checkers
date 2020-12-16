@@ -29,7 +29,9 @@ public class ClassicGame implements Game {
         board.setup();
         List<Color> colors = board.getColors();
         for (int i = 0; i < numberOfPlayers; i++) {
-            activePlayers.addObject(new ClassicPlayer(board.getPiecesOfColor(colors.get(i))));
+            List<Color> playerColors = new ArrayList<>(1);
+            playerColors.add(colors.get(i));
+            activePlayers.addObject(new ClassicPlayer(playerColors));
             // player gets a set of pieces of one color
         }
         Random rd = new Random();
@@ -55,7 +57,7 @@ public class ClassicGame implements Game {
         Piece pieceInBetween = board.getField(betweenPosition).getPiece();
         Piece pieceOnNewCor = board.getField(newPosition).getPiece();
 
-        if (!player.getPieces().contains(piece)) {
+        if (!player.getColors().contains(piece.getColor())) {
             throw new WrongPlayerException();
         } else if (currMove == MoveType.ONESTEP
           && (lastMove != MoveType.NEWTURN
@@ -110,10 +112,13 @@ public class ClassicGame implements Game {
     }
 
     private boolean checkIfWon() {
-        List<Piece> pieces = activePlayer.getPieces();
-        for (Piece piece: pieces) {
-            if (piece.getField().getHomeForColor() != piece.getColor()) {
-                return false;
+        List<Color> colors = activePlayer.getColors();
+        for (Color color: colors) {
+            List<Piece> pieces = board.getPiecesOfColor(color);
+            for (Piece piece: pieces) {
+                if (piece.getField().getHomeForColor() != color) {
+                    return false;
+                }
             }
         }
         activePlayers.remove(activePlayer);

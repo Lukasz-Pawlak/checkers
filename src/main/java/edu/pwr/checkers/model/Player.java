@@ -5,5 +5,5 @@ import java.util.List;
 public interface Player {
   void movePiece(Piece piece, Coordinates cor);
   boolean notMyPiece(Piece piece);
-  List<Piece> getPieces();
+  List<Color> getColors();
 }
