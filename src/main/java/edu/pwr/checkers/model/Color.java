@@ -1,6 +1,8 @@
 package edu.pwr.checkers.model;
 
-public enum Color {
+import java.io.Serializable;
+
+public enum Color implements Serializable {
   RED,
   GREEN,
   BLUE,

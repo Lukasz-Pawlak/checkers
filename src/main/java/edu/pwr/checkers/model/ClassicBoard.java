@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClassicBoard implements Board {
+    //private final long int SE
     private int playerNo;
     protected static int SIDE_LENGTH = 5;       // left not final for inheritance
     protected final static int HEX_RADIUS;

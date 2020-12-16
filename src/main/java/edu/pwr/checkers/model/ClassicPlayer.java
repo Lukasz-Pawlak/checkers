@@ -5,11 +5,11 @@ import edu.pwr.checkers.client.Controller;
 import java.util.List;
 
 public class ClassicPlayer implements Player {
-  private final List<Piece> pieces;
+  private final List<Color> colors;
   Controller controller;
 
-  public ClassicPlayer(List<Piece> pieces) {
-    this.pieces = pieces;
+  public ClassicPlayer(List<Color> colors) {
+    this.colors = colors;
   }
 
 
@@ -24,12 +24,11 @@ public class ClassicPlayer implements Player {
 
   @Override
   public boolean notMyPiece(Piece piece) {
-    //return !pieces.contains(piece);
-    return !piece.getColor().equals(pieces.get(0).getColor());
+    return !colors.contains(piece.getColor());
   }
 
   @Override
-  public List<Piece> getPieces() {
-    return pieces;
+  public List<Color> getColors() {
+    return colors;
   }
 }

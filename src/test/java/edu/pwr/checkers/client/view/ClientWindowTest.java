@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.io.*;
 import java.util.Scanner;
 
 import static org.mockito.Mockito.*;
@@ -25,8 +26,7 @@ public class ClientWindowTest {
         client = getMockedClient();
         game = new ClassicGame(2);
         game.init();
-        board = new ClassicBoard(2);
-        board.setup();
+        board = cloneBoard(game.getBoard());
         current = game.getActivePlayer(); //players.getNext();
         when(client.getBoard()).thenReturn(board);
         when(client.getPlayer()).thenReturn(current);
@@ -52,7 +52,7 @@ public class ClientWindowTest {
                 game.acceptMove(invocationOnMock.getArgument(0));
                 current = game.getActivePlayer();
                 mediator.setPlayer(current);
-                mediator.setStatus("Now moving:\nPlayer with color " + current.getPieces().get(0).getColor().toString());
+                mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
                 return null;
             }
         }).when(client).sendAcceptMoveRequest(any(Player.class));
@@ -71,7 +71,7 @@ public class ClientWindowTest {
     @Test
     public void testRules() {
         mediator = new Mediator(client);
-        mediator.setStatus("Now moving:\nPlayer with color " + current.getPieces().get(0).getColor().toString());
+        mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
         Scanner scanner = new Scanner(System.in);
         scanner.next();
         scanner.close();
@@ -79,5 +79,21 @@ public class ClientWindowTest {
 
     protected Client getMockedClient() {
         return mock(Client.class);
+    }
+
+    /** This method will not be needed in final program, as it will happen by itself */
+    protected Board cloneBoard(Board board) {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(board);
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            return (Board) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("error in serialization: " + e.getClass());
+        }
+        return null;
     }
 }

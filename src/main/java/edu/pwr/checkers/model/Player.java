@@ -6,5 +6,5 @@ import java.util.List;
 public interface Player extends Serializable {
   void movePiece(Piece piece, Coordinates cor);
   boolean notMyPiece(Piece piece);
-  List<Piece> getPieces();
+  List<Color> getColors();
 }
