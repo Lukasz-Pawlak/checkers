@@ -47,7 +47,8 @@ public class ClassicGame implements Game {
             player.setCurrState(player.getLastState());
             throw new WrongPlayerException();
         } else if (currMove == MoveType.ONESTEP
-          && lastMove != MoveType.NEWTURN) {
+          && (lastMove != MoveType.NEWTURN
+          || pieceOnNewCor != null)) {
             player.setCurrState(player.getLastState());
             throw new IllegalMoveException(); // done ONESTEP cannot do another
         } else if (currMove == MoveType.UNKNOWN) {
