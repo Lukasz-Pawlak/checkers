@@ -12,6 +12,8 @@ public class ClassicGame implements Game {
     protected ArrayList<Player> ranking;
     protected MoveType lastMove;
     protected Player activePlayer;
+    protected Coordinates beginPosition;
+    protected Piece movingPiece;
     private Server server;
 
     public ClassicGame(int numberOfPlayers) {
@@ -27,6 +29,7 @@ public class ClassicGame implements Game {
         List<Color> colors = board.getColors();
         for (int i = 0; i < numberOfPlayers; i++) {
             activePlayers.addObject(new ClassicPlayer(board.getPiecesOfColor(colors.get(i))));
+            // player gets a set of pieces of one color
         }
     }
 
@@ -36,6 +39,10 @@ public class ClassicGame implements Game {
         Coordinates betweenPosition = new Coordinates((piece.getField().getPosition().x + newPosition.x) / 2,
           (piece.getField().getPosition().y + newPosition.y) / 2);
 
+        if (lastMove == MoveType.NEWTURN) {
+            movingPiece = piece;
+            beginPosition = piece.getField().getPosition();
+        }
         if (board.getField(newPosition) == null) {
             throw new IllegalMoveException();
         }
@@ -44,24 +51,23 @@ public class ClassicGame implements Game {
         Piece pieceOnNewCor = board.getField(newPosition).getPiece();
 
         if (!player.getPieces().contains(piece)) {
-            player.setCurrState(player.getLastState());
             throw new WrongPlayerException();
         } else if (currMove == MoveType.ONESTEP
           && (lastMove != MoveType.NEWTURN
           || pieceOnNewCor != null)) {
-            player.setCurrState(player.getLastState());
             throw new IllegalMoveException(); // done ONESTEP cannot do another
         } else if (currMove == MoveType.UNKNOWN) {
-            player.setCurrState(player.getLastState());
             throw new IllegalMoveException(); // UNKNOWN is an error
         } else if (currMove == MoveType.JUMPSEQ
           && (pieceOnNewCor != null || pieceInBetween == null
         || lastMove == MoveType.ONESTEP || lastMove == MoveType.UNKNOWN)) {
-            player.setCurrState(player.getLastState());
             throw new IllegalMoveException();
         } else {
-            player.setLastState(player.getCurrState());
-            lastMove = currMove;
+            Field newField = board.getField(newPosition);
+            Field oldField = piece.getField();
+            newField.setPiece(piece);
+            oldField.setPiece(null);
+            piece.setField(newField);
         }
     }
 
@@ -82,12 +88,15 @@ public class ClassicGame implements Game {
     public void cancelMove(Player player) {
         // TODO: send board from the beginning of turn to client and set it
         lastMove = MoveType.NEWTURN;
-        player.setCurrState(player.getBeginState());
+        Field oldField = board.getField(beginPosition);
+        Field newField = movingPiece.getField();
+        oldField.setPiece(movingPiece);
+        newField.setPiece(null);
+        movingPiece.setField(oldField);
     }
 
     @Override
     public void acceptMove(Player player) {
-        board =  player.getCurrState();
         lastMove = MoveType.NEWTURN;
         checkIfWon();
         activePlayer = activePlayers.getNext();

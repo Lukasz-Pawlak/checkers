@@ -31,34 +31,4 @@ public class ClassicPlayer implements Player {
   public List<Piece> getPieces() {
     return pieces;
   }
-
-  @Override
-  public Board getCurrState() {
-    return controller.currState;
-  }
-
-  @Override
-  public Board getLastState() {
-    return controller.lastState;
-  }
-
-  @Override
-  public Board getBeginState() {
-    return controller.beginState;
-  }
-
-  @Override
-  public void setCurrState(Board board) {
-    controller.currState = board;
-  }
-
-  @Override
-  public void setLastState(Board board) {
-    controller.lastState = board;
-  }
-
-  @Override
-  public void setBeginState(Board board) {
-    controller.beginState = board;
-  }
 }
