@@ -28,6 +28,10 @@ public class Mediator {
         return client.getBoard();
     }
 
+    public void setBoard(Board board) {
+        controller.setBoard(board);
+    }
+
 
     public boolean movePiece(Piece piece, Coordinates cor) {
         if (player.notMyPiece(piece)) {

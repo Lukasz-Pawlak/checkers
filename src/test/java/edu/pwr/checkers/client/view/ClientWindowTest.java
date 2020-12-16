@@ -61,7 +61,7 @@ public class ClientWindowTest {
             @Override
             public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
                 game.cancelMove(invocationOnMock.getArgument(0));
-                game.getBoard();
+                mediator.setBoard(cloneBoard(game.getBoard()));
                 return null;
             }
         }).when(client).sendCancelMoveRequest(any(Player.class));
@@ -77,6 +77,7 @@ public class ClientWindowTest {
         scanner.close();
     }
 
+    /** Perhaps for overriding, dunno */
     protected Client getMockedClient() {
         return mock(Client.class);
     }
