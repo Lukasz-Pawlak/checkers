@@ -70,6 +70,7 @@ public class ClassicGame implements Game {
         || lastMove == MoveType.ONESTEP || lastMove == MoveType.UNKNOWN)) {
             throw new IllegalMoveException();
         } else {
+            lastMove = currMove;
             Field newField = board.getField(newPosition);
             Field oldField = piece.getField();
             newField.setPiece(piece);
