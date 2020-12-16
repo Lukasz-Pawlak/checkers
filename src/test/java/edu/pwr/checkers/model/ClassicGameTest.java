@@ -24,9 +24,9 @@ public class ClassicGameTest {
     game.init();
     Piece piece = game.board.getField(10,4).getPiece();
     Coordinates cor = new Coordinates(10, 8);
-    Player player = game.players.get(0);
-    assertNotNull(game.players);
-    assertNotNull(game.players.get(0));
+    Player player = game.activePlayers.get(0);
+    assertNotNull(game.activePlayers);
+    assertNotNull(game.activePlayers.get(0));
     game.move(player, piece, cor);
   }
 }

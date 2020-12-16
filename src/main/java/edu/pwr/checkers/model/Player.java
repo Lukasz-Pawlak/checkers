@@ -7,4 +7,9 @@ public interface Player {
   boolean notMyPiece(Piece piece);
   List<Piece> getPieces();
   Board getCurrState();
+  Board getLastState();
+  Board getBeginState();
+  void setCurrState(Board board);
+  void setLastState(Board board);
+  void setBeginState(Board board);
 }

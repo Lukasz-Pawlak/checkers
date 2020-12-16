@@ -26,6 +26,10 @@ public class CyclicGetter<T> {
         return false;
     }
 
+    boolean remove(T obj) {
+        return ring.remove(obj);
+    }
+
     T get(int i) {
         return ring.get(i);
     }

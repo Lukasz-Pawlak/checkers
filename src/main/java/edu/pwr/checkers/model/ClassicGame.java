@@ -8,7 +8,8 @@ import java.util.List;
 public class ClassicGame implements Game {
     protected int numberOfPlayers;
     protected Board board;
-    protected CyclicGetter<Player> players;
+    protected CyclicGetter<Player> activePlayers;
+    protected ArrayList<Player> ranking;
     protected MoveType lastMove;
     protected Player activePlayer;
     private Server server;
@@ -16,7 +17,8 @@ public class ClassicGame implements Game {
     public ClassicGame(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
         board = new ClassicBoard(numberOfPlayers);
-        players = new CyclicGetter<>(numberOfPlayers);
+        activePlayers = new CyclicGetter<>(numberOfPlayers);
+        ranking = new ArrayList<>(numberOfPlayers);
     }
 
     @Override
@@ -24,41 +26,42 @@ public class ClassicGame implements Game {
         board.setup();
         List<Color> colors = board.getColors();
         for (int i = 0; i < numberOfPlayers; i++) {
-           players.addObject(new ClassicPlayer(board.getPiecesOfColor(colors.get(i))));
+            activePlayers.addObject(new ClassicPlayer(board.getPiecesOfColor(colors.get(i))));
         }
     }
 
     @Override
     public void move(Player player, Piece piece, Coordinates newPosition) throws IllegalMoveException, WrongPlayerException {
+        MoveType currMove = getType(piece, newPosition);
         Coordinates betweenPosition = new Coordinates((piece.getField().getPosition().x + newPosition.x) / 2,
           (piece.getField().getPosition().y + newPosition.y) / 2);
+
+        if (board.getField(newPosition) == null) {
+            throw new IllegalMoveException();
+        }
+
         Piece pieceInBetween = board.getField(betweenPosition).getPiece();
         Piece pieceOnNewCor = board.getField(newPosition).getPiece();
 
         if (!player.getPieces().contains(piece)) {
+            player.setCurrState(player.getLastState());
             throw new WrongPlayerException();
-        } else if (lastMove == MoveType.ONESTEP
-        && (pieceOnNewCor != null || lastMove != null)) {
-            throw new IllegalMoveException();
-        } else if (lastMove == MoveType.JUMPSEQ
+        } else if (currMove == MoveType.ONESTEP
+          && lastMove != MoveType.NEWTURN) {
+            player.setCurrState(player.getLastState());
+            throw new IllegalMoveException(); // done ONESTEP cannot do another
+        } else if (currMove == MoveType.UNKNOWN) {
+            player.setCurrState(player.getLastState());
+            throw new IllegalMoveException(); // UNKNOWN is an error
+        } else if (currMove == MoveType.JUMPSEQ
           && (pieceOnNewCor != null || pieceInBetween == null
-          || (lastMove != MoveType.JUMPSEQ
-          && lastMove != null))) {
-            throw new IllegalMoveException();
-        } else if (lastMove == MoveType.UNKNOWN) {
+        || lastMove == MoveType.ONESTEP || lastMove == MoveType.UNKNOWN)) {
+            player.setCurrState(player.getLastState());
             throw new IllegalMoveException();
         } else {
-            lastMove = getType(piece, newPosition);
+            player.setLastState(player.getCurrState());
+            lastMove = currMove;
         }
-    }
-
-    private int getPlayerNum(Player player) {
-        for (int i = 0; i < numberOfPlayers; i++) {
-            if (players.get(i) == player) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     public MoveType getType (Piece piece, Coordinates newCor) {
@@ -76,14 +79,29 @@ public class ClassicGame implements Game {
 
     @Override
     public void cancelMove(Player player) {
-        int index = getPlayerNum(player);
+        // TODO: send board from the beginning of turn to client and set it
         lastMove = MoveType.NEWTURN;
+        player.setCurrState(player.getBeginState());
     }
 
     @Override
     public void acceptMove(Player player) {
         board =  player.getCurrState();
         lastMove = MoveType.NEWTURN;
+        checkIfWon();
+        activePlayer = activePlayers.getNext();
+    }
+
+    private boolean checkIfWon() {
+        List<Piece> pieces = activePlayer.getPieces();
+        for (Piece piece: pieces) {
+            if (piece.getField().getHomeForColor() != piece.getColor()) {
+                return false;
+            }
+        }
+        activePlayers.remove(activePlayer);
+        ranking.add(activePlayer);
+        return true;
     }
 
     @Override
