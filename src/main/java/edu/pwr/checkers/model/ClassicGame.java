@@ -33,8 +33,9 @@ public class ClassicGame implements Game {
             // player gets a set of pieces of one color
         }
         Random rd = new Random();
-        int random = rd.nextInt() % numberOfPlayers;
+        int random = rd.nextInt(numberOfPlayers);
         activePlayer = activePlayers.get(random);
+        lastMove = MoveType.NEWTURN;
     }
 
     @Override
@@ -91,12 +92,14 @@ public class ClassicGame implements Game {
     @Override
     public void cancelMove(Player player) {
         // TODO: send board from the beginning of turn to client and set it
+        if (lastMove != MoveType.NEWTURN) {
+            Field oldField = board.getField(beginPosition);
+            Field newField = movingPiece.getField();
+            oldField.setPiece(movingPiece);
+            newField.setPiece(null);
+            movingPiece.setField(oldField);
+        }
         lastMove = MoveType.NEWTURN;
-        Field oldField = board.getField(beginPosition);
-        Field newField = movingPiece.getField();
-        oldField.setPiece(movingPiece);
-        newField.setPiece(null);
-        movingPiece.setField(oldField);
     }
 
     @Override
