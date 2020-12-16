@@ -21,9 +21,6 @@ public class ClassicGame implements Game {
         this.numberOfPlayers = numberOfPlayers;
         board = new ClassicBoard(numberOfPlayers);
         activePlayers = new CyclicGetter<>(numberOfPlayers);
-        Random rd = new Random();
-        int random = rd.nextInt() % numberOfPlayers;
-        activePlayer = activePlayers.get(random);
         ranking = new ArrayList<>(numberOfPlayers);
     }
 
@@ -35,6 +32,9 @@ public class ClassicGame implements Game {
             activePlayers.addObject(new ClassicPlayer(board.getPiecesOfColor(colors.get(i))));
             // player gets a set of pieces of one color
         }
+        Random rd = new Random();
+        int random = rd.nextInt() % numberOfPlayers;
+        activePlayer = activePlayers.get(random);
     }
 
     @Override
