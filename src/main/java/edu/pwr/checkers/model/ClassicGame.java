@@ -32,7 +32,6 @@ public class ClassicGame implements Game {
             List<Color> playerColors = new ArrayList<>(1);
             playerColors.add(colors.get(i));
             activePlayers.addObject(new ClassicPlayer(playerColors));
-            // player gets a set of pieces of one color
         }
         Random rd = new Random();
         int random = rd.nextInt(numberOfPlayers);
@@ -43,7 +42,7 @@ public class ClassicGame implements Game {
 
     @Override
     public void move(Player player, Piece piece, Coordinates newPosition) throws IllegalMoveException, WrongPlayerException {
-        piece = board.getField(piece.getField().getPosition()).getPiece(); // o to mi chodziło :p
+        piece = board.getField(piece.getField().getPosition()).getPiece();
         MoveType currMove = getType(piece, newPosition);
         Coordinates betweenPosition = new Coordinates((piece.getField().getPosition().x + newPosition.x) / 2,
           (piece.getField().getPosition().y + newPosition.y) / 2);
@@ -54,7 +53,6 @@ public class ClassicGame implements Game {
         }
 
         if (board.getField(newPosition) == null) {
-            //System.out.println("Hej nowe pole jest nullem!");
             throw new IllegalMoveException();
         }
 
@@ -79,10 +77,19 @@ public class ClassicGame implements Game {
             Field oldField = piece.getField();
             newField.setPiece(piece);
             oldField.setPiece(null);
-
-            //board.getField(betweenPosition).setPiece(null); // nie o to mi chodziło :(
             piece.setField(newField);
         }
+    }
+
+    //class needed only for tests, to finish the game faster
+    public void illegalMove(Piece piece, Coordinates newPosition) {
+        piece = board.getField(piece.getField().getPosition()).getPiece();
+
+        Field newField = board.getField(newPosition);
+        Field oldField = piece.getField();
+        newField.setPiece(piece);
+        oldField.setPiece(null);
+        piece.setField(newField);
     }
 
     public MoveType getType(Piece piece, Coordinates newCor) {
