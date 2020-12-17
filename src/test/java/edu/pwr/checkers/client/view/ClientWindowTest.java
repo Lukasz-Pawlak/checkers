@@ -5,7 +5,6 @@ import edu.pwr.checkers.client.Mediator;
 import edu.pwr.checkers.model.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.io.*;
@@ -16,7 +15,6 @@ import static org.mockito.Mockito.*;
 public class ClientWindowTest {
     protected Client client;
     protected Board board;
-    protected CyclicGetter<Player> players;
     protected Player current;
     protected Game game;
     protected Mediator mediator;
@@ -24,10 +22,10 @@ public class ClientWindowTest {
     @Before
     public void setup() {
         client = getMockedClient();
-        game = new ClassicGame(2);
+        game = getGame();
         game.init();
         board = cloneBoard(game.getBoard());
-        current = game.getActivePlayer(); //players.getNext();
+        current = game.getActivePlayer();
         when(client.getBoard()).thenReturn(board);
         when(client.getPlayer()).thenReturn(current);
 
@@ -43,13 +41,13 @@ public class ClientWindowTest {
             }//*/
         }).when(client).sendMoveRequest(any(Player.class), any(Piece.class), any(Coordinates.class));
 
-        doAnswer((Answer<Void>) invocationOnMock -> {
+        doAnswer((Answer<Boolean>) invocationOnMock -> {
             game.acceptMove(invocationOnMock.getArgument(0));
             current = game.getActivePlayer();
             mediator.setPlayer(current);
             mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
             mediator.refresh();
-            return null;
+            return Boolean.TRUE;
         }).when(client).sendAcceptMoveRequest(any(Player.class));
 
         doAnswer((Answer<Void>) invocationOnMock -> {
@@ -73,6 +71,10 @@ public class ClientWindowTest {
     /** Perhaps for overriding, dunno */
     protected Client getMockedClient() {
         return mock(Client.class);
+    }
+
+    protected Game getGame() {
+        return new ClassicGame(2);
     }
 
     /** This method will not be needed in final program, as it will happen by itself */

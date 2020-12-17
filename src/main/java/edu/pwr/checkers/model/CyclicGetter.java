@@ -34,6 +34,14 @@ public class CyclicGetter<T> {
         return ring.get(i);
     }
 
+    public boolean setCurrent(int n) {
+        if (n >= 0 && n < noObjects && remainingSpace == 0) {
+            current = n;
+            return true;
+        }
+        return false;
+    }
+
     public T getNext() {
         if (remainingSpace > 0) {
             return null;

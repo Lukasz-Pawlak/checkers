@@ -36,12 +36,14 @@ public class ClassicGame implements Game {
         }
         Random rd = new Random();
         int random = rd.nextInt(numberOfPlayers);
-        activePlayer = activePlayers.get(random);
+        activePlayers.setCurrent(random);
+        activePlayer = activePlayers.getNext();
         lastMove = MoveType.NEWTURN;
     }
 
     @Override
     public void move(Player player, Piece piece, Coordinates newPosition) throws IllegalMoveException, WrongPlayerException {
+        piece = board.getField(piece.getField().getPosition()).getPiece(); // o to mi chodziło :p
         MoveType currMove = getType(piece, newPosition);
         Coordinates betweenPosition = new Coordinates((piece.getField().getPosition().x + newPosition.x) / 2,
           (piece.getField().getPosition().y + newPosition.y) / 2);
@@ -52,7 +54,7 @@ public class ClassicGame implements Game {
         }
 
         if (board.getField(newPosition) == null) {
-            System.out.println("Hej nowe pole jest nullem!");
+            //System.out.println("Hej nowe pole jest nullem!");
             throw new IllegalMoveException();
         }
 
@@ -78,7 +80,7 @@ public class ClassicGame implements Game {
             newField.setPiece(piece);
             oldField.setPiece(null);
 
-            board.getField(betweenPosition).setPiece(null);
+            //board.getField(betweenPosition).setPiece(null); // nie o to mi chodziło :(
             piece.setField(newField);
         }
     }

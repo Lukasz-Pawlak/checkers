@@ -18,6 +18,7 @@ public class Mediator {
 
     public void sendAcceptMoveRequest() {
         client.sendAcceptMoveRequest(player);
+        controller.showMessage("Next players turn!");
     }
 
     public void sendCancelMoveRequest() {
