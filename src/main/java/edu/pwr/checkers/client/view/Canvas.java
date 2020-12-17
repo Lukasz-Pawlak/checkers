@@ -120,12 +120,22 @@ public class Canvas extends JPanel {
     }
 
     /** This method is called when size of canvas changes */
-    private void canvasSizeChanged() {
+    public void canvasSizeChanged() {
         squareSideLength = (int) Math.min(2.0 * getWidth() / 3, 2 * getHeight() / Math.sqrt(3.0));
         int width = (int) (squareSideLength * 1.5);
         int height = (int) (squareSideLength * Math.sqrt(3.0)  * 0.5);
         int type = BufferedImage.TYPE_INT_ARGB;
 
+        boardLayer = new BufferedImage(width, height, type);
+        stillPiecesLayer = new BufferedImage(width, height, type);
+        movingPieceLayer = new BufferedImage(width, height, type);
+        CLEAR = new BufferedImage(width, height, type);
+
+        redrawAll();
+    }
+
+    public void refresh(int width, int height) {
+        int type = BufferedImage.TYPE_INT_ARGB;
         boardLayer = new BufferedImage(width, height, type);
         stillPiecesLayer = new BufferedImage(width, height, type);
         movingPieceLayer = new BufferedImage(width, height, type);

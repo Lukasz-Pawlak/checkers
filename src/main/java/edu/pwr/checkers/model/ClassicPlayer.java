@@ -6,7 +6,6 @@ import java.util.List;
 
 public class ClassicPlayer implements Player {
   private final List<Color> colors;
-  Controller controller;
 
   public ClassicPlayer(List<Color> colors) {
     this.colors = colors;

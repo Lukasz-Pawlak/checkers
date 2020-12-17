@@ -4,8 +4,6 @@ import edu.pwr.checkers.client.view.ClientWindow;
 import edu.pwr.checkers.model.*;
 
 public class Controller {
-  public Board beginState, lastState, currState; // ig we need a way to clone existing board
-  private MoveType lastMoveType;
   private final ClientWindow window;
   private Board board;
   private Mediator mediator;
@@ -43,5 +41,9 @@ public class Controller {
 
   public void sendAcceptMoveRequest() {
     mediator.sendAcceptMoveRequest();
+  }
+
+  public void refresh() {
+    window.refresh();
   }
 }

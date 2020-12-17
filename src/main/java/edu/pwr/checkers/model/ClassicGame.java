@@ -50,7 +50,9 @@ public class ClassicGame implements Game {
             movingPiece = piece;
             beginPosition = piece.getField().getPosition();
         }
+
         if (board.getField(newPosition) == null) {
+            System.out.println("Hej nowe pole jest nullem!");
             throw new IllegalMoveException();
         }
 
@@ -59,15 +61,15 @@ public class ClassicGame implements Game {
 
         if (player.notMyPiece(piece)) {
             throw new WrongPlayerException();
+        } else if (pieceOnNewCor != null) {
+            throw new IllegalMoveException();
         } else if (currMove == MoveType.ONESTEP
-          && (lastMove != MoveType.NEWTURN
-          || pieceOnNewCor != null)) {
+          && lastMove != MoveType.NEWTURN) {
             throw new IllegalMoveException(); // done ONESTEP cannot do another
         } else if (currMove == MoveType.UNKNOWN) {
             throw new IllegalMoveException(); // UNKNOWN is an error
         } else if (currMove == MoveType.JUMPSEQ
-          && (pieceOnNewCor != null || pieceInBetween == null
-        || lastMove == MoveType.ONESTEP || lastMove == MoveType.UNKNOWN)) {
+          && (pieceInBetween == null || lastMove == MoveType.ONESTEP || lastMove == MoveType.UNKNOWN)) {
             throw new IllegalMoveException();
         } else {
             lastMove = currMove;
@@ -75,6 +77,8 @@ public class ClassicGame implements Game {
             Field oldField = piece.getField();
             newField.setPiece(piece);
             oldField.setPiece(null);
+
+            board.getField(betweenPosition).setPiece(null);
             piece.setField(newField);
         }
     }
@@ -94,10 +98,9 @@ public class ClassicGame implements Game {
 
     @Override
     public void cancelMove(Player player) {
-        // TODO: send board from the beginning of turn to client and set it
         if (lastMove != MoveType.NEWTURN) {
             Field oldField = board.getField(beginPosition);
-            Field newField = movingPiece.getField();
+            Field newField = board.getField(movingPiece.getField().getPosition());
             oldField.setPiece(movingPiece);
             newField.setPiece(null);
             movingPiece.setField(oldField);

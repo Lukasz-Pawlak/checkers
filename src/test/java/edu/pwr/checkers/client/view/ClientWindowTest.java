@@ -48,12 +48,14 @@ public class ClientWindowTest {
             current = game.getActivePlayer();
             mediator.setPlayer(current);
             mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
+            mediator.refresh();
             return null;
         }).when(client).sendAcceptMoveRequest(any(Player.class));
 
         doAnswer((Answer<Void>) invocationOnMock -> {
             game.cancelMove(invocationOnMock.getArgument(0));
             mediator.setBoard(cloneBoard(game.getBoard()));
+            mediator.refresh();
             return null;
         }).when(client).sendCancelMoveRequest(any(Player.class));
     }
