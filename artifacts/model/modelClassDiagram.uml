@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>edu.pwr.checkers.model</OriginalElement>
+  <nodes>
+    <node x="10.5" y="420.0">edu.pwr.checkers.model.ClassicPlayer</node>
+    <node x="302.6333333333333" y="310.0">edu.pwr.checkers.model.Board</node>
+    <node x="201.63333333333333" y="420.0">edu.pwr.checkers.model.Game</node>
+    <node x="131.40789473684185" y="310.0">edu.pwr.checkers.model.Player</node>
+    <node x="576.6333333333333" y="230.0">edu.pwr.checkers.model.ClassicPiece</node>
+    <node x="411.6333333333333" y="230.0">edu.pwr.checkers.model.ClassicField</node>
+    <node x="741.6333333333333" y="230.0">edu.pwr.checkers.model.FieldFactory</node>
+    <node x="279.1204678362575" y="570.0">edu.pwr.checkers.model.ClassicGame</node>
+    <node x="589.7359649122807" y="310.0">edu.pwr.checkers.model.ClassicFieldFactory</node>
+    <node x="802.7359649122807" y="420.0">edu.pwr.checkers.model.ClassicBoard</node>
+    <node x="261.7245614035086" y="120.0">edu.pwr.checkers.model.Piece</node>
+    <node x="1093.6333333333332" y="420.0">edu.pwr.checkers.model.MoveType</node>
+    <node x="928.6333333333333" y="310.0">edu.pwr.checkers.model.CyclicGetter</node>
+    <node x="648.7245614035087" y="0.0">edu.pwr.checkers.model.Field</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="edu.pwr.checkers.model.ClassicFieldFactory" target="edu.pwr.checkers.model.FieldFactory">
+      <point x="75.0" y="-15.0" />
+      <point x="764.7359649122807" y="290.0" />
+      <point x="777.6333333333333" y="290.0" />
+      <point x="-36.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicPlayer" target="edu.pwr.checkers.model.Player">
+      <point x="38.0" y="-15.0" />
+      <point x="124.5" y="400.0" />
+      <point x="141.00789473684188" y="400.0" />
+      <point x="-38.39999999999998" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicPiece" target="edu.pwr.checkers.model.Piece">
+      <point x="-48.0" y="-15.0" />
+      <point x="600.6333333333333" y="170.0" />
+      <point x="345.3245614035086" y="170.0" />
+      <point x="39.60000000000002" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicBoard" target="edu.pwr.checkers.model.Board">
+      <point x="-64.0" y="-15.0" />
+      <point x="810.7359649122807" y="400.0" />
+      <point x="379.6333333333333" y="400.0" />
+      <point x="33.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicGame" target="edu.pwr.checkers.model.Game">
+      <point x="-18.133333333333326" y="-15.0" />
+      <point x="328.98713450292416" y="500.0" />
+      <point x="241.63333333333333" y="500.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicField" target="edu.pwr.checkers.model.Field">
+      <point x="47.99999999999994" y="-15.0" />
+      <point x="531.6333333333332" y="210.0" />
+      <point x="528.8192982456139" y="210.0" />
+      <point x="528.8192982456139" y="70.0" />
+      <point x="667.057894736842" y="70.0" />
+      <point x="-25.666666666666657" y="15.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.5361842105263158" x="608.0" y="300.0" />
+  <SelectedNodes>
+    <node>edu.pwr.checkers.model.ClassicPlayer</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
