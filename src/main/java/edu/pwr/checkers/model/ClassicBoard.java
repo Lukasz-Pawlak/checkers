@@ -3,13 +3,44 @@ package edu.pwr.checkers.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of {@link Board}.
+ * Represents classic board, in which fields are arranged in hexagonal
+ * grid in a pattern of star. See artifacts.model.Board for more
+ * detailed information.
+ * @version 1.1
+ * @author Łukasz Pawlak
+ * @author Wojciech Sęk
+ */
 public class ClassicBoard implements Board {
     //private final long int SE
+    /**
+     * Number of players needed for {@link ClassicBoard#setup()} and
+     * {@link ClassicBoard#setup()}
+     */
     private int playerNo;
-    protected static int SIDE_LENGTH = 5;       // left not final for inheritance
+    /**
+     * Constant specifying side length of hexagon which is at the core
+     * of the star. Measured in number of fields.
+     * Left not final for possible future inheritance.
+     */
+    protected static int SIDE_LENGTH = 5;
+    /**
+     * Constant representing distance from central field to corner of the
+     * core hexagon. Measured in number of fields, does not include
+     * central field.
+     */
     protected final static int HEX_RADIUS;
+    /**
+     * Constant representing distance from central field to corner of the
+     * core hexagon. Measured in number of fields, does not include
+     * central field.
+     */
     protected final static int STAR_RADIUS;
     //protected final static int TORUS_SIZE;
+    /**
+     * Size of square in which whole board can be inscribed.
+     */
     protected final static int SQUARE_SIZE;
 
     static {
@@ -27,10 +58,22 @@ public class ClassicBoard implements Board {
     public final static int LEFT_DOWN = 4;
     public final static int DOWN = 5;
 
+    /**
+     * Number of directions.
+     */
     protected final static int DIRECTIONS_NO = 6;
 
+    /**
+     * This variable holds all fields of this board.
+     */
     protected Field[][] cells;
 
+    /**
+     * @inheritDoc
+     *
+     * @return new Coordinates object or null, when position is
+     * outside square in which board is inscribed
+     */
     @Override
     public Coordinates move(int direction, int amount, Coordinates pos) {
         if (Math.floorMod(direction, DIRECTIONS_NO) > 2) {
@@ -51,24 +94,50 @@ public class ClassicBoard implements Board {
                 y = pos.y + amount;
                 break;
         }
+        if (!withinSquare(x, y))
+            return null;
         return new Coordinates(x, y);
     }
 
+    /**
+     * Function checking if given position is not out of bounds.
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return is given position within board's square
+     */
+    private boolean withinSquare(int x, int y) {
+        return x >= 0 && y >= 0 && x < SQUARE_SIZE && y < SQUARE_SIZE;
+    }
+
+    /**
+     * @inheritDoc
+     */
     @Override
     public int getSize() {
         return 2 * STAR_RADIUS + 1;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Field getField(int x, int y) {
+        if (!withinSquare(x, y))
+            return null;
         return cells[x][y];
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Field getField(Coordinates cor) {
         return getField(cor.x, cor.y);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Color> getColors() {
         List<Color> colors = new ArrayList<>();
@@ -99,6 +168,9 @@ public class ClassicBoard implements Board {
         return colors;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Piece> getPiecesOfColor(Color color) {
         List<Piece> pieces = new ArrayList<>();
@@ -114,13 +186,19 @@ public class ClassicBoard implements Board {
         return pieces;
     }
 
+    /**
+     * The only constructor.
+     * As demanded by {@link Board}, requires number of players.
+     * @param playerNo number of players.
+     */
     public ClassicBoard(int playerNo) {
         cells = new Field[SQUARE_SIZE][SQUARE_SIZE];
         this.playerNo = playerNo;
     }
 
-
-
+    /**
+     * @inheritDoc
+     */
     @Override
     public void setup() {
         FieldFactory currentFactory = new ClassicFieldFactory(Color.NOCOLOR, false);
@@ -164,25 +242,39 @@ public class ClassicBoard implements Board {
         }
     }
 
-    public List<Field> getNeigboursOfDistance (Field field, int distance) {
+    /**
+     * Generic function used in {@link ClassicBoard#getNeighborsOf(Field)}
+     * and in {@link ClassicBoard#getFurtherNeighborsOf(Field)}
+     * @param field as in links.
+     * @param distance how far from initial field should we seek.
+     * @return list of neighbors that are exactly distance apart from
+     * the field
+     */
+    private List<Field> getNeighborsOfDistance(Field field, int distance) {
         List<Field> list = new ArrayList<>();
         Coordinates pos = field.getPosition();
         for (int i = 0; i < DIRECTIONS_NO; i++) {
             Coordinates other = move(i, distance, pos);
-            if (cells[other.x][other.y] != null) {
+            if (other != null && cells[other.x][other.y] != null) {
                 list.add(cells[other.x][other.y]);
             }
         }
         return list;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Field> getNeighborsOf(Field field) {
-        return getNeigboursOfDistance(field, 1);
+        return getNeighborsOfDistance(field, 1);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Field> getFurtherNeighborsOf(Field field) {
-        return getNeigboursOfDistance(field, 2);
+        return getNeighborsOfDistance(field, 2);
     }
 }
