@@ -103,12 +103,4 @@ public class Mediator {
     public void setPlayer(Player player) {
         this.player = player;
     }
-
-    /**
-     * Method used to refresh the view.
-     */
-    //TODO: ay, might not be needed as well
-    public void refresh() {
-        controller.refresh();
-    }
 }

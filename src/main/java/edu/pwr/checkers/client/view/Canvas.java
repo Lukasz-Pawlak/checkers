@@ -5,7 +5,6 @@ import edu.pwr.checkers.model.Board;
 import edu.pwr.checkers.model.Coordinates;
 import edu.pwr.checkers.model.Field;
 import edu.pwr.checkers.model.Piece;
-import org.graalvm.compiler.api.replacements.Snippet;
 
 import javax.swing.*;
 import java.awt.*;
@@ -179,11 +178,11 @@ public class Canvas extends JPanel {
         redrawAll();
     }
 
-    /**
+    /* // so it turns out it is useless
      * This method refreshes the view.
      * @param width width to be matched
      * @param height height to bee matched.
-     */
+     /
     public void refresh(int width, int height) {
         int type = BufferedImage.TYPE_INT_ARGB;
         boardLayer = new BufferedImage(width, height, type);
@@ -192,7 +191,7 @@ public class Canvas extends JPanel {
         CLEAR = new BufferedImage(width, height, type);
 
         redrawAll();
-    }
+    }*/
 
     /**
      * This method redraws all layer images.

@@ -76,12 +76,4 @@ public class ClientWindow extends JFrame {
     public void useThisBoard(Board board) {
         canvas.setBoard(board);
     }
-
-    /**
-     * This method refreshes the view.
-     */
-    //TODO: is it even needed?
-    public void refresh() {
-        canvas.refresh(getWidth(), getHeight());
-    }
 }
