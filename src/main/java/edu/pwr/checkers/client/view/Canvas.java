@@ -5,18 +5,31 @@ import edu.pwr.checkers.model.Board;
 import edu.pwr.checkers.model.Coordinates;
 import edu.pwr.checkers.model.Field;
 import edu.pwr.checkers.model.Piece;
+import org.graalvm.compiler.api.replacements.Snippet;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * This class represents canvas on which Board is displayed.
+ * Is capable of displaying any hexagonal grid based Board object.
+ * @version 1.0
+ * @author Łukasz Pawlak
+ */
 public class Canvas extends JPanel {
+    /** Board displayed. */
     private Board board;
+    /** Image representing empty board. */
     private BufferedImage boardLayer;
+    /** Image representing pieces that are not currently being moved. */
     private BufferedImage stillPiecesLayer;
+    /** Image representing piece that is currently being moved.*/
     private BufferedImage movingPieceLayer;
+    /** Clear image. */
     private BufferedImage CLEAR;
+    /** Piece currently being moved.*/
     private Piece movingPiece;
     /** Position on screen of moving piece relative to this panel */
     private Point movingPiecePosition;
@@ -26,8 +39,13 @@ public class Canvas extends JPanel {
     private int stepSize;
     /** this.board.getSize() */
     private int boardSize;
-    private Controller controller;
+    /** Controller object used to communicate with model and client. */
+    private final Controller controller;
 
+    /**
+     * The only constructor.
+     * @param controller controller object to be used.
+     */
     Canvas(Controller controller) {
         this.controller = controller;
         this.board = controller.getBoard();
@@ -81,6 +99,16 @@ public class Canvas extends JPanel {
         });
     }
 
+    /**
+     * This method is called whenever mouse is pressed.
+     * It tries to grab piece on top of which mouse cursor was.
+     * If no such piece exists, null is returned.
+     * Otherwise grabbed piece is returned and field on which it
+     * was standing is marked as empty (but piece still remembers
+     * the field it was standing on before).
+     * @param point coordinates on panel under which piece should be seeked.
+     * @return grabbed piece of null when not found.
+     */
     private Piece tryToGetPiece(Point point) {
         super.paint(stillPiecesLayer.getGraphics());
         point.translate(- squareSideLength / 2, 0);
@@ -97,8 +125,22 @@ public class Canvas extends JPanel {
         return null;
     }
 
+    /**
+     * This method is called whenever muse is released.
+     * It tries to put moving piece on field located under the point.
+     * If no piece is currently being moved, it does nothing.
+     * If piece was released over void, it will be put back to it's
+     * original position (before it was grabbed). Otherwise it will
+     * send move request to the server to check if move is legal.
+     * If it is, piece will be put on new position. If it isn't, it will
+     * return to the original position.
+     * @param point point of mouse release.
+     */
     private void putMovingPiece(Point point) {
-        super.paint(movingPieceLayer.getGraphics());        // dunno why but it is needed; like it needs to be called early enough
+        if (movingPiece == null)
+            return;
+
+        //super.paint(movingPieceLayer.getGraphics());        // dunno why but it is needed; like it needs to be called early enough
         point.translate(- squareSideLength / 2, 0);
         point = inverseTransform(point.x, point.y);
 
@@ -119,8 +161,11 @@ public class Canvas extends JPanel {
         movingPiece = null;
     }
 
-    /** This method is called when size of canvas changes */
-    public void canvasSizeChanged() {
+    /**
+     * This method is called when size of canvas changes.
+     * It redraws images representing state of the board.
+     */
+    private void canvasSizeChanged() {
         squareSideLength = (int) Math.min(2.0 * getWidth() / 3, 2 * getHeight() / Math.sqrt(3.0));
         int width = (int) (squareSideLength * 1.5);
         int height = (int) (squareSideLength * Math.sqrt(3.0)  * 0.5);
@@ -134,6 +179,11 @@ public class Canvas extends JPanel {
         redrawAll();
     }
 
+    /**
+     * This method refreshes the view.
+     * @param width width to be matched
+     * @param height height to bee matched.
+     */
     public void refresh(int width, int height) {
         int type = BufferedImage.TYPE_INT_ARGB;
         boardLayer = new BufferedImage(width, height, type);
@@ -144,7 +194,9 @@ public class Canvas extends JPanel {
         redrawAll();
     }
 
-    /** This method redraws all layers */
+    /**
+     * This method redraws all layer images.
+     */
     private void redrawAll() {
         Graphics g = boardLayer.getGraphics();
         super.paint(g);
@@ -168,6 +220,9 @@ public class Canvas extends JPanel {
         redrawAllPieces();
     }
 
+    /**
+     * This method redraws layer images containing pieces.
+     */
     private void redrawAllPieces() {
         Graphics g = stillPiecesLayer.getGraphics();
         super.paint(g);
@@ -190,6 +245,9 @@ public class Canvas extends JPanel {
         redrawMovingPiece();
     }
 
+    /**
+     * This method redraws layer image containing moving piece.
+     */
     private void redrawMovingPiece() {
         int diam = (int) (0.7 * stepSize);
 
@@ -205,6 +263,9 @@ public class Canvas extends JPanel {
     }
 
 
+    /**
+     * @inheritDoc
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -213,11 +274,21 @@ public class Canvas extends JPanel {
         g.drawImage(movingPieceLayer, 0, 0, null);
     }
 
+    /**
+     * Board setter.
+     * After board is set, everything is redrawn.
+     * @param board non null new board to be set.
+     */
     void setBoard(Board board) {
         this.board = board;
         redrawAll();
     }
 
+    /**
+     * Function converting enum Color to awt Color object.
+     * @param col color to be translated.
+     * @return translated color.
+     */
     private Color translateColor(edu.pwr.checkers.model.Color col) {
         switch (col) {
             case RED:
@@ -239,7 +310,9 @@ public class Canvas extends JPanel {
         }
     }
 
-    /** Linear transformation to straighten the star */
+    /**
+     * Linear transformation used to straighten the board.
+     */
     private Point transform(int initialX, int initialY) {
         return new Point(
                 (int) (initialX - 0.5 * initialY),
@@ -247,7 +320,9 @@ public class Canvas extends JPanel {
         );
     }
 
-    /** Inverse of the transformation used to straighten the star */
+    /**
+     * Inverse of the transformation used to straighten the board.
+     */
     private Point inverseTransform(int initialX, int initialY) {
         return new Point(
                 (int) (initialX + (initialY / Math.sqrt(3.0))),

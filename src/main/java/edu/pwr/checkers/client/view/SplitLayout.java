@@ -7,20 +7,20 @@ import java.awt.*;
  * Displays the exact number of components as length of param ratios in constructor.
  * They are displayed based on ratios passed in constructor.
  * CAUTION: if not exactly ratios.length components are present ArrayIndexOutOfBoundsException may be thrown.
- * @author Łukasz Pawlak
  * @version 1.1
+ * @author Łukasz Pawlak
  */
 class SplitLayout implements LayoutManager {
     /** Array of ratios */
-    private int[] ratios;
+    private final int[] ratios;
     /** Is split horizontal (false means vertical split) */
-    private boolean horizontal;
+    private final boolean horizontal;
     /** Sum of ratios array */
     private final int sum;
 
     /**
      * The only constructor.
-     * @param ratios parts od whole space (sum of this array) given component will ocupy
+     * @param ratios parts od whole space (sum of this array) given component will occupy
      * @param horizontal is split horizontal
      */
     public SplitLayout(int[] ratios, boolean horizontal) {

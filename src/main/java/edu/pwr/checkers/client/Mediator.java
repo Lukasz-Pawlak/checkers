@@ -5,35 +5,71 @@ import edu.pwr.checkers.model.Coordinates;
 import edu.pwr.checkers.model.Piece;
 import edu.pwr.checkers.model.Player;
 
+/**
+ * This class is responsible for communication between client and
+ * controller. Also it provides information about player this client
+ * is corresponding to.
+ * @version 1.0
+ * @author Łukasz Pawlak
+ */
 public class Mediator {
+    /** Player to which this client is corresponding. */
     private /*final*/ Player player;
+    /** Controller used to communicate with GUI. */
     private final Controller controller;
+    /** Client object used to communicate with server. */
     private final Client client;
 
+    /**
+     * Thew only constructor. Mediator is bound to one client
+     * and one Controller, therefore one GUI.
+     * @param client client to which mediator is bound.
+     */
     public Mediator(Client client) {
         this.client = client;
         this.player = client.getPlayer();
         controller = new Controller(this);
     }
 
+    /**
+     * Method responsible for sending accept move request via client.
+     */
     public void sendAcceptMoveRequest() {
         client.sendAcceptMoveRequest(player);
         controller.showMessage("Next players turn!");
     }
 
+    /**
+     * Method responsible for sending cancel move request via client.
+     */
     public void sendCancelMoveRequest() {
         client.sendCancelMoveRequest(player);
     }
 
+    /**
+     * Board getter.
+     * @return board currently used by the GUI.
+     */
     public Board getBoard() {
         return client.getBoard();
     }
 
+    /**
+     * Method setting board used by GUI.
+     * @param board board to be set.
+     */
     public void setBoard(Board board) {
         controller.setBoard(board);
     }
 
 
+    /**
+     * Method used to pass information about move Piece request
+     * to client. Provides additional request validation.
+     * @param piece piece to be moved.
+     * @param cor new coordinates of piece.
+     * @return if move was successful.
+     */
     public boolean movePiece(Piece piece, Coordinates cor) {
         if (player.notMyPiece(piece)) {
             controller.showMessage("You cant move this piece!");
@@ -51,15 +87,27 @@ public class Mediator {
         }
     }
 
+    /**
+     * This method sets status of the game.
+     * @param status status to be set.
+     */
     public void setStatus(String status) {
         controller.setStatus(status);
     }
 
-    // for testing
+    /**
+     * Player setter.
+     * @param player player to be set.
+     */
+    // for testing // but actually it can stay ig
     public void setPlayer(Player player) {
         this.player = player;
     }
 
+    /**
+     * Method used to refresh the view.
+     */
+    //TODO: ay, might not be needed as well
     public void refresh() {
         controller.refresh();
     }
