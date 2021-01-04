@@ -8,7 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
@@ -46,7 +45,7 @@ public class ClassicServer implements Server {
   }
 
   private class SocketHandler implements Runnable {
-    private Socket socket;
+    private final Socket socket;
     private ObjectInputStream inputStream = null;
     private ObjectOutputStream outputStream = null;
 
@@ -60,7 +59,6 @@ public class ClassicServer implements Server {
     }
 
     private void process(Socket socket) {
-      System.out.println("Wchodzę w process.");
       try {
         System.out.println("Trying to create inout streams.");
         inputStream = new ObjectInputStream(socket.getInputStream());
@@ -100,21 +98,25 @@ public class ClassicServer implements Server {
       Coordinates coordinates = message.getCoordinates();
       Piece piece = message.getPiece();
 
-      if (messageType.equals("MOVEREQUEST")) {
-        System.out.println("Received move request.");
-        game.move(player, piece, coordinates);
-        sendAcceptedMoveMessage();
-        System.out.println("Sent move accepted request.");
-      } else if (messageType.equals("CANCELMOVE")) {
-        System.out.println("Received cancel move message.");
-        game.cancelMove(player);
-        sendCanceledMoveMessage();
-        System.out.println("Sent cancelled move message.");
-      } else if (messageType.equals("ACCEPTMOVE")) {
-        System.out.println("Received accept move message.");
-        game.acceptMove(player);
-        sendMoveAcceptedMessage();
-        System.out.println("Sent accepted move message.");
+      switch (messageType) {
+        case "MOVEREQUEST": {
+          System.out.println("Received move request.");
+          game.move(player, piece, coordinates);
+          sendAcceptedMoveMessage();
+          System.out.println("Sent move accepted request.");
+        }
+        case "CANCELMOVE": {
+          System.out.println("Received cancel move message.");
+          game.cancelMove(player);
+          sendCanceledMoveMessage();
+          System.out.println("Sent cancelled move message.");
+        }
+        case "ACCEPTMOVE": {
+          System.out.println("Received accept move message.");
+          game.acceptMove(player);
+          sendMoveAcceptedMessage();
+          System.out.println("Sent accepted move message.");
+        }
       }
     }
 
