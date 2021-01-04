@@ -182,6 +182,14 @@ public class ClassicGame implements Game {
     }
 
     /**
+     * @inheritDoc
+     */
+    @Override
+    public Player nextPlayer() {
+        return activePlayers.getNext();
+    }
+
+    /**
      * This method checks if current player won.
      * If so, puts him in ranking and updates the getter of players.
      * @return whether active player won.
@@ -217,8 +225,5 @@ public class ClassicGame implements Game {
         return activePlayer;
     }
 
-    @Override
-    public List<Player> getActivePlayers() {
-        return activePlayers.getRing();
-    }
+
 }

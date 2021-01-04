@@ -2,6 +2,8 @@ package edu.pwr.checkers.client;
 
 import edu.pwr.checkers.model.*;
 
+import java.io.IOException;
+
 /**
  * This interface provides basic functionality of client-server communication
  * for the game of Chinese Checkers.
@@ -39,11 +41,11 @@ public interface Client {
      * It asks server which player this client will correspond to.
      * @return player associated with this client.
      */
-    Player getPlayer();
+    Player getPlayer() throws IOException, ClassNotFoundException;
 
     /**
      * This method asks server to send current version of board.
-     * @return board send by server.
+     * @return board sent by server.
      */
     Board getBoard();
 }

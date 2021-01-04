@@ -61,5 +61,10 @@ public interface Game extends Serializable {
      * @return active player.
      */
     Player getActivePlayer();
-    List<Player> getActivePlayers();
+
+    /**
+     * Function used to map players with clients.
+     * @return The next player of the list.
+     */
+    Player nextPlayer();
 }

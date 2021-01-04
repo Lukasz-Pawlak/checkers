@@ -1,6 +1,5 @@
 package edu.pwr.checkers.server;
 
-import edu.pwr.checkers.client.ClassicClient;
 import edu.pwr.checkers.client.ClientMessage;
 import edu.pwr.checkers.model.*;
 
@@ -31,33 +30,27 @@ public class ClassicServer implements Server {
     System.out.println("Started server with 4444...");
   }
 
-  public void errorKill() {
-    try {
-      serverSocket.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
   @Override
   public void setUp() throws NullPointerException, RejectedExecutionException, IOException {
-    ExecutorService pool = Executors.newFixedThreadPool(2 * numOfPlayers);
-    List<Player> players = game.getActivePlayers();
-    System.out.println("Jest " + players.size() + " graczy.");
+    ExecutorService pool = Executors.newFixedThreadPool(numOfPlayers);
+    System.out.println("There are " + numOfPlayers + " players.");
 
-    for (Player player: players) {
+    for (int i = 1; i <= numOfPlayers; i++) {
+      System.out.println("Waiting for player " + i);
       Socket socket = serverSocket.accept();
-      pool.execute(new ClassicClient(player, socket));
-      pool.execute(new socketHandler(socket));
+      SocketHandler handler =  new SocketHandler(socket);
+      handler.sendPlayer();
+      handler.sendBoard();
+      pool.execute(handler);
     }
   }
 
-  private class socketHandler implements Runnable {
+  private class SocketHandler implements Runnable {
     private Socket socket;
     private ObjectInputStream inputStream = null;
     private ObjectOutputStream outputStream = null;
 
-    public socketHandler(Socket socket) {
+    public SocketHandler(Socket socket) {
       this.socket = socket;
     }
 
@@ -146,7 +139,12 @@ public class ClassicServer implements Server {
     }
 
     private void sendBoard() throws IOException {
-      ServerMessage message = new ServerMessage("BOARD", game.getBoard());
+      ServerMessage message = new ServerMessage("SETBOARD", game.getBoard());
+      outputStream.writeObject(message);
+    }
+
+    private void sendPlayer() throws IOException {
+      ServerMessage message = new ServerMessage("SETPLAYER", game.nextPlayer());
       outputStream.writeObject(message);
     }
 
