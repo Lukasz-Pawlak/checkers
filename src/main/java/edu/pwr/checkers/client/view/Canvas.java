@@ -48,6 +48,9 @@ public class Canvas extends JPanel {
     Canvas(Controller controller) {
         this.controller = controller;
         this.board = controller.getBoard();
+
+        if (board != null) System.out.println("Pobrano board prawidłowo");
+
         boardLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
         stillPiecesLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
         movingPieceLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);

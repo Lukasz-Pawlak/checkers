@@ -9,7 +9,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,13 +25,25 @@ public class ClassicServer implements Server {
     }
     this.numOfPlayers = numOfPlayers;
     this.game = new ClassicGame(numOfPlayers);
+    this.game.init();
+    System.out.println("Trying to start server with port 4444...");
     this.serverSocket = new ServerSocket(4444);
+    System.out.println("Started server with 4444...");
+  }
+
+  public void errorKill() {
+    try {
+      serverSocket.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
   public void setUp() throws NullPointerException, RejectedExecutionException, IOException {
     ExecutorService pool = Executors.newFixedThreadPool(2 * numOfPlayers);
     List<Player> players = game.getActivePlayers();
+    System.out.println("Jest " + players.size() + " graczy.");
 
     for (Player player: players) {
       Socket socket = serverSocket.accept();
@@ -42,7 +53,7 @@ public class ClassicServer implements Server {
   }
 
   private class socketHandler implements Runnable {
-    private Socket socket = null;
+    private Socket socket;
     private ObjectInputStream inputStream = null;
     private ObjectOutputStream outputStream = null;
 
@@ -56,9 +67,14 @@ public class ClassicServer implements Server {
     }
 
     private void process(Socket socket) {
+      System.out.println("Wchodzę w process.");
       try {
+        System.out.println("Trying to create inout streams.");
         inputStream = new ObjectInputStream(socket.getInputStream());
+        System.out.println("input stream correctly connected");
         outputStream = new ObjectOutputStream(socket.getOutputStream());
+        System.out.println("output stream correctly connected");
+        sendBoard();
       } catch (IOException e) {
     // nothing
       }
@@ -67,7 +83,7 @@ public class ClassicServer implements Server {
         try {
           ClientMessage message = (ClientMessage) inputStream.readObject();
           processMessage(message);
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
           System.out.println("Couldn't read the message.");
         } catch (IllegalMoveException e) {
           try {
@@ -81,8 +97,6 @@ public class ClassicServer implements Server {
           } catch (IOException f) {
             System.out.println("Couldn't send the message.");
           }
-        } catch (ClassNotFoundException e) {
-          System.out.println("Couldn't read the message.");
         }
       }
     }
@@ -93,15 +107,21 @@ public class ClassicServer implements Server {
       Coordinates coordinates = message.getCoordinates();
       Piece piece = message.getPiece();
 
-      if (messageType == "MOVEREQUEST") {
+      if (messageType.equals("MOVEREQUEST")) {
+        System.out.println("Received move request.");
         game.move(player, piece, coordinates);
         sendAcceptedMoveMessage();
-      } else if (messageType == "CANCELMOVE") {
+        System.out.println("Sent move accepted request.");
+      } else if (messageType.equals("CANCELMOVE")) {
+        System.out.println("Received cancel move message.");
         game.cancelMove(player);
         sendCanceledMoveMessage();
-      } else if (messageType == "ACCEPTMOVE") {
+        System.out.println("Sent cancelled move message.");
+      } else if (messageType.equals("ACCEPTMOVE")) {
+        System.out.println("Received accept move message.");
         game.acceptMove(player);
         sendMoveAcceptedMessage();
+        System.out.println("Sent accepted move message.");
       }
     }
 
@@ -125,6 +145,11 @@ public class ClassicServer implements Server {
       outputStream.writeObject(message);
     }
 
+    private void sendBoard() throws IOException {
+      ServerMessage message = new ServerMessage("BOARD", game.getBoard());
+      outputStream.writeObject(message);
+    }
+
     private void sendMoveAcceptedMessage() throws IOException {
       ServerMessage message = new ServerMessage("MOVEACCEPTED");
       outputStream.writeObject(message);
@@ -132,7 +157,7 @@ public class ClassicServer implements Server {
   }
 
   public static void main(String[] args) {
-    Server server = null;
+    Server server;
 
     if (args.length != 1) {
       System.err.println("Give only the number of players!");

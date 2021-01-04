@@ -1,9 +1,6 @@
 package edu.pwr.checkers.client;
 
-import edu.pwr.checkers.model.Board;
-import edu.pwr.checkers.model.Coordinates;
-import edu.pwr.checkers.model.Piece;
-import edu.pwr.checkers.model.Player;
+import edu.pwr.checkers.model.*;
 import edu.pwr.checkers.server.ServerMessage;
 
 import java.io.ObjectInputStream;
@@ -14,6 +11,7 @@ import java.net.Socket;
 public class ClassicClient implements Client, Runnable {
   private final Mediator mediator;
   private final Player player;
+  private Board board = sendGetBoard();
   private final Socket clientSocket;
   private ObjectInputStream inputStream;
   private ObjectOutputStream outputStream;
@@ -34,6 +32,7 @@ public class ClassicClient implements Client, Runnable {
       String messageType = serverMessage.getMessage();
 
       if (messageType.equals("VALIDMOVE")) {
+        board = sendGetBoard();
         return true;
       } else {
         return false;
@@ -52,6 +51,8 @@ public class ClassicClient implements Client, Runnable {
       ServerMessage serverMessage;
       serverMessage = (ServerMessage) inputStream.readObject();
       mediator.setBoard(serverMessage.getBoard());
+      board = sendGetBoard();
+      System.out.println("Ustawiono nowy board.");
     } catch (Exception ex) {
       System.out.println("Message couldn't be sent.");
     }
@@ -72,6 +73,19 @@ public class ClassicClient implements Client, Runnable {
     }
   }
 
+  public synchronized Board sendGetBoard() {
+    try {
+      ClientMessage clientMessage = new ClientMessage("GETBOARD");
+      outputStream.writeObject(clientMessage);
+      ServerMessage serverMessage;
+      serverMessage = (ServerMessage) inputStream.readObject();
+      return serverMessage.getBoard();
+    } catch (Exception ex) {
+      System.out.println("Message couldn't be sent.");
+    }
+    return null;
+  }
+
   @Override
   public Player getPlayer() {
     return player;
@@ -79,12 +93,12 @@ public class ClassicClient implements Client, Runnable {
 
   @Override
   public Board getBoard() {
-    return null;
+    return board;
   }
 
   public static void main (String[] args) throws IOException {
     System.out.println("Trying to connect with server...");
-    new Socket("4444", 4444);
+    new Socket("localhost", 4444);
     System.out.println("Connected to server.");
   }
 
@@ -93,7 +107,13 @@ public class ClassicClient implements Client, Runnable {
     System.out.println("Client is running!");
     try {
       setUp();
+      System.out.println("Client is set up!");
     } catch (Exception ex) {
+      try {
+        clientSocket.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
       System.err.println("Client stopped working due to an error.");
     } finally {
       try {
@@ -107,5 +127,8 @@ public class ClassicClient implements Client, Runnable {
   private void setUp() throws IOException {
     inputStream = new ObjectInputStream(clientSocket.getInputStream());
     outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+    //To receive and set the board.
+    board = sendGetBoard();
+    System.out.println("Got the board.");
   }
 }
