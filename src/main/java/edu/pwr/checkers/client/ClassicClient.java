@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class ClassicClient implements Client, Runnable {
-  private Mediator mediator;
-  private Player player;
-  private Socket clientSocket;
+  private final Mediator mediator;
+  private final Player player;
+  private final Socket clientSocket;
   private ObjectInputStream inputStream;
   private ObjectOutputStream outputStream;
 
@@ -29,11 +29,11 @@ public class ClassicClient implements Client, Runnable {
     try {
       ClientMessage clientMessage = new ClientMessage("MOVEREQUEST", player, piece, coordinates);
       outputStream.writeObject(clientMessage);
-      ServerMessage serverMessage = null;
+      ServerMessage serverMessage;
       serverMessage = (ServerMessage) inputStream.readObject();
       String messageType = serverMessage.getMessage();
 
-      if (messageType == "VALIDMOVE") {
+      if (messageType.equals("VALIDMOVE")) {
         return true;
       } else {
         return false;
@@ -49,7 +49,7 @@ public class ClassicClient implements Client, Runnable {
     try {
       ClientMessage clientMessage = new ClientMessage("CANCELMOVE", player);
       outputStream.writeObject(clientMessage);
-      ServerMessage serverMessage = null;
+      ServerMessage serverMessage;
       serverMessage = (ServerMessage) inputStream.readObject();
       mediator.setBoard(serverMessage.getBoard());
     } catch (Exception ex) {
@@ -62,7 +62,7 @@ public class ClassicClient implements Client, Runnable {
     try {
       ClientMessage clientMessage = new ClientMessage("ACCEPTMOVE", player);
       outputStream.writeObject(clientMessage);
-      ServerMessage serverMessage = null;
+      ServerMessage serverMessage;
       serverMessage = (ServerMessage) inputStream.readObject();
       Player current = serverMessage.getPlayer();
       mediator.setPlayer(current);
@@ -84,7 +84,7 @@ public class ClassicClient implements Client, Runnable {
 
   public static void main (String[] args) throws IOException {
     System.out.println("Trying to connect with server...");
-    Socket socket = new Socket("4444", 4444);
+    new Socket("4444", 4444);
     System.out.println("Connected to server.");
   }
 
