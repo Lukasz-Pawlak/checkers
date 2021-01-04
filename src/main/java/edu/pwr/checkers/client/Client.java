@@ -41,7 +41,7 @@ public interface Client {
      * It asks server which player this client will correspond to.
      * @return player associated with this client.
      */
-    Player getPlayer() throws IOException, ClassNotFoundException;
+    Player getPlayer();
 
     /**
      * This method asks server to send current version of board.

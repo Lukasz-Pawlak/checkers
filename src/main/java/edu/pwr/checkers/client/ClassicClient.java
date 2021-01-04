@@ -2,139 +2,150 @@ package edu.pwr.checkers.client;
 
 import edu.pwr.checkers.model.*;
 import edu.pwr.checkers.server.ServerMessage;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
-import java.net.Socket;
+import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 
 public class ClassicClient implements Client {
-  private Mediator mediator;
-  private Player player;
-  private final Socket clientSocket;
-  private ObjectInputStream inputStream;
-  private ObjectOutputStream outputStream;
+    private final Mediator mediator;
+    private final Player player;
+    private final ByteBuffer buffer;
+    protected static int BUFFER_SIZE = 4096;//1024;
 
-  public ClassicClient(Socket socket) {
-    this.clientSocket = socket;
-    try {
-      setUp();
-      System.out.println("Client is set up!");
-      this.player = getPlayer();
-      this.mediator = new Mediator(this);
-    } catch (IOException e) {
-      e.printStackTrace();
+    private final SocketChannel socketChannel;
+
+    public ClassicClient(InetAddress hostIP, int port) throws IOException {
+        buffer = ByteBuffer.allocate(BUFFER_SIZE);
+
+        InetSocketAddress myAddress = new InetSocketAddress(hostIP, port);
+        socketChannel = SocketChannel.open(myAddress);
+
+        //TODO: send init request or smth
+        this.player = getPlayer(); // ...
+
+        System.out.println("Client is set up!");
+        this.mediator = new Mediator(this);
     }
-  }
 
-  private void setUp() throws IOException {
-    inputStream = new ObjectInputStream(clientSocket.getInputStream());
-    outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-    //To receive and set the board.
-    //board = sendGetBoard();
-    System.out.println("Got the board.");
-  }
+    public void init() {
 
-  @Override
-  public synchronized boolean sendMoveRequest(Player player, Piece piece, Coordinates coordinates) {
-    try {
-      ClientMessage clientMessage = new ClientMessage("MOVEREQUEST", player, piece, coordinates);
-      outputStream.writeObject(clientMessage);
-      ServerMessage serverMessage;
-      serverMessage = (ServerMessage) inputStream.readObject();
-      String messageType = serverMessage.getMessage();
+    }
 
-      if (messageType.equals("VALIDMOVE")) {
-        return true;
-      } else {
+    private void send(ClientMessage message) throws IOException {
+        buffer.clear();
+        buffer.put(SerializationUtils.serialize(message));
+        buffer.flip();
+        socketChannel.write(buffer);
+    }
+
+    private ServerMessage receive() throws IOException {
+        buffer.clear();
+        socketChannel.read(buffer);
+        return SerializationUtils.deserialize(buffer.array());
+    }
+
+    @Override
+    public boolean sendMoveRequest(Player player, Piece piece, Coordinates coordinates) {
+        try {
+            ClientMessage clientMessage = new ClientMessage(
+                    "MOVEREQUEST", player, piece, coordinates);
+            send(clientMessage);
+            ServerMessage serverMessage = receive();
+            String messageType = serverMessage.getMessage();
+
+            if (messageType.equals("VALIDMOVE")) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception ex) {
+            System.out.println("Message couldn't be sent.");
+        }
         return false;
-      }
-    } catch (Exception ex) {
-      System.out.println("Message couldn't be sent.");
     }
-    return false;
-  }
 
-  @Override
-  public synchronized void sendCancelMoveRequest(Player player) {
-    try {
-      ClientMessage clientMessage = new ClientMessage("CANCELMOVE", player);
-      outputStream.writeObject(clientMessage);
-      ServerMessage serverMessage;
-      serverMessage = (ServerMessage) inputStream.readObject();
-      mediator.setBoard(serverMessage.getBoard());
-    } catch (Exception ex) {
-      System.out.println("Message couldn't be sent.");
+    @Override
+    public void sendCancelMoveRequest(Player player) {
+        try {
+            ClientMessage clientMessage = new ClientMessage("CANCELMOVE", player);
+            send(clientMessage);
+            ServerMessage serverMessage = receive();
+            mediator.setBoard(serverMessage.getBoard());
+        } catch (Exception ex) {
+            System.out.println("Message couldn't be sent.");
+        }
     }
-  }
 
-  @Override
-  public synchronized void sendAcceptMoveRequest(Player player) {
-    try {
-      ClientMessage clientMessage = new ClientMessage("ACCEPTMOVE", player);
-      outputStream.writeObject(clientMessage);
-      ServerMessage serverMessage;
-      serverMessage = (ServerMessage) inputStream.readObject();
-      Player current = serverMessage.getPlayer();
-      mediator.setPlayer(current);
-      mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
-    } catch (Exception ex) {
-      System.out.println("Message couldn't be sent.");
+    @Override
+    public void sendAcceptMoveRequest(Player player) {
+        try {
+            ClientMessage clientMessage = new ClientMessage("ACCEPTMOVE", player);
+            send(clientMessage);
+            ServerMessage serverMessage = receive();
+            Player current = serverMessage.getPlayer();
+            mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
+        } catch (Exception ex) {
+            System.out.println("Message couldn't be sent.");
+        }
     }
-  }
 
-  @Override
-  public synchronized Player getPlayer() {
-    try {
-      ClientMessage clientMessage = new ClientMessage("GETPLAYER");
-      outputStream.writeObject(clientMessage);
-      ServerMessage serverMessage;
-      serverMessage = (ServerMessage) inputStream.readObject();
-      return serverMessage.getPlayer();
-    } catch (Exception ex) {
-      System.out.println("Message couldn't be sent.");
+    @Override
+    public Player getPlayer() {
+        try {
+            ClientMessage clientMessage = new ClientMessage("GETPLAYER");
+            send(clientMessage);
+            ServerMessage serverMessage = receive();
+            return serverMessage.getPlayer();
+        } catch (Exception ex) {
+            System.out.println("Message couldn't be sent.");
+        }
+        return null;
     }
-    return null;
-  }
 
-  @Override
-  public synchronized Board getBoard() {
-    try {
-      ClientMessage clientMessage = new ClientMessage("GETBOARD");
-      outputStream.writeObject(clientMessage);
-      ServerMessage serverMessage;
-      serverMessage = (ServerMessage) inputStream.readObject();
-      return serverMessage.getBoard();
-    } catch (Exception ex) {
-      System.out.println("Message couldn't be sent.");
+    @Override
+    public Board getBoard() {
+        try {
+            ClientMessage clientMessage = new ClientMessage("GETBOARD");
+            send(clientMessage);
+            ServerMessage serverMessage = receive();
+            return serverMessage.getBoard();
+        } catch (Exception ex) {
+            System.out.println("Message couldn't be sent.");
+        }
+        return null;
     }
-    return null;
-  }
 
-  public static void main (String[] args) throws IOException {
-    System.out.println("Trying to connect with server...");
-    ClassicClient client = new ClassicClient(new Socket("localhost", 4444));
-    System.out.println("Connected to server.");
-  }
 
-  public void run() {
-    System.out.println("Client is running!");
-    try {
-      setUp();
-      System.out.println("Client is set up!");
-    } catch (Exception ex) {
-      try {
-        clientSocket.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      System.err.println("Client stopped working due to an error.");
-    } finally {
-      try {
-        clientSocket.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+//*******************************************************************************
+
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        Thread.sleep(100);
+        ClassicClient client = new ClassicClient(InetAddress.getLocalHost(),4444);
+        System.out.println("Client is running!");
+        try {
+            System.out.println("Client is set up!");
+        } catch (Exception ex) {
+            try {
+                client.socketChannel.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.err.println("Client stopped working due to an error.");
+        } finally {
+            try {
+                client.socketChannel.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
-  }
 }
