@@ -1,6 +1,7 @@
 package edu.pwr.checkers.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Game object keeps track of the rules - asserts that all moves
@@ -60,4 +61,5 @@ public interface Game extends Serializable {
      * @return active player.
      */
     Player getActivePlayer();
+    List<Player> getActivePlayers();
 }

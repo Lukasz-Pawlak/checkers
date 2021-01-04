@@ -35,6 +35,14 @@ public class CyclicGetter<T> {
     }
 
     /**
+     * The method to get just the list of objects.
+     * @return list of objects.
+     */
+    public List<T> getRing() {
+        return ring;
+    }
+
+    /**
      * This method adds object to last currently position in the
      * getter. On success true is returned. If the getter is full
      * no action is performed and false is returned.

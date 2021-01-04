@@ -216,4 +216,9 @@ public class ClassicGame implements Game {
     public Player getActivePlayer() {
         return activePlayer;
     }
+
+    @Override
+    public List<Player> getActivePlayers() {
+        return activePlayers.getRing();
+    }
 }

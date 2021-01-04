@@ -3,66 +3,254 @@
   <ID>JAVA</ID>
   <OriginalElement>edu.pwr.checkers.model</OriginalElement>
   <nodes>
-    <node x="10.5" y="420.0">edu.pwr.checkers.model.ClassicPlayer</node>
-    <node x="302.6333333333333" y="310.0">edu.pwr.checkers.model.Board</node>
-    <node x="201.63333333333333" y="420.0">edu.pwr.checkers.model.Game</node>
-    <node x="131.40789473684185" y="310.0">edu.pwr.checkers.model.Player</node>
-    <node x="576.6333333333333" y="230.0">edu.pwr.checkers.model.ClassicPiece</node>
-    <node x="411.6333333333333" y="230.0">edu.pwr.checkers.model.ClassicField</node>
-    <node x="741.6333333333333" y="230.0">edu.pwr.checkers.model.FieldFactory</node>
-    <node x="279.1204678362575" y="570.0">edu.pwr.checkers.model.ClassicGame</node>
-    <node x="589.7359649122807" y="310.0">edu.pwr.checkers.model.ClassicFieldFactory</node>
-    <node x="802.7359649122807" y="420.0">edu.pwr.checkers.model.ClassicBoard</node>
-    <node x="261.7245614035086" y="120.0">edu.pwr.checkers.model.Piece</node>
-    <node x="1093.6333333333332" y="420.0">edu.pwr.checkers.model.MoveType</node>
-    <node x="928.6333333333333" y="310.0">edu.pwr.checkers.model.CyclicGetter</node>
-    <node x="648.7245614035087" y="0.0">edu.pwr.checkers.model.Field</node>
+    <node x="10.5" y="410.0">edu.pwr.checkers.model.ClassicPlayer</node>
+    <node x="245.70584795321628" y="300.0">edu.pwr.checkers.model.Board</node>
+    <node x="129.70584795321628" y="300.0">edu.pwr.checkers.model.Player</node>
+    <node x="276.62777777777757" y="410.0">edu.pwr.checkers.model.Game</node>
+    <node x="565.1254385964912" y="220.0">edu.pwr.checkers.model.ClassicPiece</node>
+    <node x="400.1254385964912" y="220.0">edu.pwr.checkers.model.ClassicField</node>
+    <node x="731.6254385964912" y="220.0">edu.pwr.checkers.model.FieldFactory</node>
+    <node x="251.5868421052633" y="540.0">edu.pwr.checkers.model.ClassicGame</node>
+    <node x="495.10350877192985" y="300.0">edu.pwr.checkers.model.ClassicFieldFactory</node>
+    <node x="765.5646198830407" y="410.0">edu.pwr.checkers.model.ClassicBoard</node>
+    <node x="327.66111111111087" y="120.0">edu.pwr.checkers.model.Piece</node>
+    <node x="1029.8868421052632" y="410.0">edu.pwr.checkers.model.MoveType</node>
+    <node x="907.6254385964912" y="300.0">edu.pwr.checkers.model.CyclicGetter</node>
+    <node x="578.5944444444442" y="0.0">edu.pwr.checkers.model.Field</node>
   </nodes>
   <notes />
   <edges>
+    <edge source="edu.pwr.checkers.model.ClassicGame" target="edu.pwr.checkers.model.Board">
+      <point x="-18.133333333333326" y="-15.0" />
+      <point x="301.45350877192993" y="470.0" />
+      <point x="244.48128654970742" y="470.0" />
+      <point x="244.48128654970742" y="390.0" />
+      <point x="256.7058479532163" y="390.0" />
+      <point x="-33.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.Piece" target="edu.pwr.checkers.model.Field">
+      <point x="-22.0" y="-15.0" />
+      <point x="349.66111111111087" y="70.0" />
+      <point x="596.9277777777775" y="70.0" />
+      <point x="-25.666666666666686" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicGame" target="edu.pwr.checkers.model.MoveType">
+      <point x="54.39999999999998" y="-15.0" />
+      <point x="373.98684210526324" y="510.0" />
+      <point x="1057.8868421052632" y="510.0" />
+      <point x="-28.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicBoard" target="edu.pwr.checkers.model.Piece">
+      <point x="-48.0" y="-15.0" />
+      <point x="789.5646198830407" y="370.0" />
+      <point x="389.6254385964912" y="370.0" />
+      <point x="389.6254385964912" y="200.0" />
+      <point x="384.86111111111086" y="200.0" />
+      <point x="13.199999999999989" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicGame" target="edu.pwr.checkers.model.Piece">
+      <point x="18.133333333333326" y="-15.0" />
+      <point x="337.7201754385966" y="470.0" />
+      <point x="376.1944444444442" y="470.0" />
+      <point x="4.399999999999977" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicGame" target="edu.pwr.checkers.model.CyclicGetter">
+      <point x="45.33333333333337" y="-15.0" />
+      <point x="364.92017543859663" y="500.0" />
+      <point x="1019.3868421052632" y="500.0" />
+      <point x="1019.3868421052632" y="390.0" />
+      <point x="1033.6254385964912" y="390.0" />
+      <point x="54.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.Board" target="edu.pwr.checkers.model.Piece">
+      <point x="22.0" y="-15.0" />
+      <point x="311.7058479532163" y="275.0" />
+      <point x="300.79795321637414" y="275.0" />
+      <point x="300.79795321637414" y="190.0" />
+      <point x="349.66111111111087" y="190.0" />
+      <point x="-22.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicBoard" target="edu.pwr.checkers.model.Field">
+      <point x="16.0" y="-15.0" />
+      <point x="853.5646198830407" y="360.0" />
+      <point x="886.1254385964912" y="360.0" />
+      <point x="886.1254385964912" y="60.0" />
+      <point x="655.5944444444442" y="60.0" />
+      <point x="33.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.Game" target="edu.pwr.checkers.model.Player">
+      <point x="-26.66666666666663" y="-15.0" />
+      <point x="289.96111111111094" y="380.0" />
+      <point x="216.10584795321626" y="380.0" />
+      <point x="38.39999999999998" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.Game" target="edu.pwr.checkers.model.Board">
+      <point x="0.0" y="-15.0" />
+      <point x="316.62777777777757" y="390.0" />
+      <point x="300.7058479532163" y="390.0" />
+      <point x="11.0" y="15.0" />
+    </edge>
     <edge source="edu.pwr.checkers.model.ClassicFieldFactory" target="edu.pwr.checkers.model.FieldFactory">
       <point x="75.0" y="-15.0" />
-      <point x="764.7359649122807" y="290.0" />
-      <point x="777.6333333333333" y="290.0" />
+      <point x="670.1035087719299" y="275.0" />
+      <point x="767.6254385964912" y="275.0" />
       <point x="-36.0" y="15.0" />
     </edge>
     <edge source="edu.pwr.checkers.model.ClassicPlayer" target="edu.pwr.checkers.model.Player">
-      <point x="38.0" y="-15.0" />
-      <point x="124.5" y="400.0" />
-      <point x="141.00789473684188" y="400.0" />
+      <point x="38.000000000000114" y="-15.0" />
+      <point x="124.50000000000011" y="390.0" />
+      <point x="139.3058479532163" y="390.0" />
       <point x="-38.39999999999998" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicPiece" target="edu.pwr.checkers.model.Field">
+      <point x="48.0" y="-15.0" />
+      <point x="685.1254385964912" y="200.0" />
+      <point x="674.8444444444442" y="200.0" />
+      <point x="674.8444444444442" y="90.0" />
+      <point x="633.5944444444442" y="90.0" />
+      <point x="11.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicGame" target="edu.pwr.checkers.model.ClassicPlayer">
+      <point x="-54.39999999999998" y="-15.0" />
+      <point x="265.1868421052633" y="510.0" />
+      <point x="86.5" y="510.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicBoard" target="edu.pwr.checkers.model.ClassicFieldFactory">
+      <point x="-32.0" y="-15.0" />
+      <point x="805.5646198830407" y="360.0" />
+      <point x="595.1035087719299" y="360.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicBoard" target="edu.pwr.checkers.model.FieldFactory">
+      <point x="0.0" y="-15.0" />
+      <point x="837.5646198830407" y="390.0" />
+      <point x="839.6254385964912" y="390.0" />
+      <point x="36.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.FieldFactory" target="edu.pwr.checkers.model.Field">
+      <point x="0.0" y="-15.0" />
+      <point x="803.6254385964912" y="70.0" />
+      <point x="648.2611111111108" y="70.0" />
+      <point x="25.66666666666663" y="15.0" />
     </edge>
     <edge source="edu.pwr.checkers.model.ClassicPiece" target="edu.pwr.checkers.model.Piece">
       <point x="-48.0" y="-15.0" />
-      <point x="600.6333333333333" y="170.0" />
-      <point x="345.3245614035086" y="170.0" />
-      <point x="39.60000000000002" y="15.0" />
+      <point x="589.1254385964912" y="170.0" />
+      <point x="411.26111111111084" y="170.0" />
+      <point x="39.599999999999966" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicGame" target="edu.pwr.checkers.model.Player">
+      <point x="-36.26666666666665" y="-15.0" />
+      <point x="283.3201754385966" y="490.0" />
+      <point x="182.0666666666666" y="490.0" />
+      <point x="182.0666666666666" y="380.0" />
+      <point x="177.70584795321628" y="380.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.Game" target="edu.pwr.checkers.model.Piece">
+      <point x="26.66666666666663" y="-15.0" />
+      <point x="343.2944444444442" y="390.0" />
+      <point x="350.0391812865496" y="390.0" />
+      <point x="350.0391812865496" y="200.0" />
+      <point x="358.4611111111109" y="200.0" />
+      <point x="-13.199999999999989" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicFieldFactory" target="edu.pwr.checkers.model.ClassicPiece">
+      <point x="25.0" y="-15.0" />
+      <point x="620.1035087719299" y="275.0" />
+      <point x="637.1254385964912" y="275.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicPlayer" target="edu.pwr.checkers.model.Piece">
+      <point x="-37.999999999999886" y="-15.0" />
+      <point x="48.500000000000114" y="170.0" />
+      <point x="332.06111111111085" y="170.0" />
+      <point x="-39.60000000000002" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicFieldFactory" target="edu.pwr.checkers.model.Field">
+      <point x="-25.0" y="-15.0" />
+      <point x="570.1035087719299" y="275.0" />
+      <point x="554.6254385964912" y="275.0" />
+      <point x="554.6254385964912" y="100.0" />
+      <point x="618.9277777777775" y="100.0" />
+      <point x="-3.6666666666666856" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.Board" target="edu.pwr.checkers.model.Field">
+      <point x="-22.0" y="-15.0" />
+      <point x="267.7058479532163" y="275.0" />
+      <point x="282.72543859649124" y="275.0" />
+      <point x="282.72543859649124" y="60.0" />
+      <point x="589.5944444444442" y="60.0" />
+      <point x="-33.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicGame" target="edu.pwr.checkers.model.Field">
+      <point x="-63.46666666666658" y="-15.0" />
+      <point x="256.1201754385967" y="520.0" />
+      <point x="0.0" y="520.0" />
+      <point x="0.0" y="50.0" />
+      <point x="582.261111111111" y="50.0" />
+      <point x="-40.333333333333314" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.Player" target="edu.pwr.checkers.model.Piece">
+      <point x="0.0" y="-15.0" />
+      <point x="177.70584795321628" y="180.0" />
+      <point x="340.86111111111086" y="180.0" />
+      <point x="-30.80000000000001" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicGame" target="edu.pwr.checkers.model.ClassicBoard">
+      <point x="27.200000000000045" y="-15.0" />
+      <point x="346.7868421052633" y="480.0" />
+      <point x="837.5646198830407" y="480.0" />
+      <point x="0.0" y="15.0" />
     </edge>
     <edge source="edu.pwr.checkers.model.ClassicBoard" target="edu.pwr.checkers.model.Board">
       <point x="-64.0" y="-15.0" />
-      <point x="810.7359649122807" y="400.0" />
-      <point x="379.6333333333333" y="400.0" />
+      <point x="773.5646198830407" y="380.0" />
+      <point x="322.7058479532163" y="380.0" />
       <point x="33.0" y="15.0" />
     </edge>
+    <edge source="edu.pwr.checkers.model.Field" target="edu.pwr.checkers.model.Piece">
+      <point x="-18.333333333333314" y="15.0" />
+      <point x="604.261111111111" y="80.0" />
+      <point x="393.66111111111087" y="80.0" />
+      <point x="22.0" y="-15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicBoard" target="edu.pwr.checkers.model.CyclicGetter">
+      <point x="48.0" y="-15.0" />
+      <point x="885.5646198830407" y="380.0" />
+      <point x="925.6254385964912" y="380.0" />
+      <point x="-54.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicFieldFactory" target="edu.pwr.checkers.model.ClassicField">
+      <point x="-75.0" y="-15.0" />
+      <point x="520.1035087719299" y="275.0" />
+      <point x="472.1254385964912" y="275.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
     <edge source="edu.pwr.checkers.model.ClassicGame" target="edu.pwr.checkers.model.Game">
-      <point x="-18.133333333333326" y="-15.0" />
-      <point x="328.98713450292416" y="500.0" />
-      <point x="241.63333333333333" y="500.0" />
+      <point x="0.0" y="-15.0" />
+      <point x="319.58684210526326" y="520.0" />
+      <point x="316.62777777777757" y="520.0" />
       <point x="0.0" y="15.0" />
     </edge>
     <edge source="edu.pwr.checkers.model.ClassicField" target="edu.pwr.checkers.model.Field">
-      <point x="47.99999999999994" y="-15.0" />
-      <point x="531.6333333333332" y="210.0" />
-      <point x="528.8192982456139" y="210.0" />
-      <point x="528.8192982456139" y="70.0" />
-      <point x="667.057894736842" y="70.0" />
-      <point x="-25.666666666666657" y="15.0" />
+      <point x="48.0" y="-15.0" />
+      <point x="520.1254385964912" y="200.0" />
+      <point x="517.3979532163742" y="200.0" />
+      <point x="517.3979532163742" y="90.0" />
+      <point x="611.5944444444442" y="90.0" />
+      <point x="-11.0" y="15.0" />
+    </edge>
+    <edge source="edu.pwr.checkers.model.ClassicField" target="edu.pwr.checkers.model.Piece">
+      <point x="-48.0" y="-15.0" />
+      <point x="424.1254385964912" y="190.0" />
+      <point x="393.66111111111087" y="190.0" />
+      <point x="22.0" y="15.0" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.5361842105263158" x="608.0" y="300.0" />
-  <SelectedNodes>
-    <node>edu.pwr.checkers.model.ClassicPlayer</node>
-  </SelectedNodes>
+  <settings layout="Hierarchic Group" zoom="0.9" x="439.75000000000017" y="441.00000000000017" />
+  <SelectedNodes />
   <Categories />
   <SCOPE>All</SCOPE>
   <VISIBILITY>private</VISIBILITY>
