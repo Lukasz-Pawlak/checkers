@@ -1,5 +1,6 @@
 package edu.pwr.checkers.client;
 
+import edu.pwr.checkers.client.view.Canvas;
 import edu.pwr.checkers.client.view.ClientWindow;
 import edu.pwr.checkers.model.*;
 
@@ -16,6 +17,11 @@ public class Controller {
   private Board board;
   /** reference to the mediator. */
   private final Mediator mediator;
+
+  public void startGame() {
+    window.getCanvas().init();
+    window.getCanvas().redrawAll();
+  }
 
   /**
    * The only constructor.

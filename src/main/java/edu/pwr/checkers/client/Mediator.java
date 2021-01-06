@@ -5,6 +5,8 @@ import edu.pwr.checkers.model.Coordinates;
 import edu.pwr.checkers.model.Piece;
 import edu.pwr.checkers.model.Player;
 
+import java.io.IOException;
+
 /**
  * This class is responsible for communication between client and
  * controller. Also it provides information about player this client
@@ -20,6 +22,10 @@ public class Mediator {
     /** Client object used to communicate with server. */
     private final Client client;
 
+    public void startGame() {
+        controller.startGame();
+    }
+
     /**
      * Thew only constructor. Mediator is bound to one client
      * and one Controller, therefore one GUI.
@@ -27,7 +33,6 @@ public class Mediator {
      */
     public Mediator(Client client) {
         this.client = client;
-        this.player = client.getPlayer();
         controller = new Controller(this);
     }
 
@@ -59,7 +64,9 @@ public class Mediator {
      * @param board board to be set.
      */
     public void setBoard(Board board) {
-        controller.setBoard(board);
+        System.out.println("mediator: set board");
+        if (board != null)
+            controller.setBoard(board);
     }
 
 
@@ -99,8 +106,8 @@ public class Mediator {
      * Player setter.
      * @param player player to be set.
      */
-    // for testing // but actually it can stay ig
     public void setPlayer(Player player) {
+        System.out.println("mediator: set player");
         this.player = player;
     }
 }

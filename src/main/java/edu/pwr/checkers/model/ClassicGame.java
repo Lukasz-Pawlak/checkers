@@ -53,13 +53,7 @@ public class ClassicGame implements Game {
         board = new ClassicBoard(numberOfPlayers);
         activePlayers = new CyclicGetter<>(numberOfPlayers);
         ranking = new ArrayList<>(numberOfPlayers);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public void init() {
+        // FIXME: setup should not be in constructor, but for now it is faster than resolving this all dependency mess
         board.setup();
         List<Color> colors = board.getColors();
         for (int i = 0; i < numberOfPlayers; i++) {
@@ -67,6 +61,14 @@ public class ClassicGame implements Game {
             playerColors.add(colors.get(i));
             activePlayers.addObject(new ClassicPlayer(playerColors));
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public void init() {
+
         Random rd = new Random();
         int random = rd.nextInt(numberOfPlayers);
         activePlayers.setCurrent(random);

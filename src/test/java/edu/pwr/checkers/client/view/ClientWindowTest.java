@@ -20,7 +20,7 @@ public class ClientWindowTest {
     protected Mediator mediator;
 
     @Before
-    public void setup() {
+    public void setup() throws IOException, ClassNotFoundException {
         client = getMockedClient();
         game = getGame();
         game.init();
@@ -58,7 +58,7 @@ public class ClientWindowTest {
 
     // this isn't a proper test, I use it to see if everything displays correctly and rules
     @Test
-    public void testRules() {
+    public void testRules() throws IOException, ClassNotFoundException {
         mediator = new Mediator(client);
         mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
         Scanner scanner = new Scanner(System.in);

@@ -45,17 +45,21 @@ public class Canvas extends JPanel {
      * The only constructor.
      * @param controller controller object to be used.
      */
-    Canvas(Controller controller) {
+    public Canvas(Controller controller) {
         this.controller = controller;
+        boardLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+        stillPiecesLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+        movingPieceLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+        CLEAR = new BufferedImage(100, 100,  BufferedImage.TYPE_INT_ARGB);
+        movingPiece = null;
+        setBackground(Color.LIGHT_GRAY);
+    }
+
+    public void init() {
         this.board = controller.getBoard();
 
         if (board != null) System.out.println("Pobrano board prawidłowo");
 
-        boardLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-        stillPiecesLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-        movingPieceLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-        movingPiece = null;
-        setBackground(Color.LIGHT_GRAY);
         // handling window resize event
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -199,7 +203,7 @@ public class Canvas extends JPanel {
     /**
      * This method redraws all layer images.
      */
-    private void redrawAll() {
+    public void redrawAll() {
         Graphics g = boardLayer.getGraphics();
         super.paint(g);
 
@@ -283,7 +287,6 @@ public class Canvas extends JPanel {
      */
     void setBoard(Board board) {
         this.board = board;
-        redrawAll();
     }
 
     /**

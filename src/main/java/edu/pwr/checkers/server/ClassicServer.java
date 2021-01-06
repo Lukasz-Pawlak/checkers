@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
@@ -16,6 +17,7 @@ public class ClassicServer implements Server {
   private final ServerSocket serverSocket;
   private final Game game;
   public final int numOfPlayers;
+  private Map<SocketHandler, Player> map;
 
   public ClassicServer(int numOfPlayers) throws IOException, WrongNumberException {
     if (numOfPlayers != 2 && numOfPlayers != 3 && numOfPlayers != 4 && numOfPlayers != 6) {
@@ -23,7 +25,6 @@ public class ClassicServer implements Server {
     }
     this.numOfPlayers = numOfPlayers;
     this.game = new ClassicGame(numOfPlayers);
-    this.game.init();
     System.out.println("Trying to start server with port 4444...");
     this.serverSocket = new ServerSocket(4444);
     System.out.println("Started server with 4444...");
@@ -31,6 +32,7 @@ public class ClassicServer implements Server {
 
   @Override
   public void setUp() throws NullPointerException, RejectedExecutionException, IOException {
+    this.game.init();
     ExecutorService pool = Executors.newFixedThreadPool(numOfPlayers);
     System.out.println("There are " + numOfPlayers + " players.");
 
@@ -38,16 +40,16 @@ public class ClassicServer implements Server {
       System.out.println("Waiting for player " + i);
       Socket socket = serverSocket.accept();
       SocketHandler handler =  new SocketHandler(socket);
-      handler.sendPlayer();
-      handler.sendBoard();
+      //handler.sendPlayer(); /// yoo, here streams aren't set up yet dude
+      //handler.sendBoard();
       pool.execute(handler);
     }
   }
 
   private class SocketHandler implements Runnable {
     private final Socket socket;
-    private ObjectInputStream inputStream = null;
-    private ObjectOutputStream outputStream = null;
+    private ObjectInputStream inputStream;
+    private ObjectOutputStream outputStream;
 
     public SocketHandler(Socket socket) {
       this.socket = socket;
@@ -55,19 +57,21 @@ public class ClassicServer implements Server {
 
     @Override
     public void run() {
-      process(socket);
-    }
-
-    private void process(Socket socket) {
       try {
         System.out.println("Trying to create inout streams.");
-        inputStream = new ObjectInputStream(socket.getInputStream());
-        System.out.println("input stream correctly connected");
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         System.out.println("output stream correctly connected");
+        inputStream = new ObjectInputStream(socket.getInputStream());
+        System.out.println("input stream correctly connected");
         sendBoard();
       } catch (IOException e) {
     // nothing
+      }
+
+      try {
+        sendGreeting();
+      } catch (IOException e) {
+        e.printStackTrace();
       }
 
       while (true) {
@@ -76,6 +80,7 @@ public class ClassicServer implements Server {
           processMessage(message);
         } catch (IOException | ClassNotFoundException e) {
           System.out.println("Couldn't read the message.");
+          System.exit(1); // TODO: check if client got disconnected here and process it properly
         } catch (IllegalMoveException e) {
           try {
             sendIllegalMoveMessage();
@@ -92,30 +97,42 @@ public class ClassicServer implements Server {
       }
     }
 
+    /**
+     * used only once
+     * @throws IOException
+     */
+    private synchronized void sendGreeting() throws IOException {
+      synchronized (game) {
+        ServerMessage message = new ServerMessage("INIT", game.getBoard(), game.nextPlayer());
+        outputStream.writeObject(message);
+      }
+    }
+
     private synchronized void processMessage(ClientMessage message) throws IllegalMoveException, WrongPlayerException, IOException {
       String messageType = message.getMessage();
       Player player = message.getPlayer();
       Coordinates coordinates = message.getCoordinates();
       Piece piece = message.getPiece();
-
-      switch (messageType) {
-        case "MOVEREQUEST": {
-          System.out.println("Received move request.");
-          game.move(player, piece, coordinates);
-          sendAcceptedMoveMessage();
-          System.out.println("Sent move accepted request.");
-        }
-        case "CANCELMOVE": {
-          System.out.println("Received cancel move message.");
-          game.cancelMove(player);
-          sendCanceledMoveMessage();
-          System.out.println("Sent cancelled move message.");
-        }
-        case "ACCEPTMOVE": {
-          System.out.println("Received accept move message.");
-          game.acceptMove(player);
-          sendMoveAcceptedMessage();
-          System.out.println("Sent accepted move message.");
+      synchronized (game) {
+        switch (messageType) {
+          case "MOVEREQUEST": {
+            System.out.println("Received move request.");
+            game.move(player, piece, coordinates);
+            sendAcceptedMoveMessage();
+            System.out.println("Sent move accepted request.");
+          }
+          case "CANCELMOVE": {
+            System.out.println("Received cancel move message.");
+            game.cancelMove(player);
+            sendCanceledMoveMessage();
+            System.out.println("Sent cancelled move message.");
+          }
+          case "ACCEPTMOVE": {
+            System.out.println("Received accept move message.");
+            game.acceptMove(player);
+            sendMoveAcceptedMessage();
+            System.out.println("Sent accepted move message.");
+          }
         }
       }
     }
@@ -168,6 +185,7 @@ public class ClassicServer implements Server {
       int numOfPlayers = Integer.parseInt(args[0]);
       server = new ClassicServer(numOfPlayers);
       server.setUp();
+      System.out.println("Server running...");
     } catch(NumberFormatException e) {
       System.err.println("Give an integer!");
     } catch(WrongNumberException e) {
@@ -176,10 +194,9 @@ public class ClassicServer implements Server {
       System.err.println("Couldn't set up the server.");
     } catch(NullPointerException e) {
       System.err.println("Server is null.");
+      e.printStackTrace();
     } catch(RejectedExecutionException e) {
       System.err.println("Execution rejected.");
     }
-
-    System.out.println("Server running...");
   }
 }

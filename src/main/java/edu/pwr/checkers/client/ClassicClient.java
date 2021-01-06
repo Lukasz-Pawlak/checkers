@@ -1,6 +1,7 @@
 package edu.pwr.checkers.client;
 
 import edu.pwr.checkers.model.*;
+import edu.pwr.checkers.server.Server;
 import edu.pwr.checkers.server.ServerMessage;
 
 import java.io.ObjectInputStream;
@@ -17,14 +18,10 @@ public class ClassicClient implements Client {
 
   public ClassicClient(Socket socket) {
     this.clientSocket = socket;
-    try {
-      setUp();
-      System.out.println("Client is set up!");
-      this.player = getPlayer();
-      this.mediator = new Mediator(this);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+  }
+
+  public void setMediator(Mediator m) {
+    this.mediator = m;
   }
 
   private void setUp() throws IOException {
@@ -32,7 +29,10 @@ public class ClassicClient implements Client {
     outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
     //To receive and set the board.
     //board = sendGetBoard();
-    System.out.println("Got the board.");
+    ServerMessage greeting = getMessage();
+    mediator.setBoard(greeting.getBoard());
+    mediator.setPlayer(greeting.getPlayer());
+    System.out.println("\n\nMediator PLAYER has been SET\n value: " + greeting.getPlayer());
   }
 
   @Override
@@ -50,7 +50,8 @@ public class ClassicClient implements Client {
         return false;
       }
     } catch (Exception ex) {
-      System.out.println("Message couldn't be sent.");
+      System.err.println("Message couldn't be sent.");
+      ex.printStackTrace();
     }
     return false;
   }
@@ -81,6 +82,17 @@ public class ClassicClient implements Client {
     } catch (Exception ex) {
       System.out.println("Message couldn't be sent.");
     }
+  }
+
+  private ServerMessage getMessage() {
+    ServerMessage message = null;
+    try {
+      message = (ServerMessage) inputStream.readObject();
+    } catch (IOException | ClassNotFoundException e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
+    return message;
   }
 
   @Override
@@ -114,6 +126,10 @@ public class ClassicClient implements Client {
   public static void main (String[] args) throws IOException {
     System.out.println("Trying to connect with server...");
     ClassicClient client = new ClassicClient(new Socket("localhost", 4444));
+    Mediator mediator = new Mediator(client);
+    client.setMediator(mediator);
+    client.setUp();
+    mediator.startGame();
     System.out.println("Connected to server.");
   }
 

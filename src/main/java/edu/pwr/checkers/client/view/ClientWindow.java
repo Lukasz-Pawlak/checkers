@@ -14,7 +14,7 @@ import java.awt.*;
  */
 public class ClientWindow extends JFrame {
     /** Canvas object used to display Board. */
-    private final Canvas canvas;
+    private Canvas canvas;
     /** Message box used to display server info. */
     private final JTextArea messageBox;
     /** Side Panel containing basic control buttons & status box */
@@ -50,6 +50,10 @@ public class ClientWindow extends JFrame {
         sidePanel.enableButtons();
 
         setVisible(true);
+    }
+
+    public Canvas getCanvas() {
+        return canvas;
     }
 
     /**

@@ -37,7 +37,19 @@ public class ServerMessage implements Serializable {
     this.player = player;
   }
 
-  public String getMessage() {
+  /**
+   * initializing new client
+   * @param init
+   * @param board
+   * @param nextPlayer
+   */
+    public ServerMessage(String init, Board board, Player nextPlayer) {
+      this.message = init;
+      this.board = board;
+      this.player = nextPlayer;
+    }
+
+    public String getMessage() {
     return message;
   }
 
