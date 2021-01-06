@@ -20,9 +20,6 @@ public class ClassicClient implements Client {
     this.clientSocket = socket;
   }
 
-  public void setMediator(Mediator m) {
-    this.mediator = m;
-  }
 
   private void setUp() throws IOException {
     inputStream = new ObjectInputStream(clientSocket.getInputStream());
@@ -30,8 +27,10 @@ public class ClassicClient implements Client {
     //To receive and set the board.
     //board = sendGetBoard();
     ServerMessage greeting = getMessage();
+    mediator = new Mediator(this);
     mediator.setBoard(greeting.getBoard());
     mediator.setPlayer(greeting.getPlayer());
+    mediator.startGame();
     System.out.println("\n\nMediator PLAYER has been SET\n value: " + greeting.getPlayer());
   }
 
@@ -126,10 +125,7 @@ public class ClassicClient implements Client {
   public static void main (String[] args) throws IOException {
     System.out.println("Trying to connect with server...");
     ClassicClient client = new ClassicClient(new Socket("localhost", 4444));
-    Mediator mediator = new Mediator(client);
-    client.setMediator(mediator);
     client.setUp();
-    mediator.startGame();
     System.out.println("Connected to server.");
   }
 
