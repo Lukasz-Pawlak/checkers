@@ -1,5 +1,6 @@
 package edu.pwr.checkers.server;
 
+import edu.pwr.checkers.Logger;
 import edu.pwr.checkers.client.ClientMessage;
 import edu.pwr.checkers.model.*;
 
@@ -25,19 +26,19 @@ public class ClassicServer implements Server {
     }
     this.numOfPlayers = numOfPlayers;
     this.game = new ClassicGame(numOfPlayers);
-    System.out.println("Trying to start server with port 4444...");
+    Logger.info("Trying to start server with port 4444...");
     this.serverSocket = new ServerSocket(4444);
-    System.out.println("Started server with 4444...");
+    Logger.info("Started server with 4444...");
   }
 
   @Override
   public void setUp() throws NullPointerException, RejectedExecutionException, IOException {
     this.game.init();
     ExecutorService pool = Executors.newFixedThreadPool(numOfPlayers);
-    System.out.println("There are " + numOfPlayers + " players.");
+    Logger.debug("There are " + numOfPlayers + " players.");
 
     for (int i = 1; i <= numOfPlayers; i++) {
-      System.out.println("Waiting for player " + i);
+      Logger.info("Waiting for player " + i);
       Socket socket = serverSocket.accept();
       SocketHandler handler =  new SocketHandler(socket);
       //handler.sendPlayer(); /// yoo, here streams aren't set up yet dude
@@ -58,40 +59,35 @@ public class ClassicServer implements Server {
     @Override
     public void run() {
       try {
-        System.out.println("Trying to create inout streams.");
+        Logger.debug("Trying to create inout streams.");
         outputStream = new ObjectOutputStream(socket.getOutputStream());
-        System.out.println("output stream correctly connected");
+        Logger.debug("output stream correctly connected");
         inputStream = new ObjectInputStream(socket.getInputStream());
-        System.out.println("input stream correctly connected");
-        sendBoard();
+        Logger.debug("input stream correctly connected");
+        sendGreeting();
       } catch (IOException e) {
     // nothing
       }
 
-      try {
-        sendGreeting();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
 
       while (true) {
         try {
           ClientMessage message = (ClientMessage) inputStream.readObject();
           processMessage(message);
         } catch (IOException | ClassNotFoundException e) {
-          System.out.println("Couldn't read the message.");
+          Logger.err("Couldn't read the message.");
           System.exit(1); // TODO: check if client got disconnected here and process it properly
         } catch (IllegalMoveException e) {
           try {
             sendIllegalMoveMessage();
           } catch (IOException f) {
-            System.out.println("Couldn't send the message.");
+            Logger.err("Couldn't send the message.");
           }
         } catch (WrongPlayerException e) {
           try {
             sendWrongPlayerMessage();
           } catch (IOException f) {
-            System.out.println("Couldn't send the message.");
+            Logger.err("Couldn't send the message.");
           }
         }
       }
@@ -103,7 +99,9 @@ public class ClassicServer implements Server {
      */
     private synchronized void sendGreeting() throws IOException {
       synchronized (game) {
-        ServerMessage message = new ServerMessage("INIT", game.getBoard(), game.nextPlayer());
+        Player p = game.nextPlayer();
+        Logger.debug(p.toString() + " <- Player");
+        ServerMessage message = new ServerMessage("INIT", game.getBoard(), p);
         outputStream.writeObject(message);
       }
     }
@@ -116,22 +114,22 @@ public class ClassicServer implements Server {
       synchronized (game) {
         switch (messageType) {
           case "MOVEREQUEST": {
-            System.out.println("Received move request.");
+            Logger.info("Received move request.");
             game.move(player, piece, coordinates);
             sendAcceptedMoveMessage();
-            System.out.println("Sent move accepted request.");
+            Logger.info("Sent move accepted request.");
           }
           case "CANCELMOVE": {
-            System.out.println("Received cancel move message.");
+            Logger.info("Received cancel move message.");
             game.cancelMove(player);
             sendCanceledMoveMessage();
-            System.out.println("Sent cancelled move message.");
+            Logger.info("Sent cancelled move message.");
           }
           case "ACCEPTMOVE": {
-            System.out.println("Received accept move message.");
+            Logger.info("Received accept move message.");
             game.acceptMove(player);
             sendMoveAcceptedMessage();
-            System.out.println("Sent accepted move message.");
+            Logger.info("Sent accepted move message.");
           }
         }
       }
@@ -177,7 +175,7 @@ public class ClassicServer implements Server {
     Server server;
 
     if (args.length != 1) {
-      System.err.println("Give only the number of players!");
+      Logger.err("Give only the number of players!");
       return;
     }
 
@@ -185,18 +183,18 @@ public class ClassicServer implements Server {
       int numOfPlayers = Integer.parseInt(args[0]);
       server = new ClassicServer(numOfPlayers);
       server.setUp();
-      System.out.println("Server running...");
+      Logger.info("Server running...");
     } catch(NumberFormatException e) {
-      System.err.println("Give an integer!");
+      Logger.err("Give an integer!");
     } catch(WrongNumberException e) {
-      System.err.println("The number can be: 2,3,4 or 6");
+      Logger.err("The number can be: 2,3,4 or 6");
     } catch(IOException e) {
-      System.err.println("Couldn't set up the server.");
+      Logger.err("Couldn't set up the server.");
     } catch(NullPointerException e) {
-      System.err.println("Server is null.");
+      Logger.err("Server is null.");
       e.printStackTrace();
     } catch(RejectedExecutionException e) {
-      System.err.println("Execution rejected.");
+      Logger.err("Execution rejected.");
     }
   }
 }

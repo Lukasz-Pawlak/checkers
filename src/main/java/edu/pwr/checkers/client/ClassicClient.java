@@ -1,5 +1,6 @@
 package edu.pwr.checkers.client;
 
+import edu.pwr.checkers.Logger;
 import edu.pwr.checkers.model.*;
 import edu.pwr.checkers.server.Server;
 import edu.pwr.checkers.server.ServerMessage;
@@ -11,7 +12,6 @@ import java.net.Socket;
 
 public class ClassicClient implements Client {
   private Mediator mediator;
-  private Player player;
   private final Socket clientSocket;
   private ObjectInputStream inputStream;
   private ObjectOutputStream outputStream;
@@ -27,11 +27,13 @@ public class ClassicClient implements Client {
     //To receive and set the board.
     //board = sendGetBoard();
     ServerMessage greeting = getMessage();
+    Logger.debug("client: server message: " + greeting.getMessage());
     mediator = new Mediator(this);
     mediator.setBoard(greeting.getBoard());
     mediator.setPlayer(greeting.getPlayer());
+    Logger.debug("client: Player got: " + greeting.getPlayer());
+    Logger.debug("client: Board got:" + greeting.getBoard());
     mediator.startGame();
-    System.out.println("\n\nMediator PLAYER has been SET\n value: " + greeting.getPlayer());
   }
 
   @Override
@@ -43,13 +45,9 @@ public class ClassicClient implements Client {
       serverMessage = (ServerMessage) inputStream.readObject();
       String messageType = serverMessage.getMessage();
 
-      if (messageType.equals("VALIDMOVE")) {
-        return true;
-      } else {
-        return false;
-      }
+      return messageType.equals("VALIDMOVE");
     } catch (Exception ex) {
-      System.err.println("Message couldn't be sent.");
+      Logger.err("Message couldn't be sent.");
       ex.printStackTrace();
     }
     return false;
@@ -64,7 +62,7 @@ public class ClassicClient implements Client {
       serverMessage = (ServerMessage) inputStream.readObject();
       mediator.setBoard(serverMessage.getBoard());
     } catch (Exception ex) {
-      System.out.println("Message couldn't be sent.");
+      Logger.err("Message couldn't be sent.");
     }
   }
 
@@ -76,10 +74,10 @@ public class ClassicClient implements Client {
       ServerMessage serverMessage;
       serverMessage = (ServerMessage) inputStream.readObject();
       Player current = serverMessage.getPlayer();
-      mediator.setPlayer(current);
+      //mediator.setPlayer(current);
       mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
     } catch (Exception ex) {
-      System.out.println("Message couldn't be sent.");
+      Logger.err("Message couldn't be sent.");
     }
   }
 
@@ -103,7 +101,7 @@ public class ClassicClient implements Client {
       serverMessage = (ServerMessage) inputStream.readObject();
       return serverMessage.getPlayer();
     } catch (Exception ex) {
-      System.out.println("Message couldn't be sent.");
+      Logger.err("Message couldn't be sent.");
     }
     return null;
   }
@@ -117,30 +115,28 @@ public class ClassicClient implements Client {
       serverMessage = (ServerMessage) inputStream.readObject();
       return serverMessage.getBoard();
     } catch (Exception ex) {
-      System.out.println("Message couldn't be sent.");
+      Logger.err("Message couldn't be sent.");
     }
     return null;
   }
 
   public static void main (String[] args) throws IOException {
-    System.out.println("Trying to connect with server...");
-    ClassicClient client = new ClassicClient(new Socket("localhost", 4444));
-    client.setUp();
-    System.out.println("Connected to server.");
+    Logger.info("Trying to connect with server...");
+    new ClassicClient(new Socket("localhost", 4444)).run();
   }
 
   public void run() {
-    System.out.println("Client is running!");
+    Logger.info("Client is running!");
     try {
       setUp();
-      System.out.println("Client is set up!");
+      Logger.info("Client is set up!");
     } catch (Exception ex) {
       try {
         clientSocket.close();
       } catch (IOException e) {
         e.printStackTrace();
       }
-      System.err.println("Client stopped working due to an error.");
+      Logger.err("Client stopped working due to an error.");
     } finally {
       try {
         clientSocket.close();

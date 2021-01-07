@@ -1,5 +1,6 @@
 package edu.pwr.checkers.client;
 
+import edu.pwr.checkers.Logger;
 import edu.pwr.checkers.model.Board;
 import edu.pwr.checkers.model.Coordinates;
 import edu.pwr.checkers.model.Piece;
@@ -64,7 +65,7 @@ public class Mediator {
      * @param board board to be set.
      */
     public void setBoard(Board board) {
-        System.out.println("mediator: set board");
+        Logger.debug("mediator: set board");
         if (board != null)
             controller.setBoard(board);
     }
@@ -107,7 +108,7 @@ public class Mediator {
      * @param player player to be set.
      */
     public void setPlayer(Player player) {
-        System.out.println("mediator: set player");
+        Logger.debug("mediator: set player: " + player);
         this.player = player;
     }
 }

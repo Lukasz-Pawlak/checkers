@@ -20,7 +20,6 @@ public class Controller {
 
   public void startGame() {
     window.getCanvas().init();
-    window.getCanvas().redrawAll();
   }
 
   /**
@@ -29,7 +28,6 @@ public class Controller {
    */
   public Controller(Mediator mediator) {
     this.mediator = mediator;
-    this.board = mediator.getBoard();
     window = new ClientWindow(this);
   }
 
@@ -38,8 +36,7 @@ public class Controller {
    * @return this.board
    */
   public Board getBoard(){
-    // /*like this*/ return mediator.getBoard();
-    return board;
+    return mediator.getBoard();
   }
 
   /**

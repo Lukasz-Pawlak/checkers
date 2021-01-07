@@ -1,5 +1,6 @@
 package edu.pwr.checkers.client.view;
 
+import edu.pwr.checkers.Logger;
 import edu.pwr.checkers.client.Controller;
 import edu.pwr.checkers.model.Board;
 import edu.pwr.checkers.model.Coordinates;
@@ -56,9 +57,7 @@ public class Canvas extends JPanel {
     }
 
     public void init() {
-        this.board = controller.getBoard();
-
-        if (board != null) System.out.println("Pobrano board prawidłowo");
+        if (board != null) Logger.debug("Pobrano board prawidłowo");
 
         // handling window resize event
         addComponentListener(new ComponentAdapter() {
@@ -103,6 +102,7 @@ public class Canvas extends JPanel {
                 }
             }
         });
+        redrawAll();
     }
 
     /**

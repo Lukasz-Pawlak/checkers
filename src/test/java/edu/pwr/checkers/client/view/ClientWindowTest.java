@@ -1,5 +1,6 @@
 package edu.pwr.checkers.client.view;
 
+import edu.pwr.checkers.Logger;
 import edu.pwr.checkers.client.Client;
 import edu.pwr.checkers.client.Mediator;
 import edu.pwr.checkers.model.*;
@@ -32,7 +33,6 @@ public class ClientWindowTest {
         doAnswer((Answer<Boolean>) invocationOnMock -> {
             //return Boolean.TRUE;
             Object[] args = invocationOnMock.getArguments();
-            //System.out.println("hello from mocked move");
             try {
                 game.move((Player) args[0], (Piece) args[1], (Coordinates) args[2]);
                 return Boolean.TRUE;
@@ -86,7 +86,7 @@ public class ClientWindowTest {
             ObjectInputStream ois = new ObjectInputStream(bais);
             return (Board) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("error in serialization: " + e.getClass());
+            Logger.err("error in serialization: " + e.getClass());
         }
         return null;
     }
