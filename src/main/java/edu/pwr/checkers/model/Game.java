@@ -13,7 +13,13 @@ import java.util.List;
  */
 public interface Game extends Serializable {
     /**
-     * This method initializes tge game, should be
+    * Method used to set up the board and
+    * also to add the players.
+     * */
+    void setup();
+
+    /**
+     * This method initializes the game, should be
      * called before first use of Game object
      */
     void init();

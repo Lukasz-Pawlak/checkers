@@ -26,6 +26,7 @@ public class ClassicServer implements Server {
     }
     this.numOfPlayers = numOfPlayers;
     this.game = new ClassicGame(numOfPlayers);
+    game.setup();
     Logger.info("Trying to start server with port 4444...");
     this.serverSocket = new ServerSocket(4444);
     Logger.info("Started server with 4444...");

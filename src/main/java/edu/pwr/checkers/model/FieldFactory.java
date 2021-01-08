@@ -3,7 +3,8 @@ package edu.pwr.checkers.model;
 /**
  * This interface provides method to crate new Field objects.
  * @version 1.0
- * @author ?? //FIXME: ej bo nie pamiętam, wpisz tu coś i poniżej w autorach też
+ * @author Łukasz Pawlak
+ * @author Wojciech Sęk
  */
 public interface FieldFactory {
     /**
@@ -20,7 +21,8 @@ public interface FieldFactory {
  * immediately create piece on newly created field on demand.
  * Suitable for classic game of Chinese Checkers.
  * @version 1.0
- * @author ??
+ * @author Łukasz Pawlak
+ * @author Wojciech Sęk
  */
 class ClassicFieldFactory implements FieldFactory {
     /** For which piece color generated fields should be home for. */

@@ -24,8 +24,6 @@ public class ClassicClient implements Client {
   private void setUp() throws IOException {
     inputStream = new ObjectInputStream(clientSocket.getInputStream());
     outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-    //To receive and set the board.
-    //board = sendGetBoard();
     ServerMessage greeting = getMessage();
     Logger.debug("client: server message: " + greeting.getMessage());
     mediator = new Mediator(this);

@@ -53,7 +53,10 @@ public class ClassicGame implements Game {
         board = new ClassicBoard(numberOfPlayers);
         activePlayers = new CyclicGetter<>(numberOfPlayers);
         ranking = new ArrayList<>(numberOfPlayers);
-        // FIXME: setup should not be in constructor, but for now it is faster than resolving this all dependency mess
+    }
+
+    @Override
+    public void setup() {
         board.setup();
         List<Color> colors = board.getColors();
         for (int i = 0; i < numberOfPlayers; i++) {
@@ -178,6 +181,11 @@ public class ClassicGame implements Game {
     public void acceptMove(Player player) {
         lastMove = MoveType.NEWTURN;
         if (checkIfWon()) {
+            if (ranking.size() == numberOfPlayers - 1) {
+                ranking.add(activePlayer);
+                activePlayers = CyclicGetter.truncateCurrent(activePlayers);
+                System.out.println("End of game!");
+            }
             // TODO: check if the whole game is done
         }
         activePlayer = activePlayers.getNext();
