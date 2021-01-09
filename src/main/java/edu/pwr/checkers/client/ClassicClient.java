@@ -10,17 +10,39 @@ import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import static java.lang.Thread.sleep;
+
+
+/**
+ * Implementation of {@link Client} interface.
+ * It is a class provided to work with {@see ClassicServer}
+ * especially connect with it properly.
+
+ * @version 1.0
+ * @author Łukasz Pawlak
+ * @author Wojciech Sęk
+ */
 public class ClassicClient implements Client {
   private Mediator mediator;
   private final Socket clientSocket;
   private ObjectInputStream inputStream;
   private ObjectOutputStream outputStream;
+  private int numMsgReceived = 0;
+  private volatile ServerMessage sendRequestMessage;
 
+  /**
+   * Constructor that sets the client's socket.
+   * @param socket The socket to be set.
+   */
   public ClassicClient(Socket socket) {
     this.clientSocket = socket;
   }
 
-
+  /**
+   * The basic setUp of the client:
+   * - it sets the basic
+   * @throws IOException appears when there is a problem with the socket.
+   */
   private void setUp() throws IOException {
     inputStream = new ObjectInputStream(clientSocket.getInputStream());
     outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -39,11 +61,15 @@ public class ClassicClient implements Client {
     try {
       ClientMessage clientMessage = new ClientMessage("MOVEREQUEST", player, piece, coordinates);
       outputStream.writeObject(clientMessage);
-      ServerMessage serverMessage;
-      serverMessage = (ServerMessage) inputStream.readObject();
-      String messageType = serverMessage.getMessage();
-
-      return messageType.equals("VALIDMOVE");
+      synchronized ((Integer)numMsgReceived) {
+        Logger.debug("Tu MoveRequest, czekam na wiadomość!");
+        int begin = numMsgReceived;
+        while (numMsgReceived == begin) {
+          sleep(1);
+        }
+        Logger.debug("Tu MoveRequest, otrzymałem wiadomość!");
+        return sendRequestMessage.getMessage().equals("VALIDMOVE");
+      }
     } catch (Exception ex) {
       Logger.err("Message couldn't be sent.");
       ex.printStackTrace();
@@ -56,9 +82,15 @@ public class ClassicClient implements Client {
     try {
       ClientMessage clientMessage = new ClientMessage("CANCELMOVE", player);
       outputStream.writeObject(clientMessage);
-      ServerMessage serverMessage;
-      serverMessage = (ServerMessage) inputStream.readObject();
-      mediator.setBoard(serverMessage.getBoard());
+      synchronized ((Integer)numMsgReceived) {
+        Logger.debug("Tu CancelRequest, czekam na wiadomość!");
+        int begin = numMsgReceived;
+        while (numMsgReceived == begin) {
+          sleep(1);
+        }
+        Logger.debug("Tu CancelRequest, otrzymałem wiadomość!");
+        mediator.setBoard(sendRequestMessage.getBoard());
+      }
     } catch (Exception ex) {
       Logger.err("Message couldn't be sent.");
     }
@@ -69,9 +101,15 @@ public class ClassicClient implements Client {
     try {
       ClientMessage clientMessage = new ClientMessage("ACCEPTMOVE", player);
       outputStream.writeObject(clientMessage);
-      ServerMessage serverMessage;
-      serverMessage = (ServerMessage) inputStream.readObject();
-      Player current = serverMessage.getPlayer();
+      synchronized ((Integer)numMsgReceived) {
+        Logger.debug("Tu CancelRequest, czekam na wiadomość!");
+        int begin = numMsgReceived;
+        while (numMsgReceived == begin) {
+          sleep(1);
+        }
+        Logger.debug("Tu CancelRequest, otrzymałem wiadomość");
+      }
+      Player current = sendRequestMessage.getPlayer();
       //mediator.setPlayer(current);
       mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
     } catch (Exception ex) {
@@ -128,6 +166,20 @@ public class ClassicClient implements Client {
     try {
       setUp();
       Logger.info("Client is set up!");
+      ServerMessage serverMessage = null;
+      String message;
+      serverMessage = (ServerMessage) inputStream.readObject();
+      message = serverMessage.getMessage();
+      while (message.equals("ENDOFGAME")) {
+        if (message.equals("NEWACTIVEPLAYER")) {
+          // TODO: send this message when the player change, maybe add some other types of message
+        }  else {
+         sendRequestMessage = serverMessage;
+         numMsgReceived++;
+        }
+        serverMessage = (ServerMessage) inputStream.readObject();
+        message = serverMessage.getMessage();
+      }
     } catch (Exception ex) {
       try {
         clientSocket.close();

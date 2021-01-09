@@ -9,11 +9,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 
+/**
+ *
+ */
 public class ClassicServer implements Server {
   private final ServerSocket serverSocket;
   private final Game game;
@@ -40,11 +44,17 @@ public class ClassicServer implements Server {
 
     for (int i = 1; i <= numOfPlayers; i++) {
       Logger.info("Waiting for player " + i);
-      Socket socket = serverSocket.accept();
-      SocketHandler handler =  new SocketHandler(socket);
-      //handler.sendPlayer(); /// yoo, here streams aren't set up yet dude
-      //handler.sendBoard();
-      pool.execute(handler);
+      synchronized (serverSocket) {
+        Logger.debug("Przyjmuję pierwsze gniazdo klienta " + i);
+        Socket socket = serverSocket.accept();
+        Logger.debug("Przyjąłem pierwsze gniazdo klienta " + i);
+        SocketHandler handler =  new SocketHandler(socket);
+        // the 2. socket to listen to status
+        Logger.debug("Przyjmuję drugie gniazdo klienta " + i);
+        //handler.sendPlayer(); /// yoo, here streams aren't set up yet dude
+        //handler.sendBoard();
+        pool.execute(handler);
+      }
     }
   }
 
@@ -73,8 +83,11 @@ public class ClassicServer implements Server {
 
       while (true) {
         try {
+          Logger.debug("Trying read the message from client.");
           ClientMessage message = (ClientMessage) inputStream.readObject();
+          Logger.debug("Message is about to be processed.");
           processMessage(message);
+          Logger.debug("Message processed properly.");
         } catch (IOException | ClassNotFoundException e) {
           Logger.err("Couldn't read the message.");
           System.exit(1); // TODO: check if client got disconnected here and process it properly

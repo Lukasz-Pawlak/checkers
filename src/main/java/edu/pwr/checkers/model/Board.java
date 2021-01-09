@@ -9,6 +9,7 @@ import java.util.List;
  * this interface.
  * Implementation should provide constructor which takes a parameter of
  * number of players.
+
  * @version 1.0
  * @author Łukasz Pawlak
  * @author Wojciech Sęk
