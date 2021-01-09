@@ -179,7 +179,10 @@ public class ClassicClient implements Client {
       serverMessage = (ServerMessage) inputStream.readObject();
       message = serverMessage.getMessage();
       while (message.equals("ENDOFGAME")) {
-        if (message.equals("NEWACTIVEPLAYER")) {
+        if (message.equals("SETPLAYER")) {
+          Player player = getMessage().getPlayer();
+          Color color = player.getColors().get(0);
+          mediator.setStatus("NOW PLAYING " + color.toString());
           // TODO: send this message when the player change, maybe add some other types of message
         }  else {
           synchronized (numMsgReceived) {

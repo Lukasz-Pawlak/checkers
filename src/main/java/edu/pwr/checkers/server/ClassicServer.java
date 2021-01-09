@@ -23,12 +23,14 @@ public class ClassicServer implements Server {
   private final Game game;
   public final int numOfPlayers;
   private Map<SocketHandler, Player> map;
+  private ArrayList<SocketHandler> handlers;
 
   public ClassicServer(int numOfPlayers) throws IOException, WrongNumberException {
     if (numOfPlayers != 2 && numOfPlayers != 3 && numOfPlayers != 4 && numOfPlayers != 6) {
       throw new WrongNumberException();
     }
     this.numOfPlayers = numOfPlayers;
+    this.handlers = new ArrayList<SocketHandler>(numOfPlayers);
     this.game = new ClassicGame(numOfPlayers);
     game.setup();
     Logger.info("Trying to start server with port 4444...");
@@ -50,13 +52,30 @@ public class ClassicServer implements Server {
         Logger.debug("Przyjąłem pierwsze gniazdo klienta " + i);
         SocketHandler handler =  new SocketHandler(socket);
         // the 2. socket to listen to status
-        Logger.debug("Przyjmuję drugie gniazdo klienta " + i);
         //handler.sendPlayer(); /// yoo, here streams aren't set up yet dude
         //handler.sendBoard();
+        handlers.add(handler);
         pool.execute(handler);
       }
     }
   }
+
+  private void sendToAllPlayers(ServerMessage message) {
+    for (SocketHandler handler: handlers) {
+      try {
+        handler.sendMessage(message);
+      } catch (IOException e) {
+        Logger.err("nie można wysłać ogólnej wiadmości do jednego z graczy");
+      }
+    }
+  }
+
+  private void setActivePlayerAll() {
+    Player activePlayer = game.getActivePlayer();
+    ServerMessage message = new ServerMessage("SETACTIVE", activePlayer);
+    sendToAllPlayers(message);
+  }
+
 
   private class SocketHandler implements Runnable {
     private final Socket socket;
@@ -120,6 +139,10 @@ public class ClassicServer implements Server {
       }
     }
 
+    public void sendMessage(ServerMessage message) throws IOException {
+      outputStream.writeObject(message);
+    }
+
     private synchronized void processMessage(ClientMessage message) throws IllegalMoveException, WrongPlayerException, IOException {
       String messageType = message.getMessage();
       Player player = message.getPlayer();
@@ -143,6 +166,7 @@ public class ClassicServer implements Server {
             Logger.info("Received accept move message.");
             game.acceptMove(player);
             sendMoveAcceptedMessage();
+            setActivePlayerAll();
             Logger.info("Sent accepted move message.");
           }
         }
@@ -166,16 +190,6 @@ public class ClassicServer implements Server {
 
     private void sendCanceledMoveMessage() throws IOException {
       ServerMessage message = new ServerMessage("CANCELLEDMOVE", game.getBoard());
-      outputStream.writeObject(message);
-    }
-
-    private void sendBoard() throws IOException {
-      ServerMessage message = new ServerMessage("SETBOARD", game.getBoard());
-      outputStream.writeObject(message);
-    }
-
-    private void sendPlayer() throws IOException {
-      ServerMessage message = new ServerMessage("SETPLAYER", game.nextPlayer());
       outputStream.writeObject(message);
     }
 
