@@ -61,16 +61,23 @@ public class ClassicClient implements Client {
     try {
       ClientMessage clientMessage = new ClientMessage("MOVEREQUEST", player, piece, coordinates);
       outputStream.writeObject(clientMessage);
-      synchronized ((Integer)numMsgReceived) {
-        Logger.debug("Tu MoveRequest, czekam na wiadomość!");
-        int begin = numMsgReceived;
-        while (numMsgReceived == begin) {
-          sleep(1);
+      Logger.debug("Tu MoveRequest, czekam na wiadomość!");
+      int begin;
+      synchronized (numMsgReceived) {
+        begin = numMsgReceived;
+      }
+      do {
+        sleep(1);
+        synchronized (numMsgReceived) {
+          if (numMsgReceived > begin) {
+            break;
+          }
         }
+      } while (true);
+
         Logger.debug("Tu MoveRequest, otrzymałem wiadomość!");
         return requestMessageAnswer.getMessage().equals("VALIDMOVE");
-      }
-    } catch (Exception ex) {
+      } catch (Exception ex) {
       Logger.err("Message couldn't be sent.");
       ex.printStackTrace();
     }
@@ -82,24 +89,22 @@ public class ClassicClient implements Client {
     try {
       ClientMessage clientMessage = new ClientMessage("CANCELMOVE", player);
       outputStream.writeObject(clientMessage);
-      synchronized ((Integer)numMsgReceived) {
-        Logger.debug("Tu CancelRequest, czekam na wiadomość!");
-        int begin;
+      Logger.debug("Tu CancelRequest, czekam na wiadomość!");
+      int begin;
+      synchronized (numMsgReceived) {
+        begin = numMsgReceived;
+      }
+      do {
+        sleep(1);
         synchronized (numMsgReceived) {
-          begin = numMsgReceived;
-        }
-        do {
-          sleep(1);
-          synchronized (numMsgReceived) {
-            if (numMsgReceived > begin) {
-              break;
-            }
+          if (numMsgReceived > begin) {
+            break;
           }
-        } while (true);
+        }
+      } while (true);
         Logger.debug("Tu CancelRequest, otrzymałem wiadomość!");
         mediator.setBoard(requestMessageAnswer.getBoard());
-      }
-    } catch (Exception ex) {
+      } catch (Exception ex) {
       Logger.err("Message couldn't be sent.");
     }
   }
@@ -109,14 +114,20 @@ public class ClassicClient implements Client {
     try {
       ClientMessage clientMessage = new ClientMessage("ACCEPTMOVE", player);
       outputStream.writeObject(clientMessage);
-      synchronized ((Integer)numMsgReceived) {
-        Logger.debug("Tu CancelRequest, czekam na wiadomość!");
-        int begin = numMsgReceived;
-        while (numMsgReceived == begin) {
-          sleep(1);
-        }
-        Logger.debug("Tu CancelRequest, otrzymałem wiadomość");
+      Logger.debug("Tu CancelRequest, czekam na wiadomość!");
+      int begin;
+      synchronized (numMsgReceived) {
+        begin = numMsgReceived;
       }
+      do {
+        sleep(1);
+        synchronized (numMsgReceived) {
+          if (numMsgReceived > begin) {
+            break;
+          }
+        }
+      } while (true);
+      Logger.debug("Tu CancelRequest, otrzymałem wiadomość");
       Player current = requestMessageAnswer.getPlayer();
       //mediator.setPlayer(current);
       mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
@@ -179,7 +190,8 @@ public class ClassicClient implements Client {
       serverMessage = (ServerMessage) inputStream.readObject();
       message = serverMessage.getMessage();
       while (message.equals("ENDOFGAME")) {
-        if (message.equals("SETPLAYER")) {
+        if (message.equals("SETACTIVE")) {
+          Logger.debug("Dostałem wiadmość SETACTIVE");
           Player player = getMessage().getPlayer();
           Color color = player.getColors().get(0);
           mediator.setStatus("NOW PLAYING " + color.toString());

@@ -74,6 +74,7 @@ public class ClassicServer implements Server {
     Player activePlayer = game.getActivePlayer();
     ServerMessage message = new ServerMessage("SETACTIVE", activePlayer);
     sendToAllPlayers(message);
+    Logger.info("Server sent a message about active player");
   }
 
 
@@ -95,6 +96,9 @@ public class ClassicServer implements Server {
         inputStream = new ObjectInputStream(socket.getInputStream());
         Logger.debug("input stream correctly connected");
         sendGreeting();
+        Logger.debug("Próbuję wysłać SETPLAYER do jednego klienta");
+        sendMessage(new ServerMessage("SETACTIVE", game.getActivePlayer()));
+        Logger.debug("Wysłałem setplayer do jednego klienta");
       } catch (IOException e) {
     // nothing
       }
@@ -112,12 +116,14 @@ public class ClassicServer implements Server {
           System.exit(1); // TODO: check if client got disconnected here and process it properly
         } catch (IllegalMoveException e) {
           try {
+            Logger.info("IllegalMoveException");
             sendIllegalMoveMessage();
           } catch (IOException f) {
             Logger.err("Couldn't send the message.");
           }
         } catch (WrongPlayerException e) {
           try {
+            Logger.info("IllegalMoveException");
             sendWrongPlayerMessage();
           } catch (IOException f) {
             Logger.err("Couldn't send the message.");
