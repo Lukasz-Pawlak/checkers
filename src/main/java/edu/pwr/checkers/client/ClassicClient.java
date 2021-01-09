@@ -27,8 +27,8 @@ public class ClassicClient implements Client {
   private final Socket clientSocket;
   private ObjectInputStream inputStream;
   private ObjectOutputStream outputStream;
-  private int numMsgReceived = 0;
-  private volatile ServerMessage sendRequestMessage;
+  private Integer numMsgReceived = 0;
+  private volatile ServerMessage requestMessageAnswer;
 
   /**
    * Constructor that sets the client's socket.
@@ -68,7 +68,7 @@ public class ClassicClient implements Client {
           sleep(1);
         }
         Logger.debug("Tu MoveRequest, otrzymałem wiadomość!");
-        return sendRequestMessage.getMessage().equals("VALIDMOVE");
+        return requestMessageAnswer.getMessage().equals("VALIDMOVE");
       }
     } catch (Exception ex) {
       Logger.err("Message couldn't be sent.");
@@ -84,12 +84,20 @@ public class ClassicClient implements Client {
       outputStream.writeObject(clientMessage);
       synchronized ((Integer)numMsgReceived) {
         Logger.debug("Tu CancelRequest, czekam na wiadomość!");
-        int begin = numMsgReceived;
-        while (numMsgReceived == begin) {
-          sleep(1);
+        int begin;
+        synchronized (numMsgReceived) {
+          begin = numMsgReceived;
         }
+        do {
+          sleep(1);
+          synchronized (numMsgReceived) {
+            if (numMsgReceived > begin) {
+              break;
+            }
+          }
+        } while (true);
         Logger.debug("Tu CancelRequest, otrzymałem wiadomość!");
-        mediator.setBoard(sendRequestMessage.getBoard());
+        mediator.setBoard(requestMessageAnswer.getBoard());
       }
     } catch (Exception ex) {
       Logger.err("Message couldn't be sent.");
@@ -109,7 +117,7 @@ public class ClassicClient implements Client {
         }
         Logger.debug("Tu CancelRequest, otrzymałem wiadomość");
       }
-      Player current = sendRequestMessage.getPlayer();
+      Player current = requestMessageAnswer.getPlayer();
       //mediator.setPlayer(current);
       mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
     } catch (Exception ex) {
@@ -174,8 +182,12 @@ public class ClassicClient implements Client {
         if (message.equals("NEWACTIVEPLAYER")) {
           // TODO: send this message when the player change, maybe add some other types of message
         }  else {
-         sendRequestMessage = serverMessage;
+          synchronized (numMsgReceived) {
+
+         requestMessageAnswer = serverMessage;
          numMsgReceived++;
+
+          }
         }
         serverMessage = (ServerMessage) inputStream.readObject();
         message = serverMessage.getMessage();
