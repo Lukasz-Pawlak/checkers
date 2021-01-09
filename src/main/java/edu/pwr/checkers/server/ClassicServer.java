@@ -47,7 +47,6 @@ public class ClassicServer implements Server {
     for (int i = 1; i <= numOfPlayers; i++) {
       Logger.info("Waiting for player " + i);
       synchronized (serverSocket) {
-        Logger.debug("Przyjmuję pierwsze gniazdo klienta " + i);
         Socket socket = serverSocket.accept();
         Logger.debug("Przyjąłem pierwsze gniazdo klienta " + i);
         SocketHandler handler =  new SocketHandler(socket);
@@ -72,6 +71,7 @@ public class ClassicServer implements Server {
 
   private void setActivePlayerAll() {
     Player activePlayer = game.getActivePlayer();
+    Logger.debug(activePlayer.toString()); // tmp
     ServerMessage message = new ServerMessage("SETACTIVE", activePlayer);
     sendToAllPlayers(message);
     Logger.info("Server sent a message about active player");
@@ -161,12 +161,14 @@ public class ClassicServer implements Server {
             game.move(player, piece, coordinates);
             sendAcceptedMoveMessage();
             Logger.info("Sent move accepted request.");
+            break;
           }
           case "CANCELMOVE": {
             Logger.info("Received cancel move message.");
             game.cancelMove(player);
             sendCanceledMoveMessage();
             Logger.info("Sent cancelled move message.");
+            break;
           }
           case "ACCEPTMOVE": {
             Logger.info("Received accept move message.");
@@ -174,6 +176,7 @@ public class ClassicServer implements Server {
             sendMoveAcceptedMessage();
             setActivePlayerAll();
             Logger.info("Sent accepted move message.");
+            break;
           }
         }
       }

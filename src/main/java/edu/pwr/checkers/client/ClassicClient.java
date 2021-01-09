@@ -60,12 +60,12 @@ public class ClassicClient implements Client {
   public synchronized boolean sendMoveRequest(Player player, Piece piece, Coordinates coordinates) {
     try {
       ClientMessage clientMessage = new ClientMessage("MOVEREQUEST", player, piece, coordinates);
-      outputStream.writeObject(clientMessage);
-      Logger.debug("Tu MoveRequest, czekam na wiadomość!");
       int begin;
       synchronized (numMsgReceived) {
         begin = numMsgReceived;
       }
+      outputStream.writeObject(clientMessage);
+      Logger.debug("Tu MoveRequest, czekam na wiadomość!");
       do {
         sleep(1);
         synchronized (numMsgReceived) {
@@ -88,12 +88,12 @@ public class ClassicClient implements Client {
   public synchronized void sendCancelMoveRequest(Player player) {
     try {
       ClientMessage clientMessage = new ClientMessage("CANCELMOVE", player);
-      outputStream.writeObject(clientMessage);
-      Logger.debug("Tu CancelRequest, czekam na wiadomość!");
       int begin;
       synchronized (numMsgReceived) {
         begin = numMsgReceived;
       }
+      outputStream.writeObject(clientMessage);
+      Logger.debug("Tu CancelRequest, czekam na wiadomość!");
       do {
         sleep(1);
         synchronized (numMsgReceived) {
@@ -113,12 +113,12 @@ public class ClassicClient implements Client {
   public synchronized void sendAcceptMoveRequest(Player player) {
     try {
       ClientMessage clientMessage = new ClientMessage("ACCEPTMOVE", player);
-      outputStream.writeObject(clientMessage);
-      Logger.debug("Tu CancelRequest, czekam na wiadomość!");
       int begin;
       synchronized (numMsgReceived) {
         begin = numMsgReceived;
       }
+      outputStream.writeObject(clientMessage);
+      Logger.debug("Tu CancelRequest, czekam na wiadomość!");
       do {
         sleep(1);
         synchronized (numMsgReceived) {
@@ -189,19 +189,17 @@ public class ClassicClient implements Client {
       String message;
       serverMessage = (ServerMessage) inputStream.readObject();
       message = serverMessage.getMessage();
-      while (message.equals("ENDOFGAME")) {
+      while (!message.equals("ENDOFGAME")) {
         if (message.equals("SETACTIVE")) {
           Logger.debug("Dostałem wiadmość SETACTIVE");
-          Player player = getMessage().getPlayer();
+          Player player = serverMessage.getPlayer();
           Color color = player.getColors().get(0);
           mediator.setStatus("NOW PLAYING " + color.toString());
           // TODO: send this message when the player change, maybe add some other types of message
         }  else {
           synchronized (numMsgReceived) {
-
-         requestMessageAnswer = serverMessage;
-         numMsgReceived++;
-
+            requestMessageAnswer = serverMessage;
+            numMsgReceived++;
           }
         }
         serverMessage = (ServerMessage) inputStream.readObject();
@@ -214,6 +212,7 @@ public class ClassicClient implements Client {
         e.printStackTrace();
       }
       Logger.err("Client stopped working due to an error.");
+      ex.printStackTrace();
     } finally {
       try {
         clientSocket.close();
