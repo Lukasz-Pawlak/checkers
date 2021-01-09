@@ -48,10 +48,6 @@ public class Canvas extends JPanel {
      */
     public Canvas(Controller controller) {
         this.controller = controller;
-        boardLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-        stillPiecesLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-        movingPieceLayer = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-        CLEAR = new BufferedImage(100, 100,  BufferedImage.TYPE_INT_ARGB);
         movingPiece = null;
         setBackground(Color.LIGHT_GRAY);
     }
@@ -102,7 +98,7 @@ public class Canvas extends JPanel {
                 }
             }
         });
-        redrawAll();
+        canvasSizeChanged();
     }
 
     /**
