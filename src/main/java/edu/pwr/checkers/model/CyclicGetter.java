@@ -116,4 +116,8 @@ public class CyclicGetter<T> {
         current = Math.floorMod(current + 1, noObjects);
         return  ring.get(current);
     }
+
+    public int getCapacity() {
+        return noObjects;
+    }
 }

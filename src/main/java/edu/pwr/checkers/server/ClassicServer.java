@@ -42,6 +42,7 @@ public class ClassicServer implements Server {
   @Override
   public void setUp() throws NullPointerException, RejectedExecutionException, IOException {
     this.game.init();
+    this.game.setServer(this);
     ExecutorService pool = Executors.newFixedThreadPool(numOfPlayers);
     Logger.debug("There are " + numOfPlayers + " players.");
 

@@ -44,6 +44,11 @@ public class ClassicGame implements Game {
     /** Reference  to the instance of the server that hosts game. */
     private Server server;
 
+    @Override
+    public void setServer(Server server) {
+        this.server = server;
+    }
+
     /**
      * The only constructor.
      * @param numberOfPlayers number of players in the game.
@@ -201,12 +206,14 @@ public class ClassicGame implements Game {
         if (checkIfWon()) {
             if (ranking.size() == numberOfPlayers - 1) {
                 ranking.add(activePlayer);
-                activePlayers = CyclicGetter.truncateCurrent(activePlayers);
                 Logger.info("End of game!");
                 server.sendRanking();
             }
         }
-        activePlayer = activePlayers.getNext();
+        if (activePlayers.getCapacity() != 0) {
+            activePlayer = activePlayers.getNext();
+        }
+
     }
 
     /**

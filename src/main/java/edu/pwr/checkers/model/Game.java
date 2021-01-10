@@ -1,5 +1,7 @@
 package edu.pwr.checkers.model;
 
+import edu.pwr.checkers.server.Server;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,6 +14,8 @@ import java.util.List;
  * @author Wojciech Sęk
  */
 public interface Game extends Serializable {
+    void setServer(Server server);
+
     /**
     * Method used to set up the board and
     * also to add the players.
