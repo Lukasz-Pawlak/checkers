@@ -196,27 +196,32 @@ public class ClassicServer implements Server {
 
     private void sendIllegalMoveMessage() throws IOException {
       ServerMessage message = new ServerMessage("ILLEGALMOVE");
+      outputStream.reset();
       outputStream.writeObject(message);
     }
 
     private void sendWrongPlayerMessage() throws IOException {
       ServerMessage message = new ServerMessage("WRONGPLAYER");
+      outputStream.reset();
       outputStream.writeObject(message);
     }
 
 
     private void sendAcceptedMoveMessage() throws IOException {
       ServerMessage message = new ServerMessage("VALIDMOVE", game.getBoard());
+      outputStream.reset();
       outputStream.writeObject(message);
     }
 
     private void sendCanceledMoveMessage() throws IOException {
       ServerMessage message = new ServerMessage("CANCELLEDMOVE", game.getBoard());
+      outputStream.reset();
       outputStream.writeObject(message);
     }
 
     private void sendMoveAcceptedMessage() throws IOException {
       ServerMessage message = new ServerMessage("MOVEACCEPTED");
+      outputStream.reset();
       outputStream.writeObject(message);
     }
   }

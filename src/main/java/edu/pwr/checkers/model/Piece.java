@@ -1,5 +1,7 @@
 package edu.pwr.checkers.model;
 
+import edu.pwr.checkers.Logger;
+
 import java.io.Serializable;
 
 /**
@@ -72,5 +74,6 @@ class ClassicPiece implements Piece {
     @Override
     public void setField(Field field) {
         this.field = field;
+        Logger.debug(this.hashCode() + " >>> zmiana pozycji");
     }
 }
