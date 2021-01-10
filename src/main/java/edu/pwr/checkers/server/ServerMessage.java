@@ -21,7 +21,7 @@ public class ServerMessage implements Serializable {
     this.message = message;
     this.board = board;
   }
-
+  
   public ServerMessage(String message, String status) {
     this.message = message;
     this.status = status;
@@ -49,9 +49,10 @@ public class ServerMessage implements Serializable {
       this.player = nextPlayer;
     }
 
-    public String getMessage() {
+  public String getMessage() {
     return message;
   }
+
   public String getStatus() {
     return status;
   }

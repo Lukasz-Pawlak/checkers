@@ -2,7 +2,6 @@ package edu.pwr.checkers.client;
 
 import edu.pwr.checkers.Logger;
 import edu.pwr.checkers.model.*;
-import edu.pwr.checkers.server.Server;
 import edu.pwr.checkers.server.ServerMessage;
 
 import java.io.ObjectInputStream;
@@ -82,7 +81,10 @@ public class ClassicClient implements Client {
 
         Logger.debug("Tu MoveRequest, otrzymałem wiadomość!");
         mediator.setBoard(requestMessageAnswer.getBoard());
-        return requestMessageAnswer.getMessage().equals("VALIDMOVE");
+        boolean isValid = requestMessageAnswer.getMessage().equals("VALIDMOVE");
+        if (isValid) {
+          mediator.setBoard(requestMessageAnswer.getBoard());
+        }
       } catch (Exception ex) {
       Logger.err("sendMoveRequest: Message couldn't be sent.");
       ex.printStackTrace();
@@ -194,7 +196,7 @@ public class ClassicClient implements Client {
     try {
       setUp();
       Logger.info("Client is set up!");
-      ServerMessage serverMessage = null;
+      ServerMessage serverMessage;
       String message;
       serverMessage = (ServerMessage) inputStream.readObject();
       message = serverMessage.getMessage();
@@ -202,9 +204,15 @@ public class ClassicClient implements Client {
         if (message.equals("SETACTIVE")) {
           Logger.debug("Dostałem wiadomość SETACTIVE");
           Player player = serverMessage.getPlayer();
+          Board board = serverMessage.getBoard();
           Color color = player.getColors().get(0);
           mediator.setStatus("NOW PLAYING " + color.toString());
-        }  else {
+          mediator.setBoard(board);
+        } else if (message.equals("SETBOARD")) {
+          Logger.debug("Dostałem wiadomość SETBOARD");
+          Board board = serverMessage.getBoard();
+          mediator.setBoard(board);
+        } else {
           synchronized (numMsgReceived) {
             requestMessageAnswer = serverMessage;
             numMsgReceived++;

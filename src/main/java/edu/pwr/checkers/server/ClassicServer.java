@@ -31,7 +31,7 @@ public class ClassicServer implements Server {
       throw new WrongNumberException();
     }
     this.numOfPlayers = numOfPlayers;
-    this.handlers = new ArrayList<SocketHandler>(numOfPlayers);
+    this.handlers = new ArrayList<>(numOfPlayers);
     this.game = new ClassicGame(numOfPlayers);
     game.setup();
     Logger.info("Trying to start server with port 4444...");
@@ -74,7 +74,15 @@ public class ClassicServer implements Server {
   private void setActivePlayerAll() {
     Player activePlayer = game.getActivePlayer();
     Logger.debug(activePlayer.toString()); // tmp
-    ServerMessage message = new ServerMessage("SETACTIVE", activePlayer);
+    ServerMessage message = new ServerMessage("SETACTIVE",game.getBoard(), activePlayer);
+    sendToAllPlayers(message);
+    Logger.info("Server sent a message about active player");
+  }
+
+  private void setBoardAll() {
+    Player activePlayer = game.getActivePlayer();
+    Logger.debug(activePlayer.toString()); // tmp
+    ServerMessage message = new ServerMessage("SETBOARD",game.getBoard());
     sendToAllPlayers(message);
     Logger.info("Server sent a message about active player");
   }
@@ -187,7 +195,6 @@ public class ClassicServer implements Server {
             Logger.info("Received accept move message.");
             game.acceptMove(player);
             sendMoveAcceptedMessage();
-            setActivePlayerAll();
             Logger.info("Sent accepted move message.");
             break;
           }
@@ -196,15 +203,17 @@ public class ClassicServer implements Server {
     }
 
     private void sendIllegalMoveMessage() throws IOException {
-      ServerMessage message = new ServerMessage("ILLEGALMOVE");
+      ServerMessage message = new ServerMessage("ILLEGALMOVE", game.getBoard());
       outputStream.reset();
       outputStream.writeObject(message);
+      setBoardAll();
     }
 
     private void sendWrongPlayerMessage() throws IOException {
-      ServerMessage message = new ServerMessage("WRONGPLAYER");
+      ServerMessage message = new ServerMessage("WRONGPLAYER", game.getBoard());
       outputStream.reset();
       outputStream.writeObject(message);
+      setBoardAll();
     }
 
 
@@ -212,18 +221,21 @@ public class ClassicServer implements Server {
       ServerMessage message = new ServerMessage("VALIDMOVE", game.getBoard());
       outputStream.reset();
       outputStream.writeObject(message);
+      setBoardAll();
     }
 
     private void sendCanceledMoveMessage() throws IOException {
       ServerMessage message = new ServerMessage("CANCELLEDMOVE", game.getBoard());
       outputStream.reset();
       outputStream.writeObject(message);
+      setBoardAll();
     }
 
     private void sendMoveAcceptedMessage() throws IOException {
       ServerMessage message = new ServerMessage("MOVEACCEPTED");
       outputStream.reset();
       outputStream.writeObject(message);
+      setActivePlayerAll();
     }
   }
 
