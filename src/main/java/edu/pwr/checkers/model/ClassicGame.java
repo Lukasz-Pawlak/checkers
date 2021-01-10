@@ -1,5 +1,6 @@
 package edu.pwr.checkers.model;
 
+import edu.pwr.checkers.Logger;
 import edu.pwr.checkers.server.Server;
 
 import java.util.ArrayList;
@@ -178,15 +179,18 @@ public class ClassicGame implements Game {
      * @inheritDoc
      */
     @Override
-    public void acceptMove(Player player) {
+    public void acceptMove(Player player) throws WrongPlayerException {
+        if (player != activePlayer) {
+            throw new WrongPlayerException();
+        }
         lastMove = MoveType.NEWTURN;
         if (checkIfWon()) {
             if (ranking.size() == numberOfPlayers - 1) {
                 ranking.add(activePlayer);
                 activePlayers = CyclicGetter.truncateCurrent(activePlayers);
-                System.out.println("End of game!");
+                Logger.info("End of game!");
+                server.sendRanking();
             }
-            // TODO: check if the whole game is done
         }
         activePlayer = activePlayers.getNext();
     }
@@ -235,5 +239,8 @@ public class ClassicGame implements Game {
         return activePlayer;
     }
 
-
+    @Override
+    public List<Player> getRanking() {
+        return ranking;
+    }
 }

@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -75,6 +76,17 @@ public class ClassicServer implements Server {
     ServerMessage message = new ServerMessage("SETACTIVE", activePlayer);
     sendToAllPlayers(message);
     Logger.info("Server sent a message about active player");
+  }
+
+  @Override
+  public void sendRanking() {
+    String ranking  = "";
+    int place = 1;
+    List<Player> rankingList = game.getRanking();
+    for (Player player: rankingList) {
+      ranking = ranking + (place++) + " place: " + player.getColors().get(0).toString() + "\n";
+    }
+    sendToAllPlayers(new ServerMessage("ENDGAME", ranking));
   }
 
 
@@ -191,6 +203,7 @@ public class ClassicServer implements Server {
       ServerMessage message = new ServerMessage("WRONGPLAYER");
       outputStream.writeObject(message);
     }
+
 
     private void sendAcceptedMoveMessage() throws IOException {
       ServerMessage message = new ServerMessage("VALIDMOVE");

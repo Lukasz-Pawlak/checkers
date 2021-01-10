@@ -53,7 +53,7 @@ public interface Game extends Serializable {
      * Does nothing when player is not currently active.
      * @param player the player which wants to confirm his move.
      */
-    void acceptMove(Player player);
+    void acceptMove(Player player) throws WrongPlayerException;
 
     /**
      * This function returns current state of board.
@@ -67,6 +67,8 @@ public interface Game extends Serializable {
      * @return active player.
      */
     Player getActivePlayer();
+
+    List<Player> getRanking();
 
     /**
      * Function used to map players with clients.

@@ -118,7 +118,7 @@ public class ClassicClient implements Client {
         begin = numMsgReceived;
       }
       outputStream.writeObject(clientMessage);
-      Logger.debug("Tu CancelRequest, czekam na wiadomość!");
+      Logger.debug("Tu AcceptMove, czekam na wiadomość!");
       do {
         sleep(1);
         synchronized (numMsgReceived) {
@@ -127,9 +127,8 @@ public class ClassicClient implements Client {
           }
         }
       } while (true);
-      Logger.debug("Tu CancelRequest, otrzymałem wiadomość");
+      Logger.debug("Tu AcceptMove, otrzymałem wiadomość");
       Player current = requestMessageAnswer.getPlayer();
-      //mediator.setPlayer(current);
       mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
     } catch (Exception ex) {
       Logger.err("Message couldn't be sent.");
@@ -191,11 +190,10 @@ public class ClassicClient implements Client {
       message = serverMessage.getMessage();
       while (!message.equals("ENDOFGAME")) {
         if (message.equals("SETACTIVE")) {
-          Logger.debug("Dostałem wiadmość SETACTIVE");
+          Logger.debug("Dostałem wiadomość SETACTIVE");
           Player player = serverMessage.getPlayer();
           Color color = player.getColors().get(0);
           mediator.setStatus("NOW PLAYING " + color.toString());
-          // TODO: send this message when the player change, maybe add some other types of message
         }  else {
           synchronized (numMsgReceived) {
             requestMessageAnswer = serverMessage;
@@ -205,6 +203,7 @@ public class ClassicClient implements Client {
         serverMessage = (ServerMessage) inputStream.readObject();
         message = serverMessage.getMessage();
       }
+      mediator.setStatus(serverMessage.getStatus());
     } catch (Exception ex) {
       try {
         clientSocket.close();

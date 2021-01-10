@@ -7,7 +7,7 @@ import edu.pwr.checkers.model.Player;
 import java.io.Serializable;
 
 public class ClientMessage implements Serializable {
-  private String message = null;
+  private String message;
   private Player player;
   private Piece piece = null;
   private Coordinates coordinates = null;

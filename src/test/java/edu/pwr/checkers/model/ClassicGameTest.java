@@ -15,7 +15,11 @@ public class ClassicGameTest {
     assertNotNull(game.getBoard());
 
     if (game.getActivePlayer().getColors().contains(Color.RED)) {
-      game.acceptMove(game.activePlayer);
+      try {
+        game.acceptMove(game.activePlayer);
+      } catch (WrongPlayerException e) {
+        e.printStackTrace();
+      }
     }
 
     Coordinates cor = new Coordinates(10, 5);
@@ -36,7 +40,11 @@ public class ClassicGameTest {
     game.illegalMove(game.board.getField(12, 6).getPiece(), new Coordinates(8, 10));
     game.illegalMove(game.board.getField(12, 7).getPiece(), new Coordinates(8, 11));
 
-    game.acceptMove(game.activePlayer);
+    try {
+      game.acceptMove(game.activePlayer);
+    } catch (WrongPlayerException e) {
+      e.printStackTrace();
+    }
     assertEquals(0, game.ranking.size());
 
     game.illegalMove(game.board.getField(4, 9).getPiece(), new Coordinates(9, 4));
@@ -50,7 +58,11 @@ public class ClassicGameTest {
     game.illegalMove(game.board.getField(6, 12).getPiece(), new Coordinates(12, 6));
     game.illegalMove(game.board.getField(7, 12).getPiece(), new Coordinates(12, 7));
 
-    game.acceptMove(game.activePlayer);
+    try {
+      game.acceptMove(game.activePlayer);
+    } catch (WrongPlayerException e) {
+      e.printStackTrace();
+    }
     assertEquals(1, game.ranking.size());
   }
 
@@ -96,7 +108,11 @@ public class ClassicGameTest {
       e.printStackTrace();
     }
     game.cancelMove(player);
-    game.acceptMove(player);
+    try {
+      game.acceptMove(player);
+    } catch (WrongPlayerException e) {
+      e.printStackTrace();
+    }
 
     assertEquals(4, piece.getField().getPosition().y);
   }

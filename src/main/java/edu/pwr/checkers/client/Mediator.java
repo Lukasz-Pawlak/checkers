@@ -110,5 +110,6 @@ public class Mediator {
     public void setPlayer(Player player) {
         Logger.debug("mediator: set player: " + player);
         this.player = player;
+        this.controller.showMessage("YOU ARE " + player.getColors().get(0).toString());
     }
 }

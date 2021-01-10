@@ -52,6 +52,9 @@ public class ServerMessage implements Serializable {
     public String getMessage() {
     return message;
   }
+  public String getStatus() {
+    return status;
+  }
 
   public Board getBoard() {
     return board;

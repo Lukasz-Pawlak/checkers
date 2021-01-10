@@ -12,4 +12,6 @@ import java.util.concurrent.Executors;
 
 public interface Server {
   void setUp() throws IOException;
+
+  void sendRanking();
 }
