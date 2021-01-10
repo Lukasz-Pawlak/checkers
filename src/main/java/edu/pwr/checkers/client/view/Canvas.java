@@ -187,7 +187,7 @@ public class Canvas extends JPanel {
      * This method is called when size of canvas changes.
      * It redraws images representing state of the board.
      */
-    private void canvasSizeChanged() {
+    public void canvasSizeChanged() {
         squareSideLength = (int) Math.min(2.0 * getWidth() / 3, 2 * getHeight() / Math.sqrt(3.0));
         int width = (int) (squareSideLength * 1.5);
         int height = (int) (squareSideLength * Math.sqrt(3.0)  * 0.5);
@@ -255,7 +255,7 @@ public class Canvas extends JPanel {
     /**
      * This method redraws layer image containing moving piece.
      */
-    private void redrawMovingPiece() {
+    public void redrawMovingPiece() {
         int diam = (int) (0.7 * stepSize);
 
         Graphics g = movingPieceLayer.getGraphics();
