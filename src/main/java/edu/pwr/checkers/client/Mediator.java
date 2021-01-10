@@ -91,7 +91,7 @@ public class Mediator {
             else {
                 controller.showMessage("This is illegal move!");
             }
-            return b;
+            return true;
         }
     }
 

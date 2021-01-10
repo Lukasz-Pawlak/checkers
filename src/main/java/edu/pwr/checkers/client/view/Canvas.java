@@ -152,7 +152,9 @@ public class Canvas extends JPanel {
         if (coords.x < boardSize && coords.y < boardSize && coords.x >= 0 && coords.y >= 0) {
             Field field = board.getField(coords.x, coords.y);
             if (field != null) {
-                controller.movePiece(movingPiece, coords);
+                if (!controller.movePiece(movingPiece, coords)) {
+                    movingPiece.getField().setPiece(movingPiece);
+                }
                 /*
                 if (!controller.movePiece(movingPiece, coords)) { // this references to the server already
                     //movingPiece.setField(initialPosition);

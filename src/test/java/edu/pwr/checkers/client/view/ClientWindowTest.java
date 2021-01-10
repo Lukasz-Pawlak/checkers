@@ -24,6 +24,7 @@ public class ClientWindowTest {
     public void setup() throws IOException, ClassNotFoundException {
         client = getMockedClient();
         game = getGame();
+        game.setup();
         game.init();
         board = cloneBoard(game.getBoard());
         current = game.getActivePlayer();
@@ -35,10 +36,16 @@ public class ClientWindowTest {
             Object[] args = invocationOnMock.getArguments();
             try {
                 game.move((Player) args[0], (Piece) args[1], (Coordinates) args[2]);
-                return Boolean.TRUE;
-            } catch (Exception ex) {
-                return Boolean.FALSE;
-            }//*/
+                board = cloneBoard(game.getBoard());
+                mediator.setBoard(board);
+                mediator.startGame();
+            } catch (Exception ignored) {
+            } finally {
+                board = cloneBoard(game.getBoard());
+                mediator.setBoard(board);
+                mediator.startGame();
+            }
+            return Boolean.TRUE;
         }).when(client).sendMoveRequest(any(Player.class), any(Piece.class), any(Coordinates.class));
 
         doAnswer((Answer<Void>) invocationOnMock -> {
@@ -61,6 +68,10 @@ public class ClientWindowTest {
     public void testRules() throws IOException, ClassNotFoundException {
         mediator = new Mediator(client);
         mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
+        mediator.setBoard(board);
+        current = game.getActivePlayer();
+        mediator.setPlayer(current);
+        mediator.startGame();
         Scanner scanner = new Scanner(System.in);
         scanner.next();
         scanner.close();
