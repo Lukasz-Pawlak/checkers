@@ -70,6 +70,10 @@ public class Mediator {
             controller.setBoard(board);
     }
 
+    public void refresh() {
+        controller.refresh();
+    }
+
 
     /**
      * Method used to pass information about move Piece request

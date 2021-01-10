@@ -2,6 +2,7 @@ package edu.pwr.checkers.client;
 
 import edu.pwr.checkers.Logger;
 import edu.pwr.checkers.model.*;
+import edu.pwr.checkers.server.Server;
 import edu.pwr.checkers.server.ServerMessage;
 
 import java.io.ObjectInputStream;
@@ -208,11 +209,14 @@ public class ClassicClient implements Client {
           Color color = player.getColors().get(0);
           mediator.setStatus("NOW PLAYING " + color.toString());
           mediator.setBoard(board);
+          mediator.refresh();
         } else if (message.equals("SETBOARD")) {
           Logger.debug("Dostałem wiadomość SETBOARD");
           Board board = serverMessage.getBoard();
           mediator.setBoard(board);
-        } else {
+          mediator.refresh();
+          mediator.refresh();
+        }  else {
           synchronized (numMsgReceived) {
             requestMessageAnswer = serverMessage;
             numMsgReceived++;

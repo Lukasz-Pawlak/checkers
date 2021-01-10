@@ -88,4 +88,8 @@ public class Controller {
   public void sendAcceptMoveRequest() {
     mediator.sendAcceptMoveRequest();
   }
+
+  public void refresh() {
+    window.refresh();
+  }
 }

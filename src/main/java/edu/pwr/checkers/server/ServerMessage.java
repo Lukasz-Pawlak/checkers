@@ -21,7 +21,7 @@ public class ServerMessage implements Serializable {
     this.message = message;
     this.board = board;
   }
-  
+
   public ServerMessage(String message, String status) {
     this.message = message;
     this.status = status;

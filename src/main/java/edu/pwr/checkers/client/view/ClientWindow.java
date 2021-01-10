@@ -80,4 +80,8 @@ public class ClientWindow extends JFrame {
     public void useThisBoard(Board board) {
         canvas.setBoard(board);
     }
+
+    public void refresh() {
+        canvas.redrawAll();
+    }
 }
