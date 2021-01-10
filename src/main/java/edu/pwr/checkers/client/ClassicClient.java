@@ -58,16 +58,21 @@ public class ClassicClient implements Client {
 
   @Override
   public synchronized boolean sendMoveRequest(Player player, Piece piece, Coordinates coordinates) {
+    if (piece == null) {
+      Logger.err("client: sendMoveRequest: null piece passed");
+      System.exit(1);
+    }
     try {
       ClientMessage clientMessage = new ClientMessage("MOVEREQUEST", player, piece, coordinates);
       int begin;
       synchronized (numMsgReceived) {
         begin = numMsgReceived;
       }
-      outputStream.writeObject(clientMessage);
+      send(clientMessage);
       Logger.debug("Tu MoveRequest, czekam na wiadomość!");
       do {
         sleep(1);
+        //Logger.debug("in loop");
         synchronized (numMsgReceived) {
           if (numMsgReceived > begin) {
             break;
@@ -76,12 +81,17 @@ public class ClassicClient implements Client {
       } while (true);
 
         Logger.debug("Tu MoveRequest, otrzymałem wiadomość!");
+        mediator.setBoard(requestMessageAnswer.getBoard());
         return requestMessageAnswer.getMessage().equals("VALIDMOVE");
       } catch (Exception ex) {
-      Logger.err("Message couldn't be sent.");
+      Logger.err("sendMoveRequest: Message couldn't be sent.");
       ex.printStackTrace();
     }
     return false;
+  }
+
+  private void send(ClientMessage message) throws IOException {
+      outputStream.writeObject(message);
   }
 
   @Override
@@ -105,7 +115,7 @@ public class ClassicClient implements Client {
         Logger.debug("Tu CancelRequest, otrzymałem wiadomość!");
         mediator.setBoard(requestMessageAnswer.getBoard());
       } catch (Exception ex) {
-      Logger.err("Message couldn't be sent.");
+      Logger.err("sendCancelMoveRequest: Message couldn't be sent.");
     }
   }
 
@@ -120,7 +130,7 @@ public class ClassicClient implements Client {
       outputStream.writeObject(clientMessage);
       Logger.debug("Tu AcceptMove, czekam na wiadomość!");
       do {
-        sleep(1);
+        Thread.sleep(1);
         synchronized (numMsgReceived) {
           if (numMsgReceived > begin) {
             break;
@@ -131,7 +141,7 @@ public class ClassicClient implements Client {
       Player current = requestMessageAnswer.getPlayer();
       mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
     } catch (Exception ex) {
-      Logger.err("Message couldn't be sent.");
+      Logger.err("sendAcceptMoveRequest: Message couldn't be sent.");
     }
   }
 
@@ -155,7 +165,7 @@ public class ClassicClient implements Client {
       serverMessage = (ServerMessage) inputStream.readObject();
       return serverMessage.getPlayer();
     } catch (Exception ex) {
-      Logger.err("Message couldn't be sent.");
+      Logger.err("getPlayer: Message couldn't be sent.");
     }
     return null;
   }
@@ -169,7 +179,7 @@ public class ClassicClient implements Client {
       serverMessage = (ServerMessage) inputStream.readObject();
       return serverMessage.getBoard();
     } catch (Exception ex) {
-      Logger.err("Message couldn't be sent.");
+      Logger.err("getBoard: Message couldn't be sent.");
     }
     return null;
   }

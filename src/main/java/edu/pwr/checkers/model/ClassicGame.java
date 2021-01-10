@@ -72,12 +72,12 @@ public class ClassicGame implements Game {
      */
     @Override
     public void init() {
-
         Random rd = new Random();
         int random = rd.nextInt(numberOfPlayers);
         activePlayers.setCurrent(random);
         activePlayer = activePlayers.getNext();
         lastMove = MoveType.NEWTURN;
+        beginPosition = null;
     }
 
     /**
@@ -86,6 +86,10 @@ public class ClassicGame implements Game {
     @Override
     public void move(Player player, Piece piece, Coordinates newPosition)
             throws IllegalMoveException, WrongPlayerException {
+        if (board.getField(newPosition) == null) {
+            Logger.debug("game: move: null position");
+            throw new IllegalMoveException();
+        }
         piece = board.getField(piece.getField().getPosition()).getPiece();
         MoveType currMove = getType(piece, newPosition);
         Coordinates betweenPosition = new Coordinates(
@@ -97,26 +101,29 @@ public class ClassicGame implements Game {
             beginPosition = piece.getField().getPosition();
         }
 
-        if (board.getField(newPosition) == null) {
-            throw new IllegalMoveException();
-        }
 
         Piece pieceInBetween = board.getField(betweenPosition).getPiece();
         Piece pieceOnNewCor = board.getField(newPosition).getPiece();
 
-        if (player.notMyPiece(piece)) {
+        if (player.notMyPiece(piece) || this.getActivePlayer().notMyPiece(piece)) {
+            Logger.debug("game: move: wrong player");
             throw new WrongPlayerException();
         } else if (pieceOnNewCor != null) {
+            Logger.debug("game: move: field is occupied");
             throw new IllegalMoveException();
         } else if (currMove == MoveType.ONESTEP
           && lastMove != MoveType.NEWTURN) {
+            Logger.debug("game: move: step not first");
             throw new IllegalMoveException(); // done ONESTEP cannot do another
         } else if (currMove == MoveType.UNKNOWN) {
+            Logger.debug("game: move: unknown type of move");
             throw new IllegalMoveException(); // UNKNOWN is an error
         } else if (currMove == MoveType.JUMPSEQ && (pieceInBetween == null ||
                 lastMove == MoveType.ONESTEP || lastMove == MoveType.UNKNOWN)) {
+            Logger.debug("game: move: jump sequence started in illegal state");
             throw new IllegalMoveException();
         } else {
+            Logger.debug("move: good move, updating board state");
             lastMove = currMove;
             Field newField = board.getField(newPosition);
             Field oldField = piece.getField();
@@ -148,6 +155,13 @@ public class ClassicGame implements Game {
      * @return type of move the piece wants to perform.
      */
     public MoveType getType(Piece piece, Coordinates newCor) {
+        /*Field field;
+        if (lastMove == MoveType.NEWTURN) {
+            field = piece.getField();
+        }
+        else {
+            field = movingPiece.getField();
+        }*/
         Field field = piece.getField();
         Field newField = board.getField(newCor.x, newCor.y);
         List<Field> neighbours = board.getNeighborsOf(field);
@@ -180,7 +194,7 @@ public class ClassicGame implements Game {
      */
     @Override
     public void acceptMove(Player player) throws WrongPlayerException {
-        if (player != activePlayer) {
+        if (player.getColors().get(0) != activePlayer.getColors().get(0)) {
             throw new WrongPlayerException();
         }
         lastMove = MoveType.NEWTURN;

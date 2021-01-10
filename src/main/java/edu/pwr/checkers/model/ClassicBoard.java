@@ -24,7 +24,7 @@ public class ClassicBoard implements Board {
      * of the star. Measured in number of fields.
      * Left not final for possible future inheritance.
      */
-    protected static int SIDE_LENGTH = 5;
+    protected static int SIDE_LENGTH = 3; // TODO: change back to 5 when we're done with testing moves
     /**
      * Constant representing distance from central field to corner of the
      * core hexagon. Measured in number of fields, does not include

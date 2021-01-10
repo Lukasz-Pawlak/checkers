@@ -206,7 +206,7 @@ public class ClassicServer implements Server {
 
 
     private void sendAcceptedMoveMessage() throws IOException {
-      ServerMessage message = new ServerMessage("VALIDMOVE");
+      ServerMessage message = new ServerMessage("VALIDMOVE", game.getBoard());
       outputStream.writeObject(message);
     }
 

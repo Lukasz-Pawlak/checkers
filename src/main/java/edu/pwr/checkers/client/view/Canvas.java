@@ -49,6 +49,7 @@ public class Canvas extends JPanel {
     public Canvas(Controller controller) {
         this.controller = controller;
         movingPiece = null;
+        //initialPosition = null;
         setBackground(Color.LIGHT_GRAY);
     }
 
@@ -121,6 +122,7 @@ public class Canvas extends JPanel {
             if (field != null) {
                 Piece piece = field.getPiece();
                 field.setPiece(null);
+                //initialPosition = field;
                 return piece;
             }
         }
@@ -149,18 +151,34 @@ public class Canvas extends JPanel {
         Coordinates coords = new Coordinates(point.x / stepSize, point.y / stepSize);
         if (coords.x < boardSize && coords.y < boardSize && coords.x >= 0 && coords.y >= 0) {
             Field field = board.getField(coords.x, coords.y);
-            if (field != null && controller.movePiece(movingPiece, coords)) { // this references to the server already
-                field.setPiece(movingPiece);
-                movingPiece.setField(field);
+            if (field != null) {
+                controller.movePiece(movingPiece, coords);
+                /*
+                if (!controller.movePiece(movingPiece, coords)) { // this references to the server already
+                    //movingPiece.setField(initialPosition);
+                    //initialPosition.setPiece(movingPiece);
+                }
+                else {
+                    Logger.debug("canvas: putMovingPiece: setting piece's field");
+                    Logger.debug("\twas: " + movingPiece.getField().toString());
+                    field.setPiece(movingPiece);
+                    movingPiece.setField(field);
+                    Logger.debug("\tis: " + movingPiece.getField().toString());
+                }*/
             }
             else {
+                //movingPiece.setField(initialPosition);
+                //initialPosition.setPiece(movingPiece);
                 movingPiece.getField().setPiece(movingPiece);
             }
         }
         else {
+            //movingPiece.setField(initialPosition);
+            //initialPosition.setPiece(movingPiece);
             movingPiece.getField().setPiece(movingPiece);
         }
         movingPiece = null;
+        //initialPosition = null;
     }
 
     /**
@@ -180,21 +198,6 @@ public class Canvas extends JPanel {
 
         redrawAll();
     }
-
-    /* // so it turns out it is useless
-     * This method refreshes the view.
-     * @param width width to be matched
-     * @param height height to bee matched.
-     /
-    public void refresh(int width, int height) {
-        int type = BufferedImage.TYPE_INT_ARGB;
-        boardLayer = new BufferedImage(width, height, type);
-        stillPiecesLayer = new BufferedImage(width, height, type);
-        movingPieceLayer = new BufferedImage(width, height, type);
-        CLEAR = new BufferedImage(width, height, type);
-
-        redrawAll();
-    }*/
 
     /**
      * This method redraws all layer images.
@@ -283,6 +286,7 @@ public class Canvas extends JPanel {
      */
     void setBoard(Board board) {
         this.board = board;
+        //redrawAllPieces();
     }
 
     /**
