@@ -183,11 +183,13 @@ public class Canvas extends JPanel {
         //initialPosition = null;
     }
 
+
     /**
      * This method is called when size of canvas changes.
      * It redraws images representing state of the board.
      */
     public void canvasSizeChanged() {
+        super.paint(getGraphics());
         squareSideLength = (int) Math.min(2.0 * getWidth() / 3, 2 * getHeight() / Math.sqrt(3.0));
         int width = (int) (squareSideLength * 1.5);
         int height = (int) (squareSideLength * Math.sqrt(3.0)  * 0.5);
@@ -205,8 +207,9 @@ public class Canvas extends JPanel {
      * This method redraws all layer images.
      */
     public void redrawAll() {
-        Graphics g = boardLayer.getGraphics();
-        super.paint(g);
+        Graphics2D g = boardLayer.createGraphics();
+        //g.setColor(new Color(0,0,0,0));
+        //g.fillRect(0, 0, getWidth(), getHeight());
 
         boardSize = board.getSize();
         stepSize = squareSideLength / boardSize;
@@ -224,6 +227,7 @@ public class Canvas extends JPanel {
                 }
             }
         }
+        g.dispose();
         redrawAllPieces();
     }
 
@@ -231,10 +235,12 @@ public class Canvas extends JPanel {
      * This method redraws layer images containing pieces.
      */
     private void redrawAllPieces() {
-        Graphics g = stillPiecesLayer.getGraphics();
+        //stillPiecesLayer.setData(CLEAR.copyData(stillPiecesLayer.getRaster()));
+        Graphics2D g = stillPiecesLayer.createGraphics();
         super.paint(g);
+        //g.setColor(new Color(0,0,0,0));
+        //g.fillRect(0, 0, getWidth(), getHeight());
 
-        stillPiecesLayer.setData(CLEAR.getRaster());
 
         int diam = (int) (0.7 * stepSize);
 
@@ -249,6 +255,7 @@ public class Canvas extends JPanel {
                 }
             }
         }
+        g.dispose();
         redrawMovingPiece();
     }
 
@@ -258,14 +265,17 @@ public class Canvas extends JPanel {
     public void redrawMovingPiece() {
         int diam = (int) (0.7 * stepSize);
 
-        Graphics g = movingPieceLayer.getGraphics();
+        Graphics2D g = movingPieceLayer.createGraphics();
         super.paint(g);
+        //g.setColor(new Color(0,0,0,0));
+        //g.fillRect(0, 0, getWidth(), getHeight());
 
         if (movingPiece != null) {
             Point coords = movingPiecePosition;
             g.setColor(translateColor(movingPiece.getColor()));
             g.fillOval(coords.x - diam / 2, coords.y - diam / 2, diam, diam);
         }
+        g.dispose();
         repaint();
     }
 
