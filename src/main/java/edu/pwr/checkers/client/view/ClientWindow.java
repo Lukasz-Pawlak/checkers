@@ -11,6 +11,7 @@ import java.awt.*;
  * per one client.
  * @version 1.0
  * @author Łukasz Pawlak
+ * @author Wojciech Sęk
  */
 public class ClientWindow extends JFrame {
     /** Canvas object used to display Board. */
@@ -91,11 +92,24 @@ public class ClientWindow extends JFrame {
         setBounds(getX(), getY(), getWidth(), getHeight());
     }
 
-  public void lockButtons() {
+    /**
+     * Method to lock buttons on the sidePanel.
+     */
+    public void lockButtons() {
         sidePanel.disableButtons();
-  }
+    }
 
-  public void unlockButtons() {
+    /**
+     * Method to lock buttons on the sidePanel.
+     */
+    public void unlockButtons() {
         sidePanel.enableButtons();
-  }
+    }
+
+    /**
+     * Method invoked when a client got disconnected.
+     */
+    public void showDisconnection() {
+        JOptionPane.showMessageDialog(this, "Another client has just got disconnected! Sorry!");
+    }
 }

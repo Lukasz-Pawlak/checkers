@@ -1,19 +1,17 @@
 package edu.pwr.checkers.server;
 
-import edu.pwr.checkers.model.ClassicGame;
-import edu.pwr.checkers.model.Color;
-import edu.pwr.checkers.model.Game;
-
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+/**
+ * Interface providing all methods a server needs.
+
+ * @version 1.0
+ * @author Wojciech Sęk
+ */
 public interface Server {
   /**
-   * Mehtod to set up the server basic properites including the clients.
-   * @throws IOException
+   * Mehtod to set up the server basic properties including the clients.
+   * @throws IOException used when there are problems with socket connection.
    */
   void setUp() throws IOException;
 

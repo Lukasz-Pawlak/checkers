@@ -12,8 +12,10 @@ import java.io.IOException;
  * This class is responsible for communication between client and
  * controller. Also it provides information about player this client
  * is corresponding to.
+
  * @version 1.0
  * @author Łukasz Pawlak
+ * @author Wojciech Sęk
  */
 public class Mediator {
     /** Player to which this client is corresponding. */
@@ -120,11 +122,24 @@ public class Mediator {
         this.controller.showMessage("YOU ARE " + player.getColors().get(0).toString());
     }
 
+    /**
+     * Method to lock the buttons on the sidePanel of client's window.
+     */
     public void lockButtons() {
         controller.lockButtons();
     }
 
+    /**
+     * Method to unlock the buttons on the sidePanel of client's window.
+     */
     public void unlockButtons() {
         controller.unlockButtons();
+    }
+
+    /**
+     * Method to show that another client has just got disconnected.
+     */
+    public void showDisconnection() {
+        controller.showDisconnection();
     }
 }

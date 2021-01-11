@@ -20,12 +20,15 @@ import java.util.concurrent.RejectedExecutionException;
  * The class representing implementing server interface
  * used in a standard game of Chinese checkers.
  * It is supposed to work with ClassicClients.
+
+ * @version 1.0
+ * @author Łukasz Pawlak
+ * @author Wojciech Sęk
  */
 public class ClassicServer implements Server {
   private final ServerSocket serverSocket;
   private final Game game;
   public final int numOfPlayers;
-  private Map<SocketHandler, Player> map;
   private ArrayList<SocketHandler> handlers;
 
   /**
@@ -176,6 +179,7 @@ public class ClassicServer implements Server {
           Logger.debug("Message processed properly.");
         } catch (IOException | ClassNotFoundException e) {
           Logger.err("Couldn't read the message.");
+          sendAllDisconnected();
           System.exit(1); // TODO: check if client got disconnected here and process it properly
         } catch (IllegalMoveException e) {
           try {
@@ -197,7 +201,7 @@ public class ClassicServer implements Server {
 
     /**
      * Used to pass the player at the beginning of the game.
-     * @throws IOException
+     * @throws IOException thrown when problems with socket
      */
     private synchronized void sendGreeting() throws IOException {
       synchronized (game) {
@@ -211,7 +215,7 @@ public class ClassicServer implements Server {
     /**
      * Used to send specific message to the client.
      * @param message message to be sent.
-     * @throws IOException
+     * @throws IOException thrown when problems with socket
      */
     public void sendMessage(ServerMessage message) throws IOException {
       outputStream.reset();
@@ -219,12 +223,20 @@ public class ClassicServer implements Server {
     }
 
     /**
+     * Method to send a message about a disconnected client to all.
+     */
+    public void sendAllDisconnected() {
+      ServerMessage message = new ServerMessage("DISCONNECTED");
+      sendToAllPlayers(message);
+    }
+
+    /**
      * It is used to process the message received from the server depending on
      * the communicate.
      * @param message message to be processed.
-     * @throws IllegalMoveException
-     * @throws WrongPlayerException
-     * @throws IOException
+     * @throws IllegalMoveException thrown when move is against the rules
+     * @throws WrongPlayerException thrown when the player is wrong
+     * @throws IOException thrown when problems with socket
      */
     private synchronized void processMessage(ClientMessage message) throws IllegalMoveException, WrongPlayerException, IOException {
       String messageType = message.getMessage();
@@ -260,7 +272,7 @@ public class ClassicServer implements Server {
 
     /**
      * Method to send information about illegal move.
-     * @throws IOException
+     * @throws IOException thrown when problems with socket
      */
     private void sendIllegalMoveMessage() throws IOException {
       ServerMessage message = new ServerMessage("ILLEGALMOVE", game.getBoard());
@@ -271,7 +283,7 @@ public class ClassicServer implements Server {
     /**
      * Method to send information that the player doing
      * the action is not supposed to do it.
-     * @throws IOException
+     * @throws IOException thrown when problems with socket
      */
     private void sendWrongPlayerMessage() throws IOException {
       ServerMessage message = new ServerMessage("WRONGPLAYER", game.getBoard());
@@ -281,7 +293,7 @@ public class ClassicServer implements Server {
 
     /**
      * Send when the move was accepted by the game, it contains the board.
-     * @throws IOException
+     * @throws IOException thrown when problems with socket
      */
     private void sendAcceptedMoveMessage() throws IOException {
       ServerMessage message = new ServerMessage("VALIDMOVE", game.getBoard());
@@ -292,7 +304,7 @@ public class ClassicServer implements Server {
 
     /**
      * Send when client has cancelled his or her move, it contains the board.
-     * @throws IOException
+     * @throws IOException thrown when problems with socket
      */
     private void sendCanceledMoveMessage() throws IOException {
       ServerMessage message = new ServerMessage("CANCELLEDMOVE", game.getBoard());
@@ -303,7 +315,7 @@ public class ClassicServer implements Server {
     /**
      * Message to send when the player confirmed his or her move,
      * sends the new active player to all.
-     * @throws IOException
+     * @throws IOException thrown when problems with socket
      */
     private void sendMoveAcceptedMessage() throws IOException {
       ServerMessage message = new ServerMessage("MOVEACCEPTED");
@@ -314,7 +326,7 @@ public class ClassicServer implements Server {
 
   /**
    * Function to be run when we start the programme.
-   * @param args
+   * @param args Standard input arguments.
    */
   public static void main(String[] args) {
     Server server;

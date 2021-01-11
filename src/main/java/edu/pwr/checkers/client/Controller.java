@@ -7,8 +7,10 @@ import edu.pwr.checkers.model.*;
 /**
  * This class is used to lover the coupling between GUI and model.
  * It communicates with Mediator.
+
  * @version 1.0
  * @author Łukasz Pawlak
+ * @author Wojciech Sęk
  */
 public class Controller {
   /** Reference to the window in which game takes place. */
@@ -93,11 +95,24 @@ public class Controller {
     window.refresh();
   }
 
+  /**
+   * Method locking the buttons on sidePanel of window.
+   */
   public void lockButtons() {
     window.lockButtons();
   }
 
+  /**
+   * Method unlocking the buttons on sidePanel of window.
+   */
   public void unlockButtons() {
     window.unlockButtons();
+  }
+
+  /**
+   * Mehtod to show information about a disconnected client on the window.
+   */
+  public void showDisconnection() {
+    window.showDisconnection();
   }
 }

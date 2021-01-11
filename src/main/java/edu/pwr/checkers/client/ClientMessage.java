@@ -8,6 +8,9 @@ import java.io.Serializable;
 
 /**
  * Class representing a message from client to server.
+
+ * @version 1.0
+ * @author Wojciech Sęk
  */
 public class ClientMessage implements Serializable {
   private String message;
