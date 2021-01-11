@@ -1,26 +1,26 @@
 #!/usr/bin/env bash
 
 echo 'Manifest-Version: 1.0
-Main-Class: edu.pwr.checkers.server.ClassicServer
-' > ./META-INF/MANIFEST.MF ;
-#./META-INF/MANIFEST.MF \
+Main-Class: edu.pwr.checkers.server.ClassicServer' > ./META-INF/MANIFEST.MF ;
 
-cd ./target/classes || exit;
+cd ./target/classes || (echo "Abort" ; exit);
 
-jar cmf server.jar \
+jar cmf ../.././META-INF/MANIFEST.MF server.jar \
 ./edu/pwr/checkers/server/* \
 ./edu/pwr/checkers/model/* \
 ./edu/pwr/checkers/Logger.class ;
 
-#echo 'META-INF/MANIFEST.MF
-#Manifest-Version: 1.0
-#Main-Class: edu.pwr.checkers.client.ClassicClient
-#' > META-INF/MANIFEST.MF ;
+cd ../.. || (echo "Abort" ; exit);
 
-#jar cf client.jar \
-#target/classes/edu/pwr/checkers/client/* \
-#target/classes/edu/pwr/checkers/model/* \
-#target/classes/edu/pwr/checkers/Logger.class \
-#target/classes/edu/pwr/checkers/client/view/* ;
+echo 'Manifest-Version: 1.0
+Main-Class: edu.pwr.checkers.client.ClassicClient' > ./META-INF/MANIFEST.MF ;
 
-java -jar server.jar
+cd ./target/classes || (echo "Abort" ; exit);
+
+jar cmf ../.././META-INF/MANIFEST.MF client.jar \
+./edu/pwr/checkers/client/* \
+./edu/pwr/checkers/model/* \
+./edu/pwr/checkers/Logger.class \
+./edu/pwr/checkers/client/view/* ;
+
+#java -jar server.jar

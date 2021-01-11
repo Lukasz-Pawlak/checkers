@@ -1,3 +1,2 @@
 Manifest-Version: 1.0
-Main-Class: edu.pwr.checkers.server.ClassicServer
-
+Main-Class: edu.pwr.checkers.client.ClassicClient
