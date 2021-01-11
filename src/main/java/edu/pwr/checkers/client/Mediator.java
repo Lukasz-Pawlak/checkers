@@ -127,4 +127,8 @@ public class Mediator {
     public void unlockButtons() {
         controller.unlockButtons();
     }
+
+    public void showDisconnection() {
+        controller.showDisconnection();
+    }
 }

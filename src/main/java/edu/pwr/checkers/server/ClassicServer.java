@@ -176,6 +176,7 @@ public class ClassicServer implements Server {
           Logger.debug("Message processed properly.");
         } catch (IOException | ClassNotFoundException e) {
           Logger.err("Couldn't read the message.");
+          sendAllDisconnected();
           System.exit(1); // TODO: check if client got disconnected here and process it properly
         } catch (IllegalMoveException e) {
           try {
@@ -216,6 +217,14 @@ public class ClassicServer implements Server {
     public void sendMessage(ServerMessage message) throws IOException {
       outputStream.reset();
       outputStream.writeObject(message);
+    }
+
+    /**
+     * Method to send a message about a disconnected client to all.
+     */
+    public void sendAllDisconnected() {
+      ServerMessage message = new ServerMessage("DISCONNECTED");
+      sendToAllPlayers(message);
     }
 
     /**

@@ -98,4 +98,8 @@ public class ClientWindow extends JFrame {
   public void unlockButtons() {
         sidePanel.enableButtons();
   }
+
+    public void showDisconnection() {
+        JOptionPane.showMessageDialog(this, "Another client has just got disconnected! Sorry!");
+    }
 }

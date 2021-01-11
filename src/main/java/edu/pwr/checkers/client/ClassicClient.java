@@ -261,7 +261,10 @@ public class ClassicClient implements Client {
           mediator.setBoard(board);
           mediator.refresh();
           mediator.refresh();
-        }  else {
+        } else if (message.equals("DISCONNECTED")) {
+          mediator.showDisconnection();
+          break;
+        } else {
           synchronized (numMsgReceived) {
             requestMessageAnswer = serverMessage;
             numMsgReceived++;

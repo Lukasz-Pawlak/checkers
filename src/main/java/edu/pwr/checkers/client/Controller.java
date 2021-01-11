@@ -100,4 +100,8 @@ public class Controller {
   public void unlockButtons() {
     window.unlockButtons();
   }
+
+  public void showDisconnection() {
+    window.showDisconnection();
+  }
 }
