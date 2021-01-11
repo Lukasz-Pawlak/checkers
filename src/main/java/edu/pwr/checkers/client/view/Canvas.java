@@ -225,6 +225,7 @@ public class Canvas extends JPanel {
             }
         }
         redrawAllPieces();
+        repaint();
     }
 
     /**

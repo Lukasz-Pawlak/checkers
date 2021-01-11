@@ -56,6 +56,9 @@ public class ClassicClient implements Client {
     mediator.startGame();
   }
 
+  /**
+   * @inheritDoc
+   */
   @Override
   public synchronized boolean sendMoveRequest(Player player, Piece piece, Coordinates coordinates) {
     if (piece == null) {
@@ -93,10 +96,18 @@ public class ClassicClient implements Client {
     return false;
   }
 
+  /**
+   * Method to send a specific message to server.
+   * @param message message to be sent
+   * @throws IOException
+   */
   private void send(ClientMessage message) throws IOException {
       outputStream.writeObject(message);
   }
 
+  /**
+   * @inheritDoc
+   */
   @Override
   public synchronized void sendCancelMoveRequest(Player player) {
     try {
@@ -122,15 +133,21 @@ public class ClassicClient implements Client {
     }
   }
 
+  /**
+   * @inheritDoc
+   */
   @Override
   public synchronized void sendAcceptMoveRequest(Player player) {
     try {
+      Logger.debug("Tworzę wiadomość z danym playerem!");
       ClientMessage clientMessage = new ClientMessage("ACCEPTMOVE", player);
+      Logger.debug("AcceptMove: stworzyłem wiadomość ACCEPTMOVE + player!");
       int begin;
       synchronized (numMsgReceived) {
         begin = numMsgReceived;
       }
-      outputStream.writeObject(clientMessage);
+      Logger.debug("AcceptMove: zaraz wyślę wiadomość!");
+      send(clientMessage);
       Logger.debug("Tu AcceptMove, czekam na wiadomość!");
       do {
         Thread.sleep(1);
@@ -141,13 +158,16 @@ public class ClassicClient implements Client {
         }
       } while (true);
       Logger.debug("Tu AcceptMove, otrzymałem wiadomość");
-      Player current = requestMessageAnswer.getPlayer();
-      mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
+//      mediator.setStatus("Now moving:\nPlayer with color " + current.getColors().get(0).toString());
     } catch (Exception ex) {
       Logger.err("sendAcceptMoveRequest: Message couldn't be sent.");
     }
   }
 
+  /**
+   * Method to get a new message from server.
+   * @return message from server.
+   */
   private ServerMessage getMessage() {
     ServerMessage message = null;
     try {
@@ -159,6 +179,9 @@ public class ClassicClient implements Client {
     return message;
   }
 
+  /**
+   * @inheritDoc
+   */
   @Override
   public synchronized Player getPlayer() {
     try {
@@ -173,6 +196,9 @@ public class ClassicClient implements Client {
     return null;
   }
 
+  /**
+   * @inheritDoc
+   */
   @Override
   public synchronized Board getBoard() {
     try {
@@ -187,11 +213,21 @@ public class ClassicClient implements Client {
     return null;
   }
 
+  /**
+   * Main function to be run when executing the programme.
+   * @param args the arguments
+   * @throws IOException
+   */
   public static void main (String[] args) throws IOException {
     Logger.info("Trying to connect with server...");
     new ClassicClient(new Socket("localhost", 4444)).run();
   }
 
+  /**
+   * Method reading the messages,
+   * if it is an answer to another function it puts
+   * it in the variable requestMessageAnswer.
+   */
   public void run() {
     Logger.info("Client is running!");
     try {
@@ -209,6 +245,7 @@ public class ClassicClient implements Client {
           Color color = player.getColors().get(0);
           mediator.setStatus("NOW PLAYING " + color.toString());
           mediator.setBoard(board);
+       //   mediator.setBoard(getBoard());
           mediator.refresh();
         } else if (message.equals("SETBOARD")) {
           Logger.debug("Dostałem wiadomość SETBOARD");
@@ -225,6 +262,7 @@ public class ClassicClient implements Client {
         serverMessage = (ServerMessage) inputStream.readObject();
         message = serverMessage.getMessage();
       }
+      Logger.debug("Dostałem wiadomość ENDGAME");
       mediator.setStatus(serverMessage.getStatus());
     } catch (Exception ex) {
       try {

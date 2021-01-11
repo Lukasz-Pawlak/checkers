@@ -72,6 +72,10 @@ public interface Game extends Serializable {
      */
     Player getActivePlayer();
 
+    /**
+     * This returns the ranking of the players at the end of game.
+     * @return The ranking of players
+     */
     List<Player> getRanking();
 
     /**
