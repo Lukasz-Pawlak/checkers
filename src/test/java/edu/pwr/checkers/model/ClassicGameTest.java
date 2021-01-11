@@ -85,9 +85,11 @@ public class ClassicGameTest {
     ClassicGame game = new ClassicGame(4);
     game.setup();
     game.init();
+    Player player = game.activePlayers.get(0);
+    while (player.getColors().get(0) != game.getActivePlayer().getColors().get(0))
+      game.acceptMove(game.getActivePlayer());
     Piece piece = game.board.getField(10,4).getPiece();
     Coordinates cor = new Coordinates(10, 5);
-    Player player = game.getActivePlayer();
     assertNotNull(game.activePlayers);
     assertNotNull(game.activePlayers.get(0));
     game.move(player, piece, cor);
