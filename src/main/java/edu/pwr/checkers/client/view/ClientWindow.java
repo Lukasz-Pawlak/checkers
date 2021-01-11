@@ -81,13 +81,13 @@ public class ClientWindow extends JFrame {
         canvas.setBoard(board);
     }
 
+    /**
+     * Used to refresh the board.
+     */
     public void refresh() {
-        canvas.redrawAll();
-        //canvas.resize(canvas.getWidth(), canvas.getHeight());
-        int w = getWidth(), h = getHeight();
-        this.setBounds(getX(), getY(), w * 2 - 7, h * 3);
-        Toolkit.getDefaultToolkit().sync();
-        this.setBounds(getX(), getY(), w, h);
-        Toolkit.getDefaultToolkit().sync();
+        canvas.canvasSizeChanged();
+        setBounds(getX(), getY(), getWidth(), getHeight());
+        canvas.canvasSizeChanged();
+        setBounds(getX(), getY(), getWidth(), getHeight());
     }
 }

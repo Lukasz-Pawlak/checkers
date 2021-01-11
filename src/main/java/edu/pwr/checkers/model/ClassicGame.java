@@ -204,8 +204,8 @@ public class ClassicGame implements Game {
         }
         lastMove = MoveType.NEWTURN;
         if (checkIfWon()) {
+            ranking.add(activePlayer);
             if (ranking.size() == numberOfPlayers - 1) {
-                ranking.add(activePlayer);
                 Logger.info("End of game!");
                 server.sendRanking();
             }
@@ -260,6 +260,9 @@ public class ClassicGame implements Game {
         return activePlayer;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Player> getRanking() {
         return ranking;

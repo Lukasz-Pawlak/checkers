@@ -229,6 +229,7 @@ public class Canvas extends JPanel {
         }
         g.dispose();
         redrawAllPieces();
+        repaint();
     }
 
     /**

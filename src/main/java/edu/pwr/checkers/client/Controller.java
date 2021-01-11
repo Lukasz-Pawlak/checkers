@@ -13,8 +13,6 @@ import edu.pwr.checkers.model.*;
 public class Controller {
   /** Reference to the window in which game takes place. */
   private final ClientWindow window;
-  /** Currently used board. */ //TODO: is it even needed here? Could be only passed when needed. Not changing it now, because maybe test use it in weird way.
-  private Board board;
   /** reference to the mediator. */
   private final Mediator mediator;
 
@@ -44,7 +42,6 @@ public class Controller {
    * @param board board to be set.
    */
   public void setBoard(Board board) {
-    this.board = board; // and this is redundant
     window.useThisBoard(board);
   }
 
@@ -89,6 +86,9 @@ public class Controller {
     mediator.sendAcceptMoveRequest();
   }
 
+  /**
+   * Used to refresh the board.
+   */
   public void refresh() {
     window.refresh();
   }

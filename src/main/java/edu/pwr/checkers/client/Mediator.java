@@ -70,6 +70,9 @@ public class Mediator {
             controller.setBoard(board);
     }
 
+    /**
+     * Used to refresh the board.
+     */
     public void refresh() {
         controller.refresh();
     }
