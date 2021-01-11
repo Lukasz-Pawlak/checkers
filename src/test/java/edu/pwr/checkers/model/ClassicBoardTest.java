@@ -10,6 +10,7 @@ public class ClassicBoardTest {
     @Test
     public void testGetSize() {
         Board board = new ClassicBoard(6);
+        //board.setup();
         assertEquals(17, board.getSize());
     }
 

@@ -8,6 +8,7 @@ public class ClassicGameTest {
   @Test
   public void generalTest() {
     ClassicGame game = new ClassicGame(2);
+    game.setup();
     game.init();
     Piece piece = game.board.getField(10,4).getPiece();
     assertNotNull(piece);
@@ -63,31 +64,35 @@ public class ClassicGameTest {
     } catch (WrongPlayerException e) {
       e.printStackTrace();
     }
-    assertEquals(1, game.ranking.size());
+    assertEquals(2, game.ranking.size());
   }
 
   @Test(expected = IllegalMoveException.class)
   public void testMove1() throws IllegalMoveException, WrongPlayerException {
     ClassicGame game = new ClassicGame(3);
+    game.setup();
     game.init();
     Piece piece = game.board.getField(10,4).getPiece();
     Coordinates cor = new Coordinates(10, 8);
-    Player player = game.activePlayers.get(0);
     assertNotNull(game.activePlayers);
-    assertNotNull(game.activePlayers.get(0));
+    Player player = game.getActivePlayer();
+    assertNotNull(player);
     game.move(player, piece, cor);
   }
 
   @Test(expected = IllegalMoveException.class)
   public void testMove2() throws IllegalMoveException, WrongPlayerException {
     ClassicGame game = new ClassicGame(4);
+    game.setup();
     game.init();
     Piece piece = game.board.getField(10,4).getPiece();
     Coordinates cor = new Coordinates(10, 5);
-    Player player = game.activePlayers.get(0);
+    Player player = game.getActivePlayer();
     assertNotNull(game.activePlayers);
     assertNotNull(game.activePlayers.get(0));
     game.move(player, piece, cor);
+    //game.acceptMove(player);
+    //player = game.getActivePlayer();
     cor = new Coordinates(10, 6); // second ONESTEP
     game.move(player, piece, cor);
   }
@@ -95,6 +100,7 @@ public class ClassicGameTest {
   @Test
   public void testMove3() {
     ClassicGame game = new ClassicGame(6);
+    game.setup();
     game.init();
     Piece piece = game.board.getField(10,4).getPiece();
     Coordinates cor = new Coordinates(10, 5);
