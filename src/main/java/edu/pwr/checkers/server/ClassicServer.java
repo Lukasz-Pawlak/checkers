@@ -210,10 +210,11 @@ public class ClassicServer implements Server {
 
     /**
      * Used to send specific message to the client.
-     * @param message messaage to be sent.
+     * @param message message to be sent.
      * @throws IOException
      */
     public void sendMessage(ServerMessage message) throws IOException {
+      outputStream.reset();
       outputStream.writeObject(message);
     }
 
@@ -263,8 +264,7 @@ public class ClassicServer implements Server {
      */
     private void sendIllegalMoveMessage() throws IOException {
       ServerMessage message = new ServerMessage("ILLEGALMOVE", game.getBoard());
-      outputStream.reset();
-      outputStream.writeObject(message);
+      sendMessage(message);
       setBoardAll();
     }
 
@@ -275,8 +275,7 @@ public class ClassicServer implements Server {
      */
     private void sendWrongPlayerMessage() throws IOException {
       ServerMessage message = new ServerMessage("WRONGPLAYER", game.getBoard());
-      outputStream.reset();
-      outputStream.writeObject(message);
+      sendMessage(message);
       setBoardAll();
     }
 
@@ -286,8 +285,7 @@ public class ClassicServer implements Server {
      */
     private void sendAcceptedMoveMessage() throws IOException {
       ServerMessage message = new ServerMessage("VALIDMOVE", game.getBoard());
-      outputStream.reset();
-      outputStream.writeObject(message);
+      sendMessage(message);
       setBoardAll();
       setBoardAll();
     }
@@ -298,8 +296,7 @@ public class ClassicServer implements Server {
      */
     private void sendCanceledMoveMessage() throws IOException {
       ServerMessage message = new ServerMessage("CANCELLEDMOVE", game.getBoard());
-      outputStream.reset();
-      outputStream.writeObject(message);
+      sendMessage(message);
       setBoardAll();
     }
 
@@ -310,8 +307,7 @@ public class ClassicServer implements Server {
      */
     private void sendMoveAcceptedMessage() throws IOException {
       ServerMessage message = new ServerMessage("MOVEACCEPTED");
-      outputStream.reset();
-      outputStream.writeObject(message);
+      sendMessage(message);
       setActivePlayerAll();
     }
   }
