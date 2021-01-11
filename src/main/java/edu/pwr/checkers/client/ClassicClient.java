@@ -86,13 +86,13 @@ public class ClassicClient implements Client {
         }
       } while (true);
 
-        Logger.debug("Tu MoveRequest, otrzymałem wiadomość!");
+      Logger.debug("Tu MoveRequest, otrzymałem wiadomość!");
+      mediator.setBoard(requestMessageAnswer.getBoard());
+      boolean isValid = requestMessageAnswer.getMessage().equals("VALIDMOVE");
+      if (isValid) {
         mediator.setBoard(requestMessageAnswer.getBoard());
-        boolean isValid = requestMessageAnswer.getMessage().equals("VALIDMOVE");
-        if (isValid) {
-          mediator.setBoard(requestMessageAnswer.getBoard());
-        }
-      } catch (Exception ex) {
+      }
+    } catch (Exception ex) {
       Logger.err("sendMoveRequest: Message couldn't be sent.");
       ex.printStackTrace();
     }
@@ -105,7 +105,7 @@ public class ClassicClient implements Client {
    * @throws IOException
    */
   private void send(ClientMessage message) throws IOException {
-      outputStream.writeObject(message);
+    outputStream.writeObject(message);
   }
 
   /**
@@ -129,9 +129,9 @@ public class ClassicClient implements Client {
           }
         }
       } while (true);
-        Logger.debug("Tu CancelRequest, otrzymałem wiadomość!");
-        mediator.setBoard(requestMessageAnswer.getBoard());
-      } catch (Exception ex) {
+      Logger.debug("Tu CancelRequest, otrzymałem wiadomość!");
+      mediator.setBoard(requestMessageAnswer.getBoard());
+    } catch (Exception ex) {
       Logger.err("sendCancelMoveRequest: Message couldn't be sent.");
     }
   }
@@ -253,7 +253,7 @@ public class ClassicClient implements Client {
           }
           mediator.setStatus("NOW PLAYING " + color.toString());
           mediator.setBoard(board);
-       //   mediator.setBoard(getBoard());
+          //   mediator.setBoard(getBoard());
           mediator.refresh();
         } else if (message.equals("SETBOARD")) {
           Logger.debug("Dostałem wiadomość SETBOARD");
@@ -261,9 +261,6 @@ public class ClassicClient implements Client {
           mediator.setBoard(board);
           mediator.refresh();
           mediator.refresh();
-        } else if (message.equals("DISCONNECTED")) {
-          mediator.showDisconnection();
-          break;
         } else {
           synchronized (numMsgReceived) {
             requestMessageAnswer = serverMessage;

@@ -6,17 +6,19 @@ import edu.pwr.checkers.model.Player;
 import java.io.Serializable;
 
 /**
- * Class representing a message grom server to client.
+ * Class representing a message from server to client.
+
+ * @version 1.0
+ * @author Wojciech Sęk
  */
 public class ServerMessage implements Serializable {
-  private String message;
+  private final String message;
   private Board board = null;
   private Player player = null;
-  private Exception exception = null;
   private String status = null;
 
   /**
-   * Constructor settting just the message.
+   * Constructor setting just the message.
    * @param message message to be set
    */
   public ServerMessage(String message) {
@@ -44,16 +46,6 @@ public class ServerMessage implements Serializable {
   }
 
   /**
-   * Constructor just the message and exception.
-   * @param message message to be set
-   * @param exception exception to be set
-   */
-  public ServerMessage(String message, Exception exception) {
-    this.message = message;
-    this.exception = exception;
-  }
-
-  /**
    * Constructor just the message and player.
    * @param message message to be set
    * @param player player to be set
@@ -64,10 +56,10 @@ public class ServerMessage implements Serializable {
   }
 
   /**
-   * initializing new client
-   * @param init
-   * @param board
-   * @param nextPlayer
+   * Initializing new client
+   * @param init initial message
+   * @param board initial board
+   * @param nextPlayer player of this client
    */
     public ServerMessage(String init, Board board, Player nextPlayer) {
       this.message = init;
