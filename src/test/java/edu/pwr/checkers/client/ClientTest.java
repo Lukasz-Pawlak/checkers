@@ -5,6 +5,7 @@ import edu.pwr.checkers.client.Client;
 import edu.pwr.checkers.client.Mediator;
 import edu.pwr.checkers.model.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
@@ -39,7 +40,7 @@ public class ClientTest {
 
     }
 
-    @Test
+    @Ignore
     public void testClient() {
 
     }
