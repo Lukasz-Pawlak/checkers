@@ -1,0 +1,6 @@
+Aby uruchomić serwer należy w lini komend wpisać
+java -jar server.jar <x>
+gdzie <x> jest liczbą graczy.
+
+Aby uruchomić klienta należy wpisać
+java -jar client.jar

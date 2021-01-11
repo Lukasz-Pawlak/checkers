@@ -111,5 +111,6 @@ public class ClientWindow extends JFrame {
      */
     public void showDisconnection() {
         JOptionPane.showMessageDialog(this, "Another client has just got disconnected! Sorry!");
+        dispose();
     }
 }

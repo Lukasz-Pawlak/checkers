@@ -24,5 +24,3 @@ jar cmf ../.././META-INF/MANIFEST.MF client.jar \
 ./edu/pwr/checkers/Logger.class \
 ./edu/pwr/checkers/server/ServerMessage.class \
 ./edu/pwr/checkers/client/view/* ;
-
-#java -jar server.jar

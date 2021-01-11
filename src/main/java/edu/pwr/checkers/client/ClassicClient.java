@@ -64,6 +64,7 @@ public class ClassicClient implements Client {
    */
   @Override
   public synchronized boolean sendMoveRequest(Player player, Piece piece, Coordinates coordinates) {
+    boolean isValid = false;
     if (piece == null) {
       Logger.err("client: sendMoveRequest: null piece passed");
       System.exit(1);
@@ -88,7 +89,7 @@ public class ClassicClient implements Client {
 
       Logger.debug("Tu MoveRequest, otrzymałem wiadomość!");
       mediator.setBoard(requestMessageAnswer.getBoard());
-      boolean isValid = requestMessageAnswer.getMessage().equals("VALIDMOVE");
+      isValid = requestMessageAnswer.getMessage().equals("VALIDMOVE");
       if (isValid) {
         mediator.setBoard(requestMessageAnswer.getBoard());
       }
@@ -96,7 +97,7 @@ public class ClassicClient implements Client {
       Logger.err("sendMoveRequest: Message couldn't be sent.");
       ex.printStackTrace();
     }
-    return false;
+    return isValid;
   }
 
   /**
