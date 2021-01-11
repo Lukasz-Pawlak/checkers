@@ -8,9 +8,7 @@ import edu.pwr.checkers.model.Field;
 import edu.pwr.checkers.model.Piece;
 import processing.core.PApplet;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
 /**
@@ -43,10 +41,6 @@ public class Canvas extends PApplet {
     /** Controller object used to communicate with model and client. */
     private final Controller controller;
 
-    public static void main(String[] passedArgs) {
-        String[] appletArgs = new String[] { "Canvas" };
-        PApplet.main(appletArgs);
-    }
 
     /**
      * The only constructor.
@@ -61,7 +55,8 @@ public class Canvas extends PApplet {
 
     public void init() {
         if (board != null) Logger.debug("Pobrano board prawidłowo");
-
+        String[] appletArgs = new String[] { "edu.pwr.checkers.client.view.Canvas" };
+        PApplet.runSketch(appletArgs, this);
     }
 
     @Override
