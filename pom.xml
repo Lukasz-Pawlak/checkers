@@ -27,9 +27,14 @@
       <dependency>
           <groupId>org.mockito</groupId>
           <artifactId>mockito-core</artifactId>
-          <version>3.6.0</version>
+          <version>2.23.4</version> <!-- there were some conflicts, but this version seems to work -->
           <scope>test</scope>
       </dependency>
+    <dependency>
+      <groupId>org.processing</groupId>
+      <artifactId>core</artifactId>
+      <version>2.2.1</version> <!-- older version is easier to port at this point -->
+    </dependency>
   </dependencies>
 
   <build>

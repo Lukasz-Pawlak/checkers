@@ -6,6 +6,7 @@ import edu.pwr.checkers.model.Board;
 import edu.pwr.checkers.model.Coordinates;
 import edu.pwr.checkers.model.Field;
 import edu.pwr.checkers.model.Piece;
+import processing.core.PApplet;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +19,7 @@ import java.awt.image.BufferedImage;
  * @version 1.0
  * @author Łukasz Pawlak
  */
-public class Canvas extends JPanel {
+public class Canvas extends PApplet {
     /** Board displayed. */
     private Board board;
     /** Image representing empty board. */
@@ -42,6 +43,11 @@ public class Canvas extends JPanel {
     /** Controller object used to communicate with model and client. */
     private final Controller controller;
 
+    public static void main(String[] passedArgs) {
+        String[] appletArgs = new String[] { "Canvas" };
+        PApplet.main(appletArgs);
+    }
+
     /**
      * The only constructor.
      * @param controller controller object to be used.
@@ -50,56 +56,39 @@ public class Canvas extends JPanel {
         this.controller = controller;
         movingPiece = null;
         //initialPosition = null;
-        setBackground(Color.LIGHT_GRAY);
+        background(0xAAAAAA);
     }
 
     public void init() {
         if (board != null) Logger.debug("Pobrano board prawidłowo");
 
-        // handling window resize event
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                canvasSizeChanged();
-                repaint();
-            }
-        });
+    }
 
-        // handling mouse events
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                if (movingPiece == null) {
-                    movingPiece = tryToGetPiece(e.getPoint());
-                }
-                if (movingPiece != null) {
-                    movingPiecePosition = e.getPoint();
-                    redrawAllPieces();
-                }
-            }
+    @Override
+    public void mouseReleased() {
+        if (movingPiece != null) {
+            putMovingPiece(new Point(mouseX, mouseY));
+            redrawAllPieces();
+        }
+    }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                super.mouseReleased(e);
-                if (movingPiece != null) {
-                    putMovingPiece(e.getPoint());
-                    redrawAllPieces();
-                }
-            }
-        });
+    @Override
+    public void mousePressed() {
+        if (movingPiece == null) {
+            movingPiece = tryToGetPiece(new Point(mouseX, mouseY));
+        }
+        if (movingPiece != null) {
+            movingPiecePosition = new Point(mouseX, mouseY);
+            redrawAllPieces();
+        }
+    }
 
-        addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                super.mouseDragged(e);
-                if (movingPiece != null) {
-                    movingPiecePosition = e.getPoint();
-                    redrawMovingPiece();
-                }
-            }
-        });
-        canvasSizeChanged();
+    @Override
+    public void mouseDragged() {
+        if (movingPiece != null) {
+            movingPiecePosition = new Point(mouseX, mouseY);
+            redrawMovingPiece();
+        }
     }
 
     /**
@@ -113,7 +102,7 @@ public class Canvas extends JPanel {
      * @return grabbed piece of null when not found.
      */
     private Piece tryToGetPiece(Point point) {
-        super.paint(stillPiecesLayer.getGraphics());
+        //super.paint(stillPiecesLayer.getGraphics());
         point.translate(- squareSideLength / 2, 0);
         point = inverseTransform(point.x, point.y);
         Coordinates coords = new Coordinates(point.x / stepSize, point.y / stepSize);
@@ -189,8 +178,8 @@ public class Canvas extends JPanel {
      * It redraws images representing state of the board.
      */
     public void canvasSizeChanged() {
-        super.paint(getGraphics());
-        squareSideLength = (int) Math.min(2.0 * getWidth() / 3, 2 * getHeight() / Math.sqrt(3.0));
+        //super.paint(getGraphics());
+        squareSideLength = (int) Math.min(2.0 * width / 3, 2 * height / Math.sqrt(3.0));
         int width = (int) (squareSideLength * 1.5);
         int height = (int) (squareSideLength * Math.sqrt(3.0)  * 0.5);
         int type = BufferedImage.TYPE_INT_ARGB;
@@ -237,7 +226,7 @@ public class Canvas extends JPanel {
     private void redrawAllPieces() {
         //stillPiecesLayer.setData(CLEAR.copyData(stillPiecesLayer.getRaster()));
         Graphics2D g = stillPiecesLayer.createGraphics();
-        super.paint(g);
+        //super.paint(g);
         //g.setColor(new Color(0,0,0,0));
         //g.fillRect(0, 0, getWidth(), getHeight());
 
@@ -266,7 +255,7 @@ public class Canvas extends JPanel {
         int diam = (int) (0.7 * stepSize);
 
         Graphics2D g = movingPieceLayer.createGraphics();
-        super.paint(g);
+        //super.paint(g);
         //g.setColor(new Color(0,0,0,0));
         //g.fillRect(0, 0, getWidth(), getHeight());
 
@@ -276,16 +265,16 @@ public class Canvas extends JPanel {
             g.fillOval(coords.x - diam / 2, coords.y - diam / 2, diam, diam);
         }
         g.dispose();
-        repaint();
+        //repaint();
     }
 
 
     /**
      * @inheritDoc
      */
-    @Override
+    //@Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        //super.paintComponent(g);
         g.drawImage(boardLayer, 0, 0, null);
         g.drawImage(stillPiecesLayer, 0, 0, null);
         g.drawImage(movingPieceLayer, 0, 0, null);
