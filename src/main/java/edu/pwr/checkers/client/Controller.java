@@ -92,4 +92,12 @@ public class Controller {
   public void refresh() {
     window.refresh();
   }
+
+  public void lockButtons() {
+    window.lockButtons();
+  }
+
+  public void unlockButtons() {
+    window.unlockButtons();
+  }
 }

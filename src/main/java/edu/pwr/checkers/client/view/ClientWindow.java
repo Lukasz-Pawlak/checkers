@@ -90,4 +90,12 @@ public class ClientWindow extends JFrame {
         canvas.canvasSizeChanged();
         setBounds(getX(), getY(), getWidth(), getHeight());
     }
+
+  public void lockButtons() {
+        sidePanel.disableButtons();
+  }
+
+  public void unlockButtons() {
+        sidePanel.enableButtons();
+  }
 }

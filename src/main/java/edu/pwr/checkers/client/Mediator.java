@@ -119,4 +119,12 @@ public class Mediator {
         this.player = player;
         this.controller.showMessage("YOU ARE " + player.getColors().get(0).toString());
     }
+
+    public void lockButtons() {
+        controller.lockButtons();
+    }
+
+    public void unlockButtons() {
+        controller.unlockButtons();
+    }
 }

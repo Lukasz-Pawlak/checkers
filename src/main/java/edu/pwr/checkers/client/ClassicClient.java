@@ -29,6 +29,7 @@ public class ClassicClient implements Client {
   private ObjectOutputStream outputStream;
   private Integer numMsgReceived = 0;
   private volatile ServerMessage requestMessageAnswer;
+  private Color myColor;
 
   /**
    * Constructor that sets the client's socket.
@@ -50,7 +51,9 @@ public class ClassicClient implements Client {
     Logger.debug("client: server message: " + greeting.getMessage());
     mediator = new Mediator(this);
     mediator.setBoard(greeting.getBoard());
-    mediator.setPlayer(greeting.getPlayer());
+    Player myPlayer = greeting.getPlayer();
+    mediator.setPlayer(myPlayer);
+    myColor = myPlayer.getColors().get(0);
     Logger.debug("client: Player got: " + greeting.getPlayer());
     Logger.debug("client: Board got:" + greeting.getBoard());
     mediator.startGame();
@@ -243,6 +246,11 @@ public class ClassicClient implements Client {
           Player player = serverMessage.getPlayer();
           Board board = serverMessage.getBoard();
           Color color = player.getColors().get(0);
+          if (color != myColor) {
+            mediator.lockButtons();
+          } else {
+            mediator.unlockButtons();
+          }
           mediator.setStatus("NOW PLAYING " + color.toString());
           mediator.setBoard(board);
        //   mediator.setBoard(getBoard());

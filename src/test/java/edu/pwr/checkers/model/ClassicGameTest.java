@@ -93,7 +93,7 @@ public class ClassicGameTest {
     Piece piece = game.board.getField(10,4).getPiece();
     Coordinates cor = new Coordinates(10, 5);
     assertNotNull(game.activePlayers);
-    assertNotNull(game.activePlayers.get(0));
+    assertNotNull(game.activePlayers.get(3));
     game.move(player, piece, cor);
     //game.acceptMove(player);
     //player = game.getActivePlayer();
