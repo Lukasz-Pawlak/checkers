@@ -43,6 +43,12 @@ public class ClassicGame implements Game {
     protected Piece movingPiece;
     /** Reference  to the instance of the server that hosts game. */
     private Server server;
+    /**
+     * 1st entry is initial position of moving piece, next ones
+     * are following displacements. Always contains n+1 positions,
+     * where n is number of atomic moves performed in this turn.
+     */
+    private final List<Coordinates> currentMoveList;
 
     @Override
     public void setServer(Server server) {
@@ -59,6 +65,7 @@ public class ClassicGame implements Game {
         board = new ClassicBoard(numberOfPlayers);
         activePlayers = new CyclicGetter<>(numberOfPlayers);
         ranking = new ArrayList<>(numberOfPlayers);
+        currentMoveList = new ArrayList<>();
     }
 
     @Override
@@ -104,6 +111,8 @@ public class ClassicGame implements Game {
         if (lastMove == MoveType.NEWTURN) {
             movingPiece = piece;
             beginPosition = piece.getField().getPosition();
+            //currentMoveList.clear();     // list should be clear at this point
+            currentMoveList.add(piece.getField().getPosition());    // adding initial position
         }
 
 
@@ -135,6 +144,7 @@ public class ClassicGame implements Game {
             newField.setPiece(piece);
             oldField.setPiece(null);
             piece.setField(newField);
+            currentMoveList.add(newField.getPosition());
         }
     }
 
@@ -192,6 +202,7 @@ public class ClassicGame implements Game {
             movingPiece.setField(oldField);
         }
         lastMove = MoveType.NEWTURN;
+        currentMoveList.clear();
     }
 
     /**
@@ -213,7 +224,8 @@ public class ClassicGame implements Game {
         if (activePlayers.getCapacity() != 0) {
             activePlayer = activePlayers.getNext();
         }
-
+        server.saveMoveList(currentMoveList);
+        currentMoveList.clear();    // TODO: make sure that server's impl doesn't use additional threads, or it might break here
     }
 
     /**

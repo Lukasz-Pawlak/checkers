@@ -76,7 +76,7 @@ public class ClientWindow extends JFrame {
 
     /**
      * This method sets board used by canvas.
-     * @param board board to bee set.
+     * @param board board to be set.
      */
     public void useThisBoard(Board board) {
         canvas.setBoard(board);
@@ -88,8 +88,7 @@ public class ClientWindow extends JFrame {
     public void refresh() {
         canvas.canvasSizeChanged();
         setBounds(getX(), getY(), getWidth(), getHeight());
-        canvas.canvasSizeChanged();
-        setBounds(getX(), getY(), getWidth(), getHeight());
+        this.repaint();
     }
 
     /**

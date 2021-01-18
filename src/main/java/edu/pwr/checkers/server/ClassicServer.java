@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -30,6 +31,7 @@ public class ClassicServer implements Server {
   private final Game game;
   public final int numOfPlayers;
   private ArrayList<SocketHandler> handlers;
+
 
   /**
    * Constructor that creates server socket and starts a game
@@ -130,6 +132,25 @@ public class ClassicServer implements Server {
       ranking = ranking + (place++) + " place: " + player.getColors().get(0).toString() + "\n";
     }
     sendToAllPlayers(new ServerMessage("ENDGAME", ranking));
+  }
+
+  @Override
+  public void saveMoveList(List<Coordinates> moves) {
+    if (moves == null || moves.size() < 2)
+      return;
+
+    Iterator<Coordinates> it = moves.iterator();
+    Coordinates prev = it.next();
+    while (it.hasNext()) {
+      Coordinates next = it.next();
+      /*
+       * TODO: handling db stuff.
+       *  prev is position before atomic move, next is position after atomic move.
+       *  We are adding atomic moves of only one piece.
+       */
+      Logger.debug("pre:" + prev.x + ", " + prev.y + "   nex:" + next.x + ", " + next.y);
+      prev = next;
+    }
   }
 
 
