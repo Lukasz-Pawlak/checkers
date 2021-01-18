@@ -24,4 +24,13 @@ public class Coordinates implements Serializable {
         this.x = x;
         this.y = y;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Coordinates) {
+            Coordinates other = ((Coordinates) o);
+            return other.x == this.x && other.y == this.y;
+        }
+        return false;
+    }
 }
