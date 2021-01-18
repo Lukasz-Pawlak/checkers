@@ -227,6 +227,10 @@ public class ClassicClient implements Client {
     new ClassicClient(new Socket("localhost", 4444)).run();
   }
 
+  class Foo extends Throwable {
+
+  }
+
   /**
    * Method reading the messages,
    * if it is an answer to another function it puts
@@ -243,7 +247,7 @@ public class ClassicClient implements Client {
       message = serverMessage.getMessage();
       while (!message.equals("ENDOFGAME")) {
         if (message.equals("SETACTIVE")) {
-          Logger.debug("Dostałem wiadomość SETACTIVE");
+          Logger.debug("Got SETACTIVE message");
           Player player = serverMessage.getPlayer();
           Board board = serverMessage.getBoard();
           Color color = player.getColors().get(0);
@@ -257,7 +261,7 @@ public class ClassicClient implements Client {
           //   mediator.setBoard(getBoard());
           mediator.refresh();
         } else if (message.equals("SETBOARD")) {
-          Logger.debug("Dostałem wiadomość SETBOARD");
+          Logger.debug("Got SETBOARD message");
           Board board = serverMessage.getBoard();
           mediator.setBoard(board);
           mediator.refresh();
