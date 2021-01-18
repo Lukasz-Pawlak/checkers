@@ -136,6 +136,9 @@ public class ClassicGame implements Game {
                 lastMove == MoveType.ONESTEP || lastMove == MoveType.UNKNOWN)) {
             Logger.debug("game: move: jump sequence started in illegal state");
             throw new IllegalMoveException();
+        } else if (currMove == MoveType.JUMPSEQ && movingPiece != null &&
+                !movingPiece.getField().getPosition().equals(piece.getField().getPosition())) {
+            throw new IllegalMoveException();
         } else {
             Logger.debug("move: good move, updating board state");
             lastMove = currMove;
