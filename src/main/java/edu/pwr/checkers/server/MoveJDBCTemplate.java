@@ -20,7 +20,7 @@ public class MoveJDBCTemplate {
     public Move getMove(Integer game, Integer moveNumber) {
         String SQL = "SELECT * FROM move WHERE game = ? AND moveNumber = ?";
         Move move = jdbcTemplateObject.queryForObject(SQL,
-            new Object[]{id}, new StudentMapper());
+            new Object[]{game, moveNumber}, new MoveMapper());
 
         return move;
     }
