@@ -2,6 +2,8 @@ package edu.pwr.checkers.server;
 
 import java.util.List;
 import javax.sql.DataSource;
+
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class GameJDBCTemplate {
@@ -14,7 +16,11 @@ public class GameJDBCTemplate {
     }
     public void create(Integer id, Integer numOfPlayers) {
         String SQL = "INSERT INTO move (id, numOfPlayers) VALUES (?, ?)";
-        jdbcTemplateObject.update( SQL, id, numOfPlayers);
+        try {
+            jdbcTemplateObject.update( SQL, id, numOfPlayers);
+        } catch (DataAccessException ex) {
+            // ...
+        }
         return;
     }
 

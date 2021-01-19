@@ -352,27 +352,36 @@ public class ClassicServer implements Server {
   public static void main(String[] args) {
     Server server;
 
-    if (args.length != 1) {
-      Logger.err("Give only the number of players!");
+    if (args.length != 2 || (!args[0].equals("play") && !args[0].equals("see"))) {
+      Logger.info("Usage: java -jar server.jar <play|see> <number>");
+      Logger.info("play -> number is number of players (clients to connect)");
+      Logger.info("see  -> number is id of game saved in database to view by client");
       return;
     }
 
+    int secondArg;
     try {
-      int numOfPlayers = Integer.parseInt(args[0]);
-      server = new ClassicServer(numOfPlayers);
-      server.setUp();
-      Logger.info("Server running...");
-    } catch(NumberFormatException e) {
-      Logger.err("Give an integer!");
-    } catch(WrongNumberException e) {
-      Logger.err("The number can be: 2,3,4 or 6");
-    } catch(IOException e) {
-      Logger.err("Couldn't set up the server.");
-    } catch(NullPointerException e) {
-      Logger.err("Server is null.");
-      e.printStackTrace();
-    } catch(RejectedExecutionException e) {
-      Logger.err("Execution rejected.");
+      secondArg = Integer.parseInt(args[1]);
+    } catch (NumberFormatException ex) {
+      Logger.err("error: second argument not a number");
+      return;
+    }
+
+    if (args[0].equals("play")) {
+      try {
+        server = new ClassicServer(secondArg);
+        server.setUp();
+        Logger.info("Server running...");
+      } catch(WrongNumberException e) {
+        Logger.err("The number can be: 2,3,4 or 6");
+      } catch(IOException e) {
+        Logger.err("Couldn't set up the server.");
+      } catch(RejectedExecutionException e) {
+        Logger.err("Execution rejected.");
+      }
+    }
+    else {
+      // TODO:
     }
   }
 }
