@@ -6,29 +6,28 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.sql.DataSource;
 
+import edu.pwr.checkers.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class GameJDBCTemplate {
-    private DataSource dataSource;
     private JdbcTemplate jdbcTemplateObject;
 
     public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
         this.jdbcTemplateObject = new JdbcTemplate(dataSource);
     }
-    public void createGame(Integer numOfPlayers) {
+    public Integer createGame(Integer numOfPlayers) {
         String SQL = "INSERT INTO game (numOfPlayers) VALUES (?)";
-        // String SQL2 = "SELECT LAST_INSERT_ID()";
-        // String SQL = "CALL createNewGame (?, @result)"; // do we want to use this procedure here?
-        // We should return id of game we created here ig, so this might be the way
+        String SQL2 = "SELECT MAX(id) FROM game";
+
         try {
             jdbcTemplateObject.update( SQL, numOfPlayers);
-            // jdbcTemplateObject.query(SQL2);
+            return jdbcTemplateObject.queryForObject(SQL2, Integer.class);
         } catch (DataAccessException ex) {
-            // ...
+            Logger.err("Data processing gone wrong");
         }
+        return null;
     }
 
     public List<Game> listGames() {

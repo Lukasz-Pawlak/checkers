@@ -32,7 +32,9 @@ public class ClassicServer implements Server {
   private final edu.pwr.checkers.model.Game game;
   public final int numOfPlayers;
   private ArrayList<SocketHandler> handlers;
-
+  public final static ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+  public final static GameJDBCTemplate gameJDBCTemplate = (GameJDBCTemplate)context.getBean("gameJDBCTemplate");
+  public final static MoveJDBCTemplate moveJDBCTemplate = (MoveJDBCTemplate)context.getBean("moveJDBCTemplate");
 
   /**
    * Constructor that creates server socket and starts a game
@@ -222,7 +224,7 @@ public class ClassicServer implements Server {
         } catch (IOException | ClassNotFoundException e) {
           Logger.err("Couldn't read the message.");
           sendAllDisconnected();
-          System.exit(1); // TODO: check if client got disconnected here and process it properly
+          System.exit(1);
         } catch (IllegalMoveException e) {
           try {
             Logger.info("IllegalMoveException");
@@ -387,9 +389,16 @@ public class ClassicServer implements Server {
         Logger.debug("output stream correctly connected");
         inputStream = new ObjectInputStream(socket.getInputStream());
         Logger.debug("input stream correctly connected");
+        sendGreeting();
       } catch (IOException e) {
         // nothing
       }
+    }
+
+    private void sendGreeting() throws IOException {
+      List<Game> games = gameJDBCTemplate.listGames();
+
+
     }
   }
 
@@ -403,6 +412,9 @@ public class ClassicServer implements Server {
     ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
 
     GameJDBCTemplate gameJDBCTemplate = (GameJDBCTemplate)context.getBean("gameJDBCTemplate");
+
+    int a = gameJDBCTemplate.createGame(7);
+    System.out.println("Numer gry " + a);
 
     /**
     Server server;
