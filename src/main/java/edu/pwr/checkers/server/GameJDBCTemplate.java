@@ -29,25 +29,8 @@ public class GameJDBCTemplate {
         }
     }
 
-    public void addMoves(Integer gameId, Integer moveNumber, List<Move> moves) {
-        String SQL = "INSERT INTO move (game, moveNumber, oldX, oldY, newX, newY) VALUES " +
-                "(" + gameId + ", " + moveNumber + ", ?, ?, ?, ?)";
-        //String SQL = "CALL addMove (" + gameId + ", " + moveNumber + ", ?, ?, ?, ?, @result)";
-        try {
-            jdbcTemplateObject.update( SQL ); // TODO: passing arguments to update here
-        } catch (DataAccessException ex) {
-            // ...
-        }
-    }
-
     public List<Game> listGames() {
         String SQL = "SELECT * FROM game";
         return jdbcTemplateObject.query(SQL, new GameMapper());
-    }
-
-    public List<Move> listMovesInGame(int gameId) {
-        String SQL = "SELECT * FROM move WHERE game = " + gameId + " ORDER BY moveNumber";
-        // it is safe to concat like this, it's just int    ^
-        return jdbcTemplateObject.query(SQL, new MoveMapper());
     }
 }

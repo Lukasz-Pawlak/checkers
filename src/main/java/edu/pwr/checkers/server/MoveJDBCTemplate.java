@@ -17,16 +17,13 @@ public class MoveJDBCTemplate {
         jdbcTemplateObject.update( SQL, game, moveNumber, oldX, oldY, newX, newY);
         return;
     }
-    public Move getMove(Integer game, Integer moveNumber) {
-        String SQL = "SELECT * FROM move WHERE game = ? AND moveNumber = ?";
-        Move move = jdbcTemplateObject.queryForObject(SQL,
-            new Object[]{game, moveNumber}, new MoveMapper());
 
-        return move;
+    public Move getMove(Integer game, Integer moveNumber) {
+        String SQL = "SELECT * FROM move WHERE game = " + game + " AND moveNumber = " + moveNumber;
+        return jdbcTemplateObject.query(SQL, new MoveMapper()).get(0);
     }
     public List<Move> listMoves(Integer game) {
-        String SQL = "SELECT * FROM move WHERE game = " + game;
-        List<Move> moves = jdbcTemplateObject.query(SQL, new MoveMapper());
-        return moves;
+        String SQL = "SELECT * FROM move WHERE game = " + game + " ORDER BY moveNumber";
+        return jdbcTemplateObject.query(SQL, new MoveMapper());
     }
 }
