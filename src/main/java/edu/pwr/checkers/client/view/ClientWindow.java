@@ -67,14 +67,15 @@ public class ClientWindow extends JFrame {
         container.add(box);
         remove(canvas);
         add(container, BorderLayout.CENTER);
-        setVisible(true);
-        Container THIS = this;
+        revalidate();
         box.addActionListener(e -> {
-            THIS.remove(box);
-            THIS.add(canvas, BorderLayout.CENTER);
-            THIS.setVisible(true);
+            remove(container);
+            add(canvas, BorderLayout.CENTER);
+            revalidate();
+            canvas.repaint();
             Logger.debug(((Game) box.getSelectedItem()).getId().toString());
-            controller.sendCancelMoveRequest();
+            // TODO: uncomment this v when making real server connection
+            //controller.sendChosenGameNumber(((Game) box.getSelectedItem()).getId());
         });
     }
 

@@ -5,8 +5,10 @@ import edu.pwr.checkers.model.Board;
 import edu.pwr.checkers.model.Coordinates;
 import edu.pwr.checkers.model.Piece;
 import edu.pwr.checkers.model.Player;
+import edu.pwr.checkers.server.Game;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * This class is responsible for communication between client and
@@ -145,5 +147,9 @@ public class Mediator {
 
     public void sendChosenGameNumber(int number) {
         client.sendChosenGameNumber(number);
+    }
+
+    public void showGameSelectionPanel(List<Game> games) {
+        controller.showGameSelectionPanel(games);
     }
 }
