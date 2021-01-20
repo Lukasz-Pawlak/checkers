@@ -38,7 +38,8 @@ public class ClassicServer implements Server {
   public final static ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
   public final static GameJDBCTemplate gameJDBCTemplate = (GameJDBCTemplate)context.getBean("gameJDBCTemplate");
   public final static MoveJDBCTemplate moveJDBCTemplate = (MoveJDBCTemplate)context.getBean("moveJDBCTemplate");
-
+  private int moveCounter;
+  private final int gameId;
   /**
    * Constructor that creates server socket and starts a game
    * with a given number of players.
@@ -53,6 +54,8 @@ public class ClassicServer implements Server {
     }
     this.numOfPlayers = numOfPlayers;
     this.handlers = new ArrayList<>(numOfPlayers);
+    moveCounter = 0;
+    gameId = gameJDBCTemplate.createGame(numOfPlayers);
     this.game = new ClassicGame(numOfPlayers);
     game.setup();
     Logger.info("Trying to start server with port 4444...");
@@ -64,6 +67,7 @@ public class ClassicServer implements Server {
   public ClassicServer() throws IOException {
     this.game = null;
     this.numOfPlayers = 0;
+    gameId = 0; // TODO: set this as you wish
     //these two need to be final for normal case
 
     Logger.info("Trying to start server with port 4444...");
@@ -160,19 +164,16 @@ public class ClassicServer implements Server {
   }
 
   @Override
-  public void saveMoveList(List<Coordinates> moves) {
-    if (moves == null || moves.size() < 2)
+  public void saveMoveList(List<Coordinates> moveList) {
+    if (moveList == null || moveList.size() < 2)
       return;
 
-    Iterator<Coordinates> it = moves.iterator();
+    Iterator<Coordinates> it = moveList.iterator();
     Coordinates prev = it.next();
     while (it.hasNext()) {
       Coordinates next = it.next();
-      /*
-       * TODO: handling db stuff.
-       *  prev is position before atomic move, next is position after atomic move.
-       *  We are adding atomic moves of only one piece.
-       */
+      moveJDBCTemplate.create(gameId, moveCounter, prev.x, prev.y, next.x, next.y);
+      moveCounter++;
       Logger.debug("pre:" + prev.x + ", " + prev.y + "   nex:" + next.x + ", " + next.y);
       prev = next;
     }
@@ -345,7 +346,7 @@ public class ClassicServer implements Server {
       ServerMessage message = new ServerMessage("VALIDMOVE", game.getBoard());
       sendMessage(message);
       setBoardAll();
-      setBoardAll();
+      //setBoardAll(); // dafuq, czemu to tu jst 2 razy XD
     }
 
     /**
@@ -430,8 +431,7 @@ public class ClassicServer implements Server {
     private void sendGreeting() throws IOException {
       List<Game> games = gameJDBCTemplate.listGames();
 
-      ServerMessage message = new ServerMessage("GAMESELECTION", games);
-      outputStream.writeObject(message);
+
     }
   }
 
@@ -442,6 +442,14 @@ public class ClassicServer implements Server {
    * @param args Standard input arguments.
    */
   public static void main(String[] args) {
+    ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+
+    GameJDBCTemplate gameJDBCTemplate = (GameJDBCTemplate)context.getBean("gameJDBCTemplate");
+
+    //int a = gameJDBCTemplate.createGame(7);
+    //System.out.println("Numer gry " + a);
+
+    //**
     Server server;
 
     if (args.length == 0) {
@@ -475,6 +483,6 @@ public class ClassicServer implements Server {
       e.printStackTrace();
     } catch(RejectedExecutionException e) {
       Logger.err("Execution rejected.");
-    }
+    }//**/
   }
 }
