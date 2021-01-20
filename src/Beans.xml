@@ -17,13 +17,13 @@
 
     <!-- Definition for moveJDBCTemplate bean -->
     <bean id = "moveJDBCTemplate"
-          class = "main.java.pwr.checkers.server.moveJDBCTemplate">
+          class = "edu.pwr.checkers.server.MoveJDBCTemplate">
         <property name = "dataSource" ref = "dataSource" />
     </bean>
 
     <!-- Definition for gameJDBCTemplate bean -->
     <bean id = "gameJDBCTemplate"
-          class = "main.java.pwr.checkers.server.gameJDBCTemplate">
+          class = "edu.pwr.checkers.server.GameJDBCTemplate">
         <property name = "dataSource" ref = "dataSource" />
     </bean>
 

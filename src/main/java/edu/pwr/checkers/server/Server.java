@@ -18,6 +18,12 @@ public interface Server {
   void setUp() throws IOException;
 
   /**
+   * Method to set up the client we will show the saved game to.
+   * @throws IOException used when there are problems with socket connection.
+   */
+  void displayingSetUp() throws IOException;
+
+  /**
    * Used to send the ranking at the end of game.
    */
   void sendRanking();

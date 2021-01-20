@@ -18,10 +18,6 @@ public class MoveJDBCTemplate {
         return;
     }
 
-    public Move getMove(Integer game, Integer moveNumber) {
-        String SQL = "SELECT * FROM move WHERE game = " + game + " AND moveNumber = " + moveNumber;
-        return jdbcTemplateObject.query(SQL, new MoveMapper()).get(0);
-    }
     public List<Move> listMoves(Integer game) {
         String SQL = "SELECT * FROM move WHERE game = " + game + " ORDER BY moveNumber";
         return jdbcTemplateObject.query(SQL, new MoveMapper());

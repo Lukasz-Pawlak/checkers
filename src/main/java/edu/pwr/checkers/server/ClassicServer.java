@@ -54,6 +54,17 @@ public class ClassicServer implements Server {
     Logger.info("Started server with 4444...");
   }
 
+  //constructor of a server that displays a game
+  public ClassicServer() throws IOException {
+    this.game = null;
+    this.numOfPlayers = 0;
+    //these two need to be final for normal case
+
+    Logger.info("Trying to start server with port 4444...");
+    this.serverSocket = new ServerSocket(4444);
+    Logger.info("Started server with 4444...");
+  }
+
   /**
    * The function to set up the server including
    * connecting with clients and creating threads to handle them.
@@ -73,7 +84,6 @@ public class ClassicServer implements Server {
       Logger.info("Waiting for player " + i);
       synchronized (serverSocket) {
         Socket socket = serverSocket.accept();
-        Logger.debug("Przyjąłem pierwsze gniazdo klienta " + i);
         SocketHandler handler =  new SocketHandler(socket);
         // the 2. socket to listen to status
         //handler.sendPlayer(); /// yoo, here streams aren't set up yet dude
@@ -81,6 +91,16 @@ public class ClassicServer implements Server {
         handlers.add(handler);
         pool.execute(handler);
       }
+    }
+  }
+
+  public void displayingSetUp() throws IOException {
+    ExecutorService pool = Executors.newFixedThreadPool(1);
+    Logger.info("Waiting for client... ");
+    synchronized (serverSocket) {
+      Socket socket = serverSocket.accept();
+      DisplaySocketHandler handler = new DisplaySocketHandler(socket);
+      pool.execute(handler);
     }
   }
 
@@ -346,42 +366,72 @@ public class ClassicServer implements Server {
   }
 
   /**
+   * Inner class to handle each client's socket.
+   */
+  private class DisplaySocketHandler implements Runnable {
+    private final Socket socket;
+    private ObjectInputStream inputStream;
+    private ObjectOutputStream outputStream;
+
+
+    public DisplaySocketHandler(Socket socket) {
+      this.socket = socket;
+    }
+
+    @Override
+    public void run() {
+      try {
+        Logger.debug("Trying to create inout streams.");
+        outputStream = new ObjectOutputStream(socket.getOutputStream());
+        Logger.debug("output stream correctly connected");
+        inputStream = new ObjectInputStream(socket.getInputStream());
+        Logger.debug("input stream correctly connected");
+      } catch (IOException e) {
+        // nothing
+      }
+    }
+  }
+
+
+
+  /**
    * Function to be run when we start the programme.
    * @param args Standard input arguments.
    */
   public static void main(String[] args) {
     Server server;
 
-    if (args.length != 2 || (!args[0].equals("play") && !args[0].equals("see"))) {
-      Logger.info("Usage: java -jar server.jar <play|see> <number>");
-      Logger.info("play -> number is number of players (clients to connect)");
-      Logger.info("see  -> number is id of game saved in database to view by client");
-      return;
-    }
-
-    int secondArg;
-    try {
-      secondArg = Integer.parseInt(args[1]);
-    } catch (NumberFormatException ex) {
-      Logger.err("error: second argument not a number");
-      return;
-    }
-
-    if (args[0].equals("play")) {
+    if (args.length == 0) {
       try {
-        server = new ClassicServer(secondArg);
-        server.setUp();
-        Logger.info("Server running...");
-      } catch(WrongNumberException e) {
-        Logger.err("The number can be: 2,3,4 or 6");
-      } catch(IOException e) {
+        server = new ClassicServer();
+        server.displayingSetUp();
+      } catch (IOException e) {
         Logger.err("Couldn't set up the server.");
-      } catch(RejectedExecutionException e) {
-        Logger.err("Execution rejected.");
       }
+      return;
     }
-    else {
-      // TODO:
+
+    if (args.length != 1) {
+      Logger.err("Give only the number of players!");
+      return;
+    }
+
+    try {
+      int numOfPlayers = Integer.parseInt(args[0]);
+      server = new ClassicServer(numOfPlayers);
+      server.setUp();
+      Logger.info("Server running...");
+    } catch(NumberFormatException e) {
+      Logger.err("Give an integer!");
+    } catch(WrongNumberException e) {
+      Logger.err("The number can be: 2,3,4 or 6");
+    } catch(IOException e) {
+      Logger.err("Couldn't set up the server.");
+    } catch(NullPointerException e) {
+      Logger.err("Server is null.");
+      e.printStackTrace();
+    } catch(RejectedExecutionException e) {
+      Logger.err("Execution rejected.");
     }
   }
 }
