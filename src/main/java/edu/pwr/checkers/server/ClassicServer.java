@@ -431,7 +431,8 @@ public class ClassicServer implements Server {
     private void sendGreeting() throws IOException {
       List<Game> games = gameJDBCTemplate.listGames();
 
-
+      ServerMessage message = new ServerMessage("GAMESELECTION", games);
+      outputStream.writeObject(message);
     }
   }
 
@@ -442,14 +443,6 @@ public class ClassicServer implements Server {
    * @param args Standard input arguments.
    */
   public static void main(String[] args) {
-    ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
-
-    GameJDBCTemplate gameJDBCTemplate = (GameJDBCTemplate)context.getBean("gameJDBCTemplate");
-
-    //int a = gameJDBCTemplate.createGame(7);
-    //System.out.println("Numer gry " + a);
-
-    //**
     Server server;
 
     if (args.length == 0) {
