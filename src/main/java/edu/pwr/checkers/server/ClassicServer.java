@@ -12,10 +12,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import edu.pwr.checkers.server.GameJDBCTemplate;
 
 /**
  * The class representing implementing server interface
@@ -399,6 +401,11 @@ public class ClassicServer implements Server {
    * @param args Standard input arguments.
    */
   public static void main(String[] args) {
+    ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+
+    GameJDBCTemplate gameJDBCTemplate = (GameJDBCTemplate)context.getBean("gameJDBCTemplate");
+
+    /**
     Server server;
 
     if (args.length == 0) {
@@ -432,6 +439,6 @@ public class ClassicServer implements Server {
       e.printStackTrace();
     } catch(RejectedExecutionException e) {
       Logger.err("Execution rejected.");
-    }
+    }**/
   }
 }
