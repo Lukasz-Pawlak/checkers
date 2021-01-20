@@ -30,6 +30,15 @@
             <version>3.6.0</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- idk what it is, but shrinks exception got in size -->
+        <!-- ig it might be due to copying Lecture code, based on mysql -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.18</version>
+        </dependency>
+
         <!--dependency>
           <groupId>org.springframework</groupId>
           <artifactId>spring</artifactId>

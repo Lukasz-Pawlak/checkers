@@ -17,7 +17,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import edu.pwr.checkers.server.GameJDBCTemplate;
 
 /**
  * The class representing implementing server interface

@@ -1,3 +1,5 @@
+-- SET GLOBAL time_zone = '-6:00';
+
 DROP DATABASE IF EXISTS games;
 CREATE DATABASE games;
 USE games;
