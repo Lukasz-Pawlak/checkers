@@ -1,6 +1,8 @@
 package edu.pwr.checkers.server;
 
-public class Game {
+import java.io.Serializable;
+
+public class Game implements Serializable {
     private Integer id;
     private Integer numOfPlayers;
 

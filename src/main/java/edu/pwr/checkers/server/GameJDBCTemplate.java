@@ -30,6 +30,17 @@ public class GameJDBCTemplate {
         return null;
     }
 
+    public Integer getNumOfPlayers(Integer gameIdx) {
+        String SQL = "SELECT numOfPlayers FROM game WHERE id = " + gameIdx;
+
+        try {
+            return jdbcTemplateObject.queryForObject(SQL, Integer.class);
+        } catch (DataAccessException ex) {
+            Logger.err("Data processing gone wrong");
+        }
+        return null;
+    }
+
     public List<Game> listGames() {
         String SQL = "SELECT * FROM game";
         return jdbcTemplateObject.query(SQL, new GameMapper());

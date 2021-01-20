@@ -19,10 +19,6 @@ public class ServerMessage implements Serializable {
   private String status = null;
   private List<Game> games = null;
 
-  public List<Game> getGames() {
-    return games;
-  }
-
   /**
    * Constructor setting just the message.
    * @param message message to be set
@@ -73,6 +69,12 @@ public class ServerMessage implements Serializable {
       this.player = nextPlayer;
     }
 
+    public ServerMessage(String init, List<Game> games) {
+    this.message = init;
+    this.games = games;
+    }
+
+
   /**
    * Method to get the exact message.
    * @return the exact message
@@ -103,5 +105,9 @@ public class ServerMessage implements Serializable {
    */
   public Player getPlayer() {
     return player;
+  }
+
+  public List<Game> getGames() {
+    return games;
   }
 }

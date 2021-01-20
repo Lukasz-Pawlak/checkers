@@ -18,6 +18,9 @@ import java.util.concurrent.RejectedExecutionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import static java.lang.Thread.sleep;
+
+
 /**
  * The class representing implementing server interface
  * used in a standard game of Chinese checkers.
@@ -97,13 +100,12 @@ public class ClassicServer implements Server {
     }
   }
 
-  public void displayingSetUp() throws IOException {
-    ExecutorService pool = Executors.newFixedThreadPool(1);
+  public void displayingSetUp() throws IOException, InterruptedException {
     Logger.info("Waiting for client... ");
     synchronized (serverSocket) {
       Socket socket = serverSocket.accept();
       DisplaySocketHandler handler = new DisplaySocketHandler(socket);
-      pool.execute(handler);
+      handler.handle();
     }
   }
 
@@ -371,7 +373,7 @@ public class ClassicServer implements Server {
   /**
    * Inner class to handle each client's socket.
    */
-  private class DisplaySocketHandler implements Runnable {
+  private class DisplaySocketHandler  {
     private final Socket socket;
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
@@ -381,8 +383,7 @@ public class ClassicServer implements Server {
       this.socket = socket;
     }
 
-    @Override
-    public void run() {
+    public void handle() throws IOException, InterruptedException {
       try {
         Logger.debug("Trying to create inout streams.");
         outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -393,12 +394,44 @@ public class ClassicServer implements Server {
       } catch (IOException e) {
         // nothing
       }
+
+      Integer gameIdx = 0;
+
+      while (true) {
+        try {
+          ClientMessage message = (ClientMessage) inputStream.readObject();
+          if (message.getMessage() == "GIMMEGAME") {
+            gameIdx = message.getGameNo();
+            break;
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+          e.printStackTrace();
+        }
+      }
+
+      List<Move> moves = moveJDBCTemplate.listMoves(gameIdx);
+      Integer numOfPlayers = gameJDBCTemplate.getNumOfPlayers(gameIdx);
+
+      Simulator simulator = new Simulator(numOfPlayers);
+      Board messageBoard = null;
+      ServerMessage message = null;
+
+      for (Move move: moves) {
+        messageBoard = simulator.nextMove(move);
+        message = new ServerMessage("CANCELLEDMOVE", messageBoard);
+        outputStream.reset();
+        outputStream.writeObject(message);
+        sleep(1);
+      }
     }
 
     private void sendGreeting() throws IOException {
       List<Game> games = gameJDBCTemplate.listGames();
 
-
+      ServerMessage message = new ServerMessage("GAMESELECTION", games);
+      outputStream.writeObject(message);
     }
   }
 
@@ -409,21 +442,13 @@ public class ClassicServer implements Server {
    * @param args Standard input arguments.
    */
   public static void main(String[] args) {
-    ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
-
-    GameJDBCTemplate gameJDBCTemplate = (GameJDBCTemplate)context.getBean("gameJDBCTemplate");
-
-    int a = gameJDBCTemplate.createGame(7);
-    System.out.println("Numer gry " + a);
-
-    /**
     Server server;
 
     if (args.length == 0) {
       try {
         server = new ClassicServer();
         server.displayingSetUp();
-      } catch (IOException e) {
+      } catch (IOException | InterruptedException e) {
         Logger.err("Couldn't set up the server.");
       }
       return;
@@ -450,6 +475,6 @@ public class ClassicServer implements Server {
       e.printStackTrace();
     } catch(RejectedExecutionException e) {
       Logger.err("Execution rejected.");
-    }**/
+    }
   }
 }
