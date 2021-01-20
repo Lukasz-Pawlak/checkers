@@ -409,8 +409,9 @@ public class ClassicServer implements Server {
           e.printStackTrace();
         }
       }
-
+      Logger.debug("gameid:" + gameIdx);
       List<Move> moves = moveJDBCTemplate.listMoves(gameIdx);
+      Logger.debug(moves.toString());
       Integer numOfPlayers = gameJDBCTemplate.getNumOfPlayers(gameIdx);
 
       Simulator simulator = new Simulator(numOfPlayers);
@@ -419,10 +420,11 @@ public class ClassicServer implements Server {
 
       for (Move move: moves) {
         messageBoard = simulator.nextMove(move);
-        message = new ServerMessage("CANCELLEDMOVE", messageBoard);
+        message = new ServerMessage("SETBOARD", messageBoard);
         outputStream.reset();
         outputStream.writeObject(message);
-        sleep(1);
+        Logger.debug("in loop");
+        sleep(1000);
       }
     }
 
