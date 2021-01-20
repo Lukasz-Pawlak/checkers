@@ -48,4 +48,6 @@ public interface Client {
      * @return board sent by server.
      */
     Board getBoard();
+
+    void sendChosenGameNumber(int number);
 }

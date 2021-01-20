@@ -1,9 +1,13 @@
 package edu.pwr.checkers.client.view;
 
+import edu.pwr.checkers.Logger;
 import edu.pwr.checkers.client.Controller;
 import edu.pwr.checkers.model.Board;
+import edu.pwr.checkers.server.Game;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * This class represents GUI window on client's side.
@@ -20,6 +24,7 @@ public class ClientWindow extends JFrame {
     private final JTextArea messageBox;
     /** Side Panel containing basic control buttons & status box */
     private final SidePanel sidePanel;
+    private final Controller controller;
 
     /**
      * The only constructor.
@@ -28,6 +33,7 @@ public class ClientWindow extends JFrame {
      */
     public ClientWindow(Controller controller) {
         super("Chinese Checkers");
+        this.controller = controller;
         setBounds(300, 200, 800, 400);
         setResizable(true);
         setMinimumSize(new Dimension(600, 400));
@@ -44,13 +50,51 @@ public class ClientWindow extends JFrame {
         add(canvas, BorderLayout.CENTER);
         add(messageBox, BorderLayout.NORTH);
 
-        messageBox.setText("test");
-        sidePanel.setStatus("to jest status");
+        messageBox.setText("Viewing mode");
+        sidePanel.setStatus("Waiting for connection...");
 
         sidePanel.disableButtons();
-        sidePanel.enableButtons();
 
         setVisible(true);
+    }
+
+    public void showChooser(java.util.List<edu.pwr.checkers.server.Game> games) {
+        JComboBox<edu.pwr.checkers.server.Game> box = new JComboBox<>();
+        for (Game game : games) {
+            box.addItem(game);
+        }
+        JPanel container = new JPanel();
+        container.add(box);
+        remove(canvas);
+        add(container, BorderLayout.CENTER);
+        setVisible(true);
+        Container THIS = this;
+        box.addActionListener(e -> {
+            THIS.remove(box);
+            THIS.add(canvas, BorderLayout.CENTER);
+            THIS.setVisible(true);
+            Logger.debug(((Game) box.getSelectedItem()).getId().toString());
+            controller.sendCancelMoveRequest();
+        });
+    }
+
+    // TODO : rm this later, it's just for quick tests
+    public static void main(String [] args) {
+        java.util.List<Game> games = new ArrayList<>();
+        class genGame {
+            int a = 0;
+            Game next() {
+                Game g = new Game();
+                g.setId(a++);
+                g.setNumOfPlayers(a++);
+                return g;
+            }
+        }
+        genGame gg = new genGame();
+        games.add(gg.next());
+        games.add(gg.next());
+        games.add(gg.next());
+        new ClientWindow(null).showChooser(games);
     }
 
     public Canvas getCanvas() {

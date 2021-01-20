@@ -17,9 +17,10 @@ public class ClientMessage implements Serializable {
   private Player player;
   private Piece piece = null;
   private Coordinates coordinates = null;
+  private Integer gameNo = null;
 
   /**
-   * Constructor settting just the message.
+   * Constructor setting just the message.
    * @param message message to be set
    */
   public ClientMessage(String message) {
@@ -34,6 +35,15 @@ public class ClientMessage implements Serializable {
   public ClientMessage(String message, Player player) {
     this.message = message;
     this.player = player;
+  }
+
+  public ClientMessage(int gameNo) {
+    this.message = "GIMMEGAME";
+    this.gameNo = gameNo;
+  }
+
+  public Integer getGameNo() {
+    return gameNo;
   }
 
   /**

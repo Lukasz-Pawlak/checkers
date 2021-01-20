@@ -4,6 +4,7 @@ import edu.pwr.checkers.model.Board;
 import edu.pwr.checkers.model.Player;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Class representing a message from server to client.
@@ -16,6 +17,11 @@ public class ServerMessage implements Serializable {
   private Board board = null;
   private Player player = null;
   private String status = null;
+  private List<Game> games = null;
+
+  public List<Game> getGames() {
+    return games;
+  }
 
   /**
    * Constructor setting just the message.

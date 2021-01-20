@@ -20,10 +20,12 @@ public class GameJDBCTemplate {
     }
     public void createGame(Integer numOfPlayers) {
         String SQL = "INSERT INTO game (numOfPlayers) VALUES (?)";
+        // String SQL2 = "SELECT LAST_INSERT_ID()";
         // String SQL = "CALL createNewGame (?, @result)"; // do we want to use this procedure here?
         // We should return id of game we created here ig, so this might be the way
         try {
             jdbcTemplateObject.update( SQL, numOfPlayers);
+            // jdbcTemplateObject.query(SQL2);
         } catch (DataAccessException ex) {
             // ...
         }

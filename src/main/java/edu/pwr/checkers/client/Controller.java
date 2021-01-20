@@ -81,6 +81,10 @@ public class Controller {
     mediator.sendCancelMoveRequest();
   }
 
+  public void sendChosenGameNumber(int number) {
+    mediator.sendChosenGameNumber(number);
+  }
+
   /**
    * This method sends accept move request to the server.
    */

@@ -142,4 +142,8 @@ public class Mediator {
     public void showDisconnection() {
         controller.showDisconnection();
     }
+
+    public void sendChosenGameNumber(int number) {
+        client.sendChosenGameNumber(number);
+    }
 }

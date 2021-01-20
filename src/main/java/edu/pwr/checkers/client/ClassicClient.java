@@ -217,6 +217,16 @@ public class ClassicClient implements Client {
     return null;
   }
 
+  @Override
+  public void sendChosenGameNumber(int number) {
+    ClientMessage msg = new ClientMessage(number);
+    try {
+      send(msg);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   /**
    * Main function to be run when executing the programme.
    * @param args the arguments
@@ -225,10 +235,6 @@ public class ClassicClient implements Client {
   public static void main (String[] args) throws IOException {
     Logger.info("Trying to connect with server...");
     new ClassicClient(new Socket("localhost", 4444)).run();
-  }
-
-  class Foo extends Throwable {
-
   }
 
   /**
