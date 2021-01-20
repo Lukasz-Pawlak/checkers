@@ -75,7 +75,7 @@ public class ClientWindow extends JFrame {
             canvas.repaint();
             Logger.debug(((Game) box.getSelectedItem()).getId().toString());
             // TODO: uncomment this v when making real server connection
-            //controller.sendChosenGameNumber(((Game) box.getSelectedItem()).getId());
+            controller.sendChosenGameNumber(((Game) box.getSelectedItem()).getId());
         });
     }
 

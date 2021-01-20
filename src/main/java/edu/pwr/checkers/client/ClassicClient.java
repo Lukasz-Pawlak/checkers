@@ -55,7 +55,8 @@ public class ClassicClient implements Client {
     mediator.setBoard(greeting.getBoard());
     Player myPlayer = greeting.getPlayer();
     mediator.setPlayer(myPlayer);
-    myColor = myPlayer.getColors().get(0);
+    if (myPlayer != null)
+      myColor = myPlayer.getColors().get(0);
     Logger.debug("client: Player got: " + greeting.getPlayer());
     Logger.debug("client: Board got:" + greeting.getBoard());
 
