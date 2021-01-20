@@ -21,9 +21,11 @@ PRIMARY KEY (game, moveNumber)
 
 DELIMITER $$
 
+-- looks like wee don't use this procedures, just doing regular sql
+-- so do we leave it like this?
 CREATE OR REPLACE PROCEDURE getGameMoves(IN id INT)
 BEGIN
-    SELECT move.oldX AS oldX, move.oldY AS oldY, move.newX AS newX, moves.newY AS newY
+    SELECT move.oldX AS oldX, move.oldY AS oldY, move.newX AS newX, move.newY AS newY
     FROM move
     WHERE move.game = id;
 END; $$
@@ -49,6 +51,7 @@ END; $$
 DELIMITER ;
 
 -- testy
+/*
 SET @out_value = -1 ;
 CALL createNewGame(2, @out_value);
 SELECT @out_value;
@@ -57,3 +60,4 @@ CALL addMove(1, 1, 1, 1, 1, 1, @moveAdded);
 SELECT @moveAdded;
 CALL getGameMoves(1);
 CALL getGameMoves(2);
+*/
