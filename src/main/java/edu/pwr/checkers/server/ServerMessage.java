@@ -69,9 +69,16 @@ public class ServerMessage implements Serializable {
       this.player = nextPlayer;
     }
 
-    public ServerMessage(String init, List<Game> games) {
-    this.message = init;
-    this.games = games;
+    public ServerMessage(String status,  List<Game> games) {
+      this.message = "GAMESELECTION";
+      this.status = status;
+      this.games = games;
+    }
+
+    public ServerMessage(String message, String status, Board board) {
+      this.status = status;
+      this.message = message;
+      this.board = board;
     }
 
 

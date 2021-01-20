@@ -57,6 +57,7 @@ public class ClassicClient implements Client {
     mediator.setPlayer(myPlayer);
     if (myPlayer != null)
       myColor = myPlayer.getColors().get(0);
+    mediator.setStatus(greeting.getStatus());
     Logger.debug("client: Player got: " + greeting.getPlayer());
     Logger.debug("client: Board got:" + greeting.getBoard());
 
@@ -264,40 +265,50 @@ public class ClassicClient implements Client {
       String message;
       serverMessage = (ServerMessage) inputStream.readObject();
       message = serverMessage.getMessage();
-      while (!message.equals("ENDOFGAME")) {
-        if (message.equals("SETACTIVE")) {
-          Logger.debug("Got SETACTIVE message");
-          Player player = serverMessage.getPlayer();
-          Board board = serverMessage.getBoard();
-          Color color = player.getColors().get(0);
-          if (color != myColor) {
-            mediator.lockButtons();
-          } else {
-            mediator.unlockButtons();
+      label:
+      while (!message.equals("ENDGAME")) {
+        switch (message) {
+          case "SETACTIVE": {
+            Logger.debug("Got SETACTIVE message");
+            Player player = serverMessage.getPlayer();
+            Board board = serverMessage.getBoard();
+            Color color = player.getColors().get(0);
+            if (color != myColor) {
+              mediator.lockButtons();
+            } else {
+              mediator.unlockButtons();
+            }
+            mediator.setStatus("NOW PLAYING " + color.toString());
+            mediator.setBoard(board);
+            //   mediator.setBoard(getBoard());
+            mediator.refresh();
+            break;
           }
-          mediator.setStatus("NOW PLAYING " + color.toString());
-          mediator.setBoard(board);
-          //   mediator.setBoard(getBoard());
-          mediator.refresh();
-        } else if (message.equals("SETBOARD")) {
-          Logger.debug("Got SETBOARD message");
-          Board board = serverMessage.getBoard();
-          mediator.setBoard(board);
-          mediator.refresh();
-          mediator.refresh();
-        } else if (message.equals("DISCONNECTED")) {
-          mediator.showDisconnection();
-          break;
-        } else {
-          synchronized (numMsgReceived) {
-            requestMessageAnswer = serverMessage;
-            numMsgReceived++;
+          case "SETBOARD": {
+            Logger.debug("Got SETBOARD message");
+            Board board = serverMessage.getBoard();
+            mediator.setBoard(board);
+            mediator.refresh();
+            mediator.refresh();
+            break;
           }
+          case "DISCONNECTED":
+            mediator.showDisconnection();
+            break label;
+          default:
+            synchronized (numMsgReceived) {
+              requestMessageAnswer = serverMessage;
+              numMsgReceived++;
+            }
+            break;
         }
-        serverMessage = (ServerMessage) inputStream.readObject();
+        if (serverMessage.getStatus() != null) {
+          mediator.setStatus(serverMessage.getStatus());
+        }
+        serverMessage = getMessage(); // get next message
         message = serverMessage.getMessage();
       }
-      Logger.debug("Dostałem wiadomość ENDGAME");
+      Logger.debug("ENDGAME");
       mediator.setStatus(serverMessage.getStatus());
     } catch (Exception ex) {
       try {

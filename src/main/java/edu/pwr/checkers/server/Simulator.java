@@ -6,7 +6,11 @@ import edu.pwr.checkers.model.Coordinates;
 import edu.pwr.checkers.model.Field;
 
 public class Simulator {
-    private Board board;
+    private final Board board;
+
+    public Board getBoard() {
+        return board;
+    }
 
     public Simulator(int numOfPLayers) {
         this.board = new ClassicBoard(numOfPLayers);

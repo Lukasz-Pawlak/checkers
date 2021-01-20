@@ -415,8 +415,11 @@ public class ClassicServer implements Server {
       Integer numOfPlayers = gameJDBCTemplate.getNumOfPlayers(gameIdx);
 
       Simulator simulator = new Simulator(numOfPlayers);
-      Board messageBoard = null;
-      ServerMessage message = null;
+      Board messageBoard = simulator.getBoard();
+      ServerMessage message = new ServerMessage("SETBOARD", "replaying game..." ,messageBoard);
+      outputStream.reset();
+      outputStream.writeObject(message);
+      sleep(1000);
 
       for (Move move: moves) {
         messageBoard = simulator.nextMove(move);
@@ -426,12 +429,21 @@ public class ClassicServer implements Server {
         Logger.debug("in loop");
         sleep(1000);
       }
+
+      message = new ServerMessage("ENDGAME", "the end");
+      outputStream.reset();
+      outputStream.writeObject(message);
+
+      outputStream.close();
+      socket.close();
     }
 
     private void sendGreeting() throws IOException {
       List<Game> games = gameJDBCTemplate.listGames();
 
-      ServerMessage message = new ServerMessage("GAMESELECTION", games);
+      ServerMessage message = new ServerMessage("Select game", games);
+
+      outputStream.reset();
       outputStream.writeObject(message);
     }
   }
