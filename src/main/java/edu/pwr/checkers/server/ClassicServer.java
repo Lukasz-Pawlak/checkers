@@ -28,7 +28,7 @@ import java.util.concurrent.RejectedExecutionException;
  */
 public class ClassicServer implements Server {
   private final ServerSocket serverSocket;
-  private final Game game;
+  private final edu.pwr.checkers.model.Game game;
   public final int numOfPlayers;
   private ArrayList<SocketHandler> handlers;
 
