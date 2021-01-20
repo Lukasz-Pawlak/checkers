@@ -401,13 +401,11 @@ public class ClassicServer implements Server {
       while (true) {
         try {
           ClientMessage message = (ClientMessage) inputStream.readObject();
-          if (message.getMessage() == "GIMMEGAME") {
+          if (message.getMessage().equals("GIMMEGAME")) {
             gameIdx = message.getGameNo();
             break;
           }
-        } catch (IOException e) {
-          e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
           e.printStackTrace();
         }
       }

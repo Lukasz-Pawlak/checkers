@@ -10,6 +10,7 @@ public class Simulator {
 
     public Simulator(int numOfPLayers) {
         this.board = new ClassicBoard(numOfPLayers);
+        board.setup();
     }
 
     public Board nextMove(Move move) {
