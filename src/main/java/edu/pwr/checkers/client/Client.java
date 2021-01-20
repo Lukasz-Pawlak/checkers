@@ -1,8 +1,10 @@
 package edu.pwr.checkers.client;
 
 import edu.pwr.checkers.model.*;
+import edu.pwr.checkers.server.Game;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * This interface provides basic functionality of client-server communication
@@ -48,4 +50,7 @@ public interface Client {
      * @return board sent by server.
      */
     Board getBoard();
+
+    void sendChosenGameNumber(int number);
+    //public void showGameSelectionPanel(List<Game> games);
 }

@@ -23,6 +23,7 @@ DELIMITER $$
 
 -- looks like wee don't use this procedures, just doing regular sql
 -- so do we leave it like this?
+-- idk, we can delete them at the end ig, I'll leave a TODO so we don't forget about it
 CREATE OR REPLACE PROCEDURE getGameMoves(IN id INT)
 BEGIN
     SELECT move.oldX AS oldX, move.oldY AS oldY, move.newX AS newX, move.newY AS newY

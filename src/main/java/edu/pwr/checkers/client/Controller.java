@@ -3,6 +3,9 @@ package edu.pwr.checkers.client;
 import edu.pwr.checkers.client.view.Canvas;
 import edu.pwr.checkers.client.view.ClientWindow;
 import edu.pwr.checkers.model.*;
+import edu.pwr.checkers.server.Game;
+
+import java.util.List;
 
 /**
  * This class is used to lover the coupling between GUI and model.
@@ -79,6 +82,14 @@ public class Controller {
    */
   public void sendCancelMoveRequest() {
     mediator.sendCancelMoveRequest();
+  }
+
+  public void showGameSelectionPanel(List<Game> games) {
+    window.showChooser(games);
+  }
+
+  public void sendChosenGameNumber(int number) {
+    mediator.sendChosenGameNumber(number);
   }
 
   /**

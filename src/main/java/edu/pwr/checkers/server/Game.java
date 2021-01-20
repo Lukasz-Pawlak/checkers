@@ -19,4 +19,9 @@ public class Game {
     public void setNumOfPlayers(Integer numOfPlayers) {
         this.numOfPlayers = numOfPlayers;
     }
+
+    @Override
+    public String toString() {
+        return "Game: " + id + ", players: " + numOfPlayers;
+    }
 }

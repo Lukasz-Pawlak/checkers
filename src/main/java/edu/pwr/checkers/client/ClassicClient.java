@@ -2,6 +2,7 @@ package edu.pwr.checkers.client;
 
 import edu.pwr.checkers.Logger;
 import edu.pwr.checkers.model.*;
+import edu.pwr.checkers.server.Game;
 import edu.pwr.checkers.server.Server;
 import edu.pwr.checkers.server.ServerMessage;
 
@@ -9,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 
 import static java.lang.Thread.sleep;
 
@@ -56,7 +58,12 @@ public class ClassicClient implements Client {
     myColor = myPlayer.getColors().get(0);
     Logger.debug("client: Player got: " + greeting.getPlayer());
     Logger.debug("client: Board got:" + greeting.getBoard());
-    mediator.startGame();
+
+    if (greeting.getMessage().equals("GAMESELECTION")) {
+      mediator.showGameSelectionPanel(greeting.getGames());
+    } else {
+      mediator.startGame();
+    }
   }
 
   /**
@@ -217,6 +224,21 @@ public class ClassicClient implements Client {
     return null;
   }
 
+  @Override
+  public void sendChosenGameNumber(int number) {
+    ClientMessage msg = new ClientMessage(number);
+    try {
+      send(msg);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  //@Override
+  public void showGameSelectionPanel(List<Game> games) {
+    mediator.showGameSelectionPanel(games);
+  }
+
   /**
    * Main function to be run when executing the programme.
    * @param args the arguments
@@ -225,10 +247,6 @@ public class ClassicClient implements Client {
   public static void main (String[] args) throws IOException {
     Logger.info("Trying to connect with server...");
     new ClassicClient(new Socket("localhost", 4444)).run();
-  }
-
-  class Foo extends Throwable {
-
   }
 
   /**
