@@ -15,7 +15,6 @@ public class MoveJDBCTemplate {
     public void create(Integer game, Integer moveNumber, Integer oldX, Integer oldY, Integer newX, Integer newY) {
         String SQL = "INSERT INTO move (game, moveNumber, oldX, oldY, newX, newY) VALUES (?, ?, ?, ?, ?, ?)";
         jdbcTemplateObject.update( SQL, game, moveNumber, oldX, oldY, newX, newY);
-        return;
     }
 
     public List<Move> listMoves(Integer game) {
