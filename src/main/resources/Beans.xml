@@ -26,5 +26,17 @@
           class = "edu.pwr.checkers.server.GameJDBCTemplate">
         <property name = "dataSource" ref = "dataSource" />
     </bean>
+    
+    <!-- other beans -->
+    <!--bean id = "mediator" class="edu.pwr.checkers.client.Mediator">
+        <constructor-arg ref="client"/>
+    </bean-->
+
+    <bean id="client" class="edu.pwr.checkers.client.ClassicClient">
+        <constructor-arg ref="clientSocket"/>
+    </bean>
+
+    <bean id="clientSocket" class="java.net.Socket"/>
+
 
 </beans>

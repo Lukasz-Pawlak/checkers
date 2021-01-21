@@ -38,7 +38,7 @@ public class Mediator {
      */
     public Mediator(Client client) {
         this.client = client;
-        controller = new Controller(this);
+        controller = new Controller(this); // TODO: SPRING [token to find]
     }
 
     /**

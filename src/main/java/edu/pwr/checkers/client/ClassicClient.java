@@ -5,10 +5,13 @@ import edu.pwr.checkers.model.*;
 import edu.pwr.checkers.server.Game;
 import edu.pwr.checkers.server.Server;
 import edu.pwr.checkers.server.ServerMessage;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
 
@@ -248,7 +251,17 @@ public class ClassicClient implements Client {
    */
   public static void main (String[] args) throws IOException {
     Logger.info("Trying to connect with server...");
-    new ClassicClient(new Socket("localhost", 4444)).run();
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+    ClassicClient client = (ClassicClient)context.getBean("client");
+    //new ClassicClient(new Socket("localhost", 4444)).run();
+    Socket clientSocket = (Socket)context.getBean("clientSocket");
+    clientSocket.connect(new InetSocketAddress(4444));
+    client.run();
   }
 
   /**
